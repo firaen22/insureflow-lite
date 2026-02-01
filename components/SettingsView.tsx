@@ -30,13 +30,19 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     // Gemini API Key State
     const [apiKey, setApiKey] = useState('');
     const [isKeySaved, setIsKeySaved] = useState(false);
+    const [availableModels, setAvailableModels] = useState<string[]>([]);
+    const [selectedModel, setSelectedModel] = useState('');
 
     useEffect(() => {
         loadUserProfile();
         const savedKey = localStorage.getItem('gemini_api_key');
+        const savedModel = localStorage.getItem('gemini_model_id');
         if (savedKey) {
             setApiKey(savedKey);
             setIsKeySaved(true);
+        }
+        if (savedModel) {
+            setSelectedModel(savedModel);
         }
     }, []);
 
@@ -202,7 +208,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <div className="space-y-4">
                     <p className="text-sm text-slate-600">
                         Enter your Google Gemini API Key to enable automated policy parsing.
-                        This key is stored <strong>locally in your browser</strong> and is never sent to our servers.
+                        This key is stored <strong>locally in your browser</strong>.
                     </p>
                     <div className="flex gap-2">
                         <input
@@ -213,10 +219,28 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             className="flex-1 p-2 border border-slate-300 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                         />
                         <button
-                            onClick={handleSaveKey}
+                            onClick={async () => {
+                                handleSaveKey();
+                                try {
+                                    setStatusMessage("Verifying key and fetching models...");
+                                    const { validateGeminiKey } = await import('../services/gemini');
+                                    const models = await validateGeminiKey(apiKey);
+                                    setAvailableModels(models);
+                                    if (models.includes('gemini-1.5-flash')) {
+                                        setSelectedModel('gemini-1.5-flash');
+                                        localStorage.setItem('gemini_model_id', 'gemini-1.5-flash');
+                                    } else if (models.length > 0) {
+                                        setSelectedModel(models[0]);
+                                        localStorage.setItem('gemini_model_id', models[0]);
+                                    }
+                                    alert(`Key Verified! Available models: ${models.join(', ')}`);
+                                } catch (e) {
+                                    alert(`Key Verification Failed: ${(e as Error).message}`);
+                                }
+                            }}
                             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
                         >
-                            Save
+                            Verify & Save
                         </button>
                         {isKeySaved && (
                             <button
@@ -227,10 +251,32 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             </button>
                         )}
                     </div>
-                    {isKeySaved && (
-                        <div className="flex items-center gap-2 text-sm text-green-600">
-                            <CheckCircle className="w-4 h-4" />
-                            <span>API Key is set and ready.</span>
+
+                    {availableModels.length > 0 && (
+                        <div className="mt-2">
+                            <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Select AI Model</label>
+                            <select
+                                value={selectedModel}
+                                onChange={(e) => {
+                                    setSelectedModel(e.target.value);
+                                    localStorage.setItem('gemini_model_id', e.target.value);
+                                }}
+                                className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-slate-50"
+                            >
+                                {availableModels.map(m => (
+                                    <option key={m} value={m}>{m}</option>
+                                ))}
+                            </select>
+                            <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3" /> key works with selected model.
+                            </p>
+                        </div>
+                    )}
+
+                    {isKeySaved && availableModels.length === 0 && (
+                        <div className="text-sm text-amber-600 flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4" />
+                            <span>Key saved, but not verified. Click "Verify & Save" to check models.</span>
                         </div>
                     )}
                 </div>

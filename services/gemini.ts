@@ -1,9 +1,29 @@
 
 import { PolicyData } from '../types';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const getGeminiUrl = (model: string) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+export const validateGeminiKey = async (apiKey: string): Promise<string[]> => {
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+        if (!response.ok) throw new Error(response.statusText);
+
+        const data = await response.json();
+        const models = data.models || [];
+
+        // Filter for models that support generateContent
+        return models
+            .filter((m: any) => m.supportedGenerationMethods?.includes('generateContent'))
+            .map((m: any) => m.name.replace('models/', ''));
+    } catch (error) {
+        console.error("Validation failed", error);
+        throw error;
+    }
+};
 
 export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Partial<PolicyData>> => {
+    const selectedModel = localStorage.getItem('gemini_model_id') || 'gemini-1.5-flash';
+
     return new Promise(async (resolve, reject) => {
         try {
             const base64Data = await fileToGenerativePart(file);
@@ -37,7 +57,7 @@ export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Pa
                 }]
             };
 
-            const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+            const response = await fetch(`${getGeminiUrl(selectedModel)}?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
