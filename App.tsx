@@ -6,6 +6,7 @@ import { ClientsView } from './components/ClientsView';
 import { ProductLibraryView } from './components/ProductLibraryView';
 import { ClientDetailsView } from './components/ClientDetailsView';
 import { RemindersView } from './components/RemindersView';
+import { GoogleSheetsConnection } from './components/GoogleSheetsConnection';
 import { AppView, Language, Client, PolicyData, Product } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
@@ -13,7 +14,7 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [language, setLanguage] = useState<Language>('en');
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
-  
+
   // Lifted State
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS);
   const [policies, setPolicies] = useState<PolicyData[]>(RECENT_POLICIES);
@@ -28,7 +29,7 @@ const App: React.FC = () => {
     // 2. Add/Update Client Locally
     setClients(prev => {
       const existingClientIndex = prev.findIndex(c => c.name === policy.holderName);
-      
+
       if (existingClientIndex >= 0) {
         const updatedClients = [...prev];
         const client = updatedClients[existingClientIndex];
@@ -98,12 +99,12 @@ const App: React.FC = () => {
   const handleAddClient = (newClient: Client) => {
     setClients(prev => [newClient, ...prev]);
   };
-  
+
   const handleViewClientDetails = (client: Client) => {
     setSelectedClientId(client.id);
     setCurrentView(AppView.CLIENT_DETAILS);
   };
-  
+
   const handleBackToClients = () => {
     setSelectedClientId(null);
     setCurrentView(AppView.CLIENTS);
@@ -114,21 +115,21 @@ const App: React.FC = () => {
   };
 
   const handleAddProduct = (newProduct: Product) => {
-     if (products.some(p => p.name === newProduct.name)) {
-        alert("A product with this name already exists.");
-        return;
-     }
-     setProducts(prev => [newProduct, ...prev]);
+    if (products.some(p => p.name === newProduct.name)) {
+      alert("A product with this name already exists.");
+      return;
+    }
+    setProducts(prev => [newProduct, ...prev]);
   };
 
   const selectedClient = clients.find(c => c.id === selectedClientId);
-  const selectedClientPolicies = selectedClient 
-    ? policies.filter(p => p.holderName === selectedClient.name) 
+  const selectedClientPolicies = selectedClient
+    ? policies.filter(p => p.holderName === selectedClient.name)
     : [];
 
   return (
-    <Layout 
-      currentView={currentView} 
+    <Layout
+      currentView={currentView}
       onChangeView={setCurrentView}
       language={language}
       onToggleLanguage={() => setLanguage(prev => prev === 'en' ? 'zh' : 'en')}
@@ -141,9 +142,9 @@ const App: React.FC = () => {
         <UploadView t={t.upload} products={products} onSave={handleSavePolicy} />
       )}
       {currentView === AppView.CLIENTS && (
-        <ClientsView 
-          t={t.clients} 
-          clients={clients} 
+        <ClientsView
+          t={t.clients}
+          clients={clients}
           policies={policies}
           products={products}
           onUpdateClient={handleUpdateClient}
@@ -172,13 +173,19 @@ const App: React.FC = () => {
         />
       )}
       {currentView === AppView.PRODUCTS && (
-        <ProductLibraryView 
-          t={t.products} 
+        <ProductLibraryView
+          t={t.products}
           products={products}
           onUpdateProduct={handleUpdateProduct}
           onAddProduct={handleAddProduct}
         />
       )}
+      <GoogleSheetsConnection
+        t={t}
+        onSync={(data) => {
+          if (data.clients) setClients(data.clients);
+        }}
+      />
     </Layout>
   );
 };
