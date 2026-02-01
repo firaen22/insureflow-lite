@@ -137,10 +137,11 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
                                     </button>
 
                                     {status && status !== 'Syncing...' && (
-                                        <div className={`p-3 rounded-lg text-sm ${status.includes('failed') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                                        <div className={`p-3 rounded-lg text-sm ${status.includes('failed') || status.includes('Error') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
                                             {status}
                                         </div>
                                     )}
+                                    <div className="text-xs text-slate-300 text-center mt-4">Debug v1.1</div>
                                 </>
                             )}
                         </div>
