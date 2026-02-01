@@ -59,11 +59,13 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
 
             onSync({ clients: mappedClients });
             setStatus(`Success! Imported ${mappedClients.length} clients.`);
+            alert(`Success! Imported ${mappedClients.length} clients from your sheet.`);
             setTimeout(() => setStatus(''), 4000);
         } catch (e: any) {
             console.error(e);
             const msg = e.result?.error?.message || e.message || 'Sync failed.';
             setStatus(`Error: ${msg}`);
+            alert(`Sync Error: ${msg}\n\nPlease check:\n1. Is the Sheet ID correct?\n2. Did you enable the API?\n3. Is the sheet empty?`);
         }
     };
 
