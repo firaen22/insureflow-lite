@@ -8,12 +8,19 @@ import { ClientDetailsView } from './components/ClientDetailsView';
 import { RemindersView } from './components/RemindersView';
 import { GoogleSheetsSync } from './components/GoogleSheetsSync';
 import { SettingsView } from './components/SettingsView';
-import { AppView, Language, Client, PolicyData, Product } from './types';
+import { AppView, Language, Client, PolicyData, Product, AppSettings } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
-  const [language, setLanguage] = useState<Language>('en');
+  // Settings State
+  const [settings, setSettings] = useState<AppSettings>({
+    language: 'en',
+    theme: 'light',
+    reminderDays: 60
+  });
+  const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
+
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
   // Lifted State
@@ -21,7 +28,7 @@ const App: React.FC = () => {
   const [policies, setPolicies] = useState<PolicyData[]>(RECENT_POLICIES);
   const [products, setProducts] = useState<Product[]>(PRODUCT_LIBRARY);
 
-  const t = TRANSLATIONS[language];
+  const t = TRANSLATIONS[settings.language];
 
   const handleSavePolicy = async (policy: PolicyData, isNewProduct: boolean) => {
     // 1. Add Policy Locally
@@ -132,8 +139,8 @@ const App: React.FC = () => {
     <Layout
       currentView={currentView}
       onChangeView={setCurrentView}
-      language={language}
-      onToggleLanguage={() => setLanguage(prev => prev === 'en' ? 'zh' : 'en')}
+      language={settings.language}
+      onToggleLanguage={() => setSettings(prev => ({ ...prev, language: prev.language === 'en' ? 'zh' : 'en' }))}
       t={t}
     >
       {currentView === AppView.DASHBOARD && (
@@ -171,6 +178,7 @@ const App: React.FC = () => {
           policies={policies}
           clients={clients}
           onUploadRenewal={() => setCurrentView(AppView.UPLOAD)}
+          reminderDays={settings.reminderDays}
         />
       )}
       {currentView === AppView.PRODUCTS && (
@@ -182,7 +190,15 @@ const App: React.FC = () => {
         />
       )}
       {currentView === AppView.SETTINGS && (
-        <SettingsView />
+        <SettingsView
+          settings={settings}
+          onUpdateSettings={setSettings}
+          spreadsheetId={spreadsheetId}
+          setSpreadsheetId={setSpreadsheetId}
+          clients={clients}
+          policies={policies}
+          products={products}
+        />
       )}
       <GoogleSheetsSync
         clients={clients}
@@ -193,6 +209,8 @@ const App: React.FC = () => {
           if (newPolicies) setPolicies(newPolicies);
           if (newProducts) setProducts(newProducts);
         }}
+        spreadsheetId={spreadsheetId}
+        setSpreadsheetId={setSpreadsheetId}
       />
     </Layout>
   );

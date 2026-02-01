@@ -83,3 +83,16 @@ export enum UploadStatus {
   COMPLETE = 'COMPLETE',
   ERROR = 'ERROR'
 }
+
+export interface AppSettings {
+  language: Language;
+  theme: 'light' | 'dark';
+  reminderDays: number;
+  googleSheetId?: string;
+}
+
+export interface UserProfile {
+  name: string;
+  email: string;
+  picture?: string;
+}

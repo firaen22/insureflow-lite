@@ -107,6 +107,28 @@ export const getIsSignedIn = () => {
     return !!token && !!token.access_token;
 }
 
+export const getUserProfile = async (): Promise<{ name: string, email: string, picture: string }> => {
+    const token = window.gapi?.client?.getToken();
+    if (!token) throw new Error("Not signed in");
+
+    try {
+        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: {
+                'Authorization': `Bearer ${token.access_token}`
+            }
+        });
+        const data = await response.json();
+        return {
+            name: data.name,
+            email: data.email,
+            picture: data.picture
+        };
+    } catch (error) {
+        console.error("Error fetching user profile", error);
+        throw error;
+    }
+};
+
 export const listSpreadsheets = async (): Promise<Array<{ id: string, name: string }>> => {
     try {
         const response = await window.gapi.client.drive.files.list({

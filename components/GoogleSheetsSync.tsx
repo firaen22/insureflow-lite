@@ -17,12 +17,13 @@ interface Props {
     policies: PolicyData[];
     products: Product[];
     onSync: (clients: Client[], policies: PolicyData[], products: Product[]) => void;
+    spreadsheetId: string | null;
+    setSpreadsheetId: (id: string | null) => void;
 }
 
-export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products, onSync }) => {
+export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products, onSync, spreadsheetId, setSpreadsheetId }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSignedIn, setIsSignedIn] = useState(false);
-    const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
     const [status, setStatus] = useState('');
     const [lastSync, setLastSync] = useState<string>('');
     const [availableSheets, setAvailableSheets] = useState<Array<{ id: string, name: string }>>([]);
