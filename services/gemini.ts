@@ -44,7 +44,15 @@ export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Pa
             });
 
             if (!response.ok) {
-                throw new Error(`Gemini API Error: ${response.statusText}`);
+                const errorBody = await response.text();
+                let errorMessage = response.statusText;
+                try {
+                    const errorJson = JSON.parse(errorBody);
+                    errorMessage = errorJson.error?.message || errorBody;
+                } catch {
+                    errorMessage = errorBody;
+                }
+                throw new Error(`Gemini API Error (${response.status}): ${errorMessage}`);
             }
 
             const result = await response.json();

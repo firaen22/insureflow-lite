@@ -111,8 +111,12 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
     const storedApiKey = localStorage.getItem('gemini_api_key');
 
     return new Promise(async (resolve) => {
+      const isImageOrPdf = file.type.startsWith('image/') || file.type === 'application/pdf' || /\.(jpg|jpeg|png|webp|pdf)$/i.test(file.name);
+
+      console.log('Processing file:', file.name, 'Type:', file.type, 'Has Key:', !!storedApiKey, 'Is Supported:', isImageOrPdf);
+
       // If we have an API key and it's an image/pdf, try real analysis
-      if (storedApiKey && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
+      if (storedApiKey && isImageOrPdf) {
         try {
           const { analyzePolicyImage } = await import('../services/gemini');
           const aiResult = await analyzePolicyImage(file, storedApiKey);
