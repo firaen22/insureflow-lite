@@ -29,25 +29,25 @@ export interface PolicyData {
   status: 'Active' | 'Pending' | 'Expired';
   extractedTags?: string[]; // Tags derived from Product Library
   riders?: Rider[]; // Nested Rider Plans
-  
+
   // --- Plan Specific Features ---
-  
+
   // Medical
   medicalPlanType?: 'Ward' | 'Semi-Private' | 'Private';
   medicalExcess?: number; // For High-end medical
-  
+
   // Life / Critical Illness / Accident (Critical)
-  sumInsured?: number; 
-  
+  sumInsured?: number;
+
   // Critical Illness
   isMultipay?: boolean; // 多重保
-  
+
   // Term Life
   policyEndDate?: string; // YYYY-MM-DD
-  
+
   // Savings
   capitalInvested?: number;
-  
+
   // Accident
   accidentMedicalLimit?: number; // Sum insured for each accident
   accidentSectionLimit?: number; // Limitation on sum insured for each section
@@ -72,7 +72,8 @@ export enum AppView {
   CLIENTS = 'CLIENTS',
   CLIENT_DETAILS = 'CLIENT_DETAILS',
   PRODUCTS = 'PRODUCTS',
-  REMINDERS = 'REMINDERS'
+  REMINDERS = 'REMINDERS',
+  SETTINGS = 'SETTINGS'
 }
 
 export enum UploadStatus {

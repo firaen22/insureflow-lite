@@ -1,5 +1,5 @@
 
-import { Client, PolicyData } from '../types';
+import { Client, PolicyData, Product } from '../types';
 
 // Environment variables
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -132,7 +132,8 @@ export const createSpreadsheet = async (title: string): Promise<string> => {
             },
             sheets: [
                 { properties: { title: 'Clients' } },
-                { properties: { title: 'Policies' } }
+                { properties: { title: 'Policies' } },
+                { properties: { title: 'Products' } }
             ]
         });
         const spreadsheetId = response.result.spreadsheetId;
@@ -150,6 +151,10 @@ export const createSpreadsheet = async (title: string): Promise<string> => {
                     {
                         range: 'Policies!A1:Z1',
                         values: [['ID', 'Policy Number', 'Plan Name', 'Holder Name', 'Client Birthday', 'Type', 'Anniversary', 'Payment Mode', 'Premium', 'Status', 'Tags', 'Riders JSON', 'Extra Data JSON']]
+                    },
+                    {
+                        range: 'Products!A1:Z1',
+                        values: [['Name', 'Provider', 'Type', 'Default Tags']]
                     }
                 ]
             }
@@ -162,7 +167,7 @@ export const createSpreadsheet = async (title: string): Promise<string> => {
     }
 };
 
-export const saveData = async (spreadsheetId: string, clients: Client[], policies: PolicyData[]) => {
+export const saveData = async (spreadsheetId: string, clients: Client[], policies: PolicyData[], products: Product[]) => {
     try {
         // Prepare Clients Data
         const clientRows = clients.map(c => [
@@ -188,15 +193,20 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
             })
         ]);
 
+        // Prepare Products Data
+        const productRows = products.map(p => [
+            p.name, p.provider, p.type, JSON.stringify(p.defaultTags)
+        ]);
+
         // Clear and Write to Sheets
-        // Note: In a real app we might want to be more careful about clearing vs updating
         await window.gapi.client.sheets.spreadsheets.values.batchUpdate({
             spreadsheetId: spreadsheetId,
             resource: {
                 valueInputOption: 'RAW',
                 data: [
                     { range: 'Clients!A2:Z', values: clientRows },
-                    { range: 'Policies!A2:Z', values: policyRows }
+                    { range: 'Policies!A2:Z', values: policyRows },
+                    { range: 'Products!A2:Z', values: productRows }
                 ]
             }
         });
@@ -207,15 +217,16 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
     }
 };
 
-export const loadData = async (spreadsheetId: string): Promise<{ clients: Client[], policies: PolicyData[] }> => {
+export const loadData = async (spreadsheetId: string): Promise<{ clients: Client[], policies: PolicyData[], products: Product[] }> => {
     try {
         const response = await window.gapi.client.sheets.spreadsheets.values.batchGet({
             spreadsheetId: spreadsheetId,
-            ranges: ['Clients!A2:Z', 'Policies!A2:Z']
+            ranges: ['Clients!A2:Z', 'Policies!A2:Z', 'Products!A2:Z']
         });
 
         const clientRows = response.result.valueRanges?.[0].values || [];
         const policyRows = response.result.valueRanges?.[1].values || [];
+        const productRows = response.result.valueRanges?.[2].values || [];
 
         const clients: Client[] = clientRows.map((row: any) => ({
             id: row[0],
@@ -248,7 +259,14 @@ export const loadData = async (spreadsheetId: string): Promise<{ clients: Client
             };
         });
 
-        return { clients, policies };
+        const products: Product[] = productRows.map((row: any) => ({
+            name: row[0],
+            provider: row[1],
+            type: row[2],
+            defaultTags: JSON.parse(row[3] || '[]')
+        }));
+
+        return { clients, policies, products };
 
     } catch (error) {
         console.error("Error loading data", error);

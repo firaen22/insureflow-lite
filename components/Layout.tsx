@@ -12,9 +12,9 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ 
-  currentView, 
-  onChangeView, 
+export const Layout: React.FC<LayoutProps> = ({
+  currentView,
+  onChangeView,
   language,
   onToggleLanguage,
   t,
@@ -24,53 +24,48 @@ export const Layout: React.FC<LayoutProps> = ({
     <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-white flex-shrink-0 hidden md:flex flex-col transition-all duration-300">
-        
+
         <nav className="flex-1 px-4 py-6 space-y-2">
           <button
             onClick={() => onChangeView(AppView.DASHBOARD)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              currentView === AppView.DASHBOARD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-            }`}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.DASHBOARD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
           >
             <LayoutDashboard className="w-5 h-5" />
             <span>{t.nav.dashboard}</span>
           </button>
-          
+
           <button
             onClick={() => onChangeView(AppView.UPLOAD)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              currentView === AppView.UPLOAD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-            }`}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.UPLOAD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
           >
             <UploadCloud className="w-5 h-5" />
             <span>{t.nav.upload}</span>
           </button>
 
           <button
-             onClick={() => onChangeView(AppView.CLIENTS)}
-             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              currentView === AppView.CLIENTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-            }`}
+            onClick={() => onChangeView(AppView.CLIENTS)}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.CLIENTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
           >
             <Users className="w-5 h-5" />
             <span>{t.nav.clients}</span>
           </button>
 
           <button
-             onClick={() => onChangeView(AppView.PRODUCTS)}
-             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              currentView === AppView.PRODUCTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-            }`}
+            onClick={() => onChangeView(AppView.PRODUCTS)}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.PRODUCTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
           >
             <BookOpen className="w-5 h-5" />
             <span>{t.nav.products}</span>
           </button>
 
           <button
-             onClick={() => onChangeView(AppView.REMINDERS)}
-             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              currentView === AppView.REMINDERS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-            }`}
+            onClick={() => onChangeView(AppView.REMINDERS)}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.REMINDERS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
           >
             <Bell className="w-5 h-5" />
             <span>{t.nav.reminders}</span>
@@ -78,7 +73,11 @@ export const Layout: React.FC<LayoutProps> = ({
         </nav>
 
         <div className="p-4 border-t border-slate-800">
-          <button className="w-full flex items-center space-x-3 px-4 py-3 text-slate-400 hover:text-white transition-colors">
+          <button
+            onClick={() => onChangeView(AppView.SETTINGS)}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.SETTINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+          >
             <Settings className="w-5 h-5" />
             <span>{t.nav.settings}</span>
           </button>
@@ -94,10 +93,10 @@ export const Layout: React.FC<LayoutProps> = ({
               <Menu className="w-6 h-6" />
             </button>
           </div>
-          
+
           <div className="flex items-center ml-auto space-x-4">
-             {/* Language Switcher */}
-             <button 
+            {/* Language Switcher */}
+            <button
               onClick={onToggleLanguage}
               className="flex items-center space-x-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors text-sm font-medium"
             >
@@ -105,7 +104,7 @@ export const Layout: React.FC<LayoutProps> = ({
               <span>{language === 'en' ? 'EN' : '中'}</span>
             </button>
 
-            <button 
+            <button
               onClick={() => onChangeView(AppView.REMINDERS)}
               className="p-2 text-slate-400 hover:text-brand-600 transition-colors relative"
             >
@@ -121,7 +120,7 @@ export const Layout: React.FC<LayoutProps> = ({
         {/* Scrollable Content */}
         <div className="flex-1 overflow-auto p-6 md:p-8">
           <div className="max-w-7xl mx-auto">
-             {children}
+            {children}
           </div>
         </div>
       </main>

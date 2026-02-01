@@ -10,15 +10,16 @@ import {
     saveData,
     loadData
 } from '../services/googleSheets';
-import { Client, PolicyData } from '../types';
+import { Client, PolicyData, Product } from '../types';
 
 interface Props {
     clients: Client[];
     policies: PolicyData[];
-    onSync: (clients: Client[], policies: PolicyData[]) => void;
+    products: Product[];
+    onSync: (clients: Client[], policies: PolicyData[], products: Product[]) => void;
 }
 
-export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, onSync }) => {
+export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products, onSync }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
@@ -97,7 +98,7 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, onSync })
         if (!spreadsheetId) return;
         setStatus('Saving to Google Sheets...');
         try {
-            await saveData(spreadsheetId, clients, policies);
+            await saveData(spreadsheetId, clients, policies, products);
             setLastSync(new Date().toLocaleTimeString());
             setStatus('Saved successfully!');
         } catch (error: any) {
@@ -111,9 +112,9 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, onSync })
         setStatus('Loading from Google Sheets...');
         try {
             const data = await loadData(spreadsheetId);
-            onSync(data.clients, data.policies);
+            onSync(data.clients, data.policies, data.products);
             setLastSync(new Date().toLocaleTimeString());
-            setStatus(`Loaded ${data.clients.length} clients and ${data.policies.length} policies.`);
+            setStatus(`Loaded ${data.clients.length} clients, ${data.policies.length} policies, and ${data.products.length} products.`);
         } catch (error: any) {
             console.error(error);
             setStatus(`Load failed: ${error.message}`);

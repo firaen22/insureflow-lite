@@ -7,6 +7,7 @@ import { ProductLibraryView } from './components/ProductLibraryView';
 import { ClientDetailsView } from './components/ClientDetailsView';
 import { RemindersView } from './components/RemindersView';
 import { GoogleSheetsSync } from './components/GoogleSheetsSync';
+import { SettingsView } from './components/SettingsView';
 import { AppView, Language, Client, PolicyData, Product } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
@@ -180,12 +181,17 @@ const App: React.FC = () => {
           onAddProduct={handleAddProduct}
         />
       )}
+      {currentView === AppView.SETTINGS && (
+        <SettingsView />
+      )}
       <GoogleSheetsSync
         clients={clients}
         policies={policies}
-        onSync={(newClients, newPolicies) => {
+        products={products}
+        onSync={(newClients, newPolicies, newProducts) => {
           if (newClients) setClients(newClients);
           if (newPolicies) setPolicies(newPolicies);
+          if (newProducts) setProducts(newProducts);
         }}
       />
     </Layout>
