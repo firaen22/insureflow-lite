@@ -30,6 +30,29 @@ const App: React.FC = () => {
 
   const t = TRANSLATIONS[settings.language];
 
+  // Persistence Logic (Feature E)
+  useEffect(() => {
+    const savedClients = localStorage.getItem('insureflow_clients');
+    const savedPolicies = localStorage.getItem('insureflow_policies');
+    const savedProducts = localStorage.getItem('insureflow_products');
+
+    if (savedClients) setClients(JSON.parse(savedClients));
+    if (savedPolicies) setPolicies(JSON.parse(savedPolicies));
+    if (savedProducts) setProducts(JSON.parse(savedProducts));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('insureflow_clients', JSON.stringify(clients));
+  }, [clients]);
+
+  useEffect(() => {
+    localStorage.setItem('insureflow_policies', JSON.stringify(policies));
+  }, [policies]);
+
+  useEffect(() => {
+    localStorage.setItem('insureflow_products', JSON.stringify(products));
+  }, [products]);
+
   const handleSavePolicy = async (policy: PolicyData, isNewProduct: boolean) => {
     // 1. Add Policy Locally
     setPolicies(prev => [policy, ...prev]);

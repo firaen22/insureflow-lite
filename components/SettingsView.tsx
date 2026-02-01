@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppSettings, UserProfile, Client, PolicyData, Product } from '../types';
-import { Languages, Database, Cloud, Bell, Trash2, Download, RefreshCw, User, Moon, Sun, CheckCircle, AlertCircle } from 'lucide-react';
+import { Languages, Database, Cloud, Bell, Trash2, Download, RefreshCw, User, Moon, Sun, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
 import { getUserProfile, listSpreadsheets } from '../services/googleSheets';
 
 interface SettingsViewProps {
@@ -170,7 +170,50 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
             </section>
 
-            {/* 3. Google Sheets Connection */}
+            {/* 3. AI Parsing Settings (Gemini API) */}
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-brand-500" />
+                    AI Parsing Settings (Gemini API)
+                </h2>
+                <div className="space-y-4">
+                    <p className="text-sm text-slate-600">
+                        Enter your Google Gemini API Key to enable automated policy parsing.
+                        This key is stored <strong>locally in your browser</strong> and is never sent to our servers.
+                    </p>
+                    <div className="flex gap-2">
+                        <input
+                            type="password"
+                            value={apiKey}
+                            onChange={(e) => setApiKey(e.target.value)}
+                            placeholder="Enter Gemini API Key..."
+                            className="flex-1 p-2 border border-slate-300 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        />
+                        <button
+                            onClick={handleSaveKey}
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Save
+                        </button>
+                        {isKeySaved && (
+                            <button
+                                onClick={handleClearKey}
+                                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Clear
+                            </button>
+                        )}
+                    </div>
+                    {isKeySaved && (
+                        <div className="flex items-center gap-2 text-sm text-green-600">
+                            <CheckCircle className="w-4 h-4" />
+                            <span>API Key is set and ready.</span>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* 4. Google Sheets Connection */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Cloud className="w-5 h-5 text-brand-500" />
@@ -206,7 +249,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
             </section>
 
-            {/* 4. Rules */}
+            {/* 5. Rules */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Bell className="w-5 h-5 text-brand-500" />
@@ -226,7 +269,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
             </section>
 
-            {/* 5. Data Management */}
+            {/* 6. Data Management */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Database className="w-5 h-5 text-brand-500" />
