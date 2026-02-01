@@ -17,23 +17,42 @@ export const CloudSyncManager: React.FC<Props> = ({ clients, policies, onSync })
     const [lastSync, setLastSync] = useState<string>('');
 
     useEffect(() => {
-        // Initialize Auth and DB on mount
         const bootstrap = async () => {
-            await initGoogleClient();
-            setIsSignedIn(getIsSignedIn());
-            await initDB();
+            console.log("CloudSyncManager: Bootstrapping...");
+            try {
+                await initGoogleClient();
+                const signedIn = getIsSignedIn();
+                console.log("CloudSyncManager: Auth initialized. SignedIn:", signedIn);
+                setIsSignedIn(signedIn);
+            } catch (e: any) {
+                console.error("Auth Init error", e);
+                setStatus(`Auth Error: ${e.message || e}`);
+            }
+
+            try {
+                await initDB();
+                console.log("CloudSyncManager: DB initialized.");
+            } catch (e: any) {
+                console.error("DB Init error", e);
+                setStatus(`DB Error: ${e.message || e}. Is sql-wasm.wasm in public/?`);
+            }
         };
         bootstrap();
     }, []);
 
     const handleSignIn = async () => {
+        setStatus('Signing in...');
         try {
+            console.log("CloudSyncManager: Calling signIn()...");
             await signIn();
+            console.log("CloudSyncManager: signIn() returned.");
             setIsSignedIn(true);
-            checkForFile();
-        } catch (e) {
-            console.error(e);
-            setStatus('Login failed');
+            setStatus('Signed in! Checking Drive...');
+            await checkForFile();
+        } catch (e: any) {
+            console.error("Sign In Error", e);
+            setStatus(`Login Warning: ${JSON.stringify(e)}`);
+            alert(`Login Failed. \n\nError: ${JSON.stringify(e)}\n\nCheck the console (F12) for more details.`);
         }
     };
 
@@ -56,7 +75,7 @@ export const CloudSyncManager: React.FC<Props> = ({ clients, policies, onSync })
                 setFileId(null);
             }
         } catch (e: any) {
-            setStatus(`Error searching Drive: ${e.message}`);
+            setStatus(`Drive Search Error: ${e.message}`);
         }
     };
 
@@ -72,17 +91,15 @@ export const CloudSyncManager: React.FC<Props> = ({ clients, policies, onSync })
             setStatus(`Loaded ${newClients.length} clients & ${newPolicies.length} policies.`);
         } catch (e: any) {
             setStatus(`Download failed: ${e.message}`);
+            alert(`Download failed: ${e.message}`);
         }
     };
 
     const handleUpload = async () => {
         setStatus('Saving to Drive...');
         try {
-            // Save current state to DB first
             saveFullState(clients, policies);
-
             const data = exportDB();
-            // If we don't have a fileId yet, this creates a new one
             const newId = await saveDatabaseFile(data, fileId || undefined);
             setFileId(newId);
             setLastSync(new Date().toLocaleTimeString());
@@ -90,14 +107,18 @@ export const CloudSyncManager: React.FC<Props> = ({ clients, policies, onSync })
         } catch (e: any) {
             console.error(e);
             setStatus(`Upload failed: ${e.message}`);
+            alert(`Upload failed: ${e.message}`);
         }
     };
 
     const handleCreateNew = async () => {
         setStatus('Initializing new database...');
-        await initDB();
-        // Sync current state to empty DB immediately
-        await handleUpload();
+        try {
+            await initDB();
+            await handleUpload();
+        } catch (e: any) {
+            setStatus(`Create failed: ${e.message}`);
+        }
     };
 
     return (
@@ -107,6 +128,7 @@ export const CloudSyncManager: React.FC<Props> = ({ clients, policies, onSync })
                 className="fixed bottom-4 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-colors z-50 flex items-center gap-2"
                 title="Cloud Sync"
             >
+                {/* SVG Icon */}
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
             </button>
 
@@ -164,7 +186,7 @@ export const CloudSyncManager: React.FC<Props> = ({ clients, policies, onSync })
                                     {lastSync && <div className="text-center text-xs text-slate-400">Last Sync: {lastSync}</div>}
 
                                     {status && (
-                                        <div className={`p-3 rounded-lg text-sm text-center ${status.includes('failed') || status.includes('Error') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                                        <div className={`p-3 rounded-lg text-sm text-center ${status.includes('failed') || status.includes('Error') || status.includes('Warning') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
                                             {status}
                                         </div>
                                     )}
