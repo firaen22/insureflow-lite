@@ -87,7 +87,9 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, onSync })
             const sheets = await listSpreadsheets();
             setAvailableSheets(sheets);
         } catch (error: any) {
-            setStatus(`Create failed: ${error.message}`);
+            console.error("Create spreadsheet error:", error);
+            const msg = error.result?.error?.message || error.message || JSON.stringify(error);
+            setStatus(`Create failed: ${msg}`);
         }
     };
 

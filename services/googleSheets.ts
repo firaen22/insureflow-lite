@@ -123,6 +123,9 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
 
 export const createSpreadsheet = async (title: string): Promise<string> => {
     try {
+        if (!window.gapi.client.sheets) {
+            throw new Error("Google Sheets API not loaded. Please refresh the page.");
+        }
         const response = await window.gapi.client.sheets.spreadsheets.create({
             properties: {
                 title: title,
