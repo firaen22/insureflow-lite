@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { initGoogleClient, signIn, signOut, getIsSignedIn, fetchSheetData, ClientRow } from '../services/googleSheets';
+import { initGoogleClient, signIn, signOut, getIsSignedIn, fetchSheetData, createSpreadsheet, listSpreadsheets, ClientRow } from '../services/googleSheets';
 
 interface Props {
     t: any;
@@ -11,6 +11,8 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [sheetId, setSheetId] = useState(localStorage.getItem('user_sheet_id') || '');
     const [status, setStatus] = useState('');
+    const [showPicker, setShowPicker] = useState(false);
+    const [availableSheets, setAvailableSheets] = useState<Array<{ id: string, name: string }>>([]);
 
     useEffect(() => {
         initGoogleClient()
@@ -109,19 +111,48 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
 
                                     <div className="space-y-2">
                                         <label className="block text-sm font-medium text-slate-700">Spreadsheet ID</label>
-                                        <input
-                                            type="text"
-                                            value={sheetId}
-                                            onChange={(e) => setSheetId(e.target.value)}
-                                            placeholder="1BxiMVs..."
-                                            className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm font-mono"
-                                        />
-                                        <p className="text-xs text-slate-500">
-                                            Paste the ID from your Google Sheet URL.
-                                        </p>
-                                        <div className="text-xs text-slate-400 mt-2 bg-slate-50 p-2 rounded">
-                                            <strong>Expected Columns (Row 1):</strong><br />
-                                            A: Name | B: Email | C: Phone | D: Status | E: Policy
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={sheetId}
+                                                onChange={(e) => setSheetId(e.target.value)}
+                                                placeholder="1BxiMVs..."
+                                                className="flex-1 p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm font-mono"
+                                            />
+                                            <button
+                                                onClick={handleShowPicker}
+                                                className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-medium transition-colors"
+                                                title="Select from Drive"
+                                            >
+                                                📂
+                                            </button>
+                                        </div>
+
+                                        {showPicker && (
+                                            <div className="absolute bg-white border border-slate-200 shadow-xl rounded-lg p-2 max-h-48 overflow-y-auto w-64 z-10 mt-1">
+                                                <div className="text-xs font-bold text-slate-400 mb-2 px-2">YOUR SHEETS</div>
+                                                {availableSheets.map(f => (
+                                                    <button
+                                                        key={f.id}
+                                                        onClick={() => selectSheet(f.id)}
+                                                        className="w-full text-left px-2 py-1.5 text-sm hover:bg-blue-50 text-slate-700 rounded truncate"
+                                                    >
+                                                        {f.name}
+                                                    </button>
+                                                ))}
+                                                {availableSheets.length === 0 && <div className="text-xs text-slate-400 px-2">No sheets found.</div>}
+                                                <button onClick={() => setShowPicker(false)} className="w-full text-center text-xs text-red-400 mt-2 hover:text-red-500">Close</button>
+                                            </div>
+                                        )}
+
+                                        <div className="flex justify-between items-center text-xs mt-1">
+                                            <span className="text-slate-500">Or create a new one:</span>
+                                            <button
+                                                onClick={handleCreateSheet}
+                                                className="text-blue-600 hover:text-blue-700 font-medium underline"
+                                            >
+                                                + Create New Database
+                                            </button>
                                         </div>
                                     </div>
 
