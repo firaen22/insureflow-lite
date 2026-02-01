@@ -25,11 +25,18 @@ export const initGoogleClient = async () => {
             window.gapi.load('client', async () => {
                 await window.gapi.client.init({
                     apiKey: API_KEY,
-                    discoveryDocs: [
-                        "https://sheets.googleapis.com/$discovery/rest?version=v4",
-                        "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
-                    ],
+                    discoveryDocs: [], // Explicitly load below
                 });
+
+                // Explicitly load APIs
+                await window.gapi.client.load('sheets', 'v4');
+                await window.gapi.client.load('drive', 'v3');
+
+                console.log("GAPI Client loaded", {
+                    sheets: !!window.gapi.client.sheets,
+                    drive: !!window.gapi.client.drive
+                });
+
                 gapiInited = true;
                 checkInit();
             });
