@@ -13,9 +13,14 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
     const [status, setStatus] = useState('');
 
     useEffect(() => {
-        initGoogleClient().then(() => {
-            setIsSignedIn(getIsSignedIn());
-        });
+        initGoogleClient()
+            .then(() => {
+                setIsSignedIn(getIsSignedIn());
+            })
+            .catch((err) => {
+                console.error(err);
+                setStatus("System Error: Google API failed to load. Check API Keys.");
+            });
     }, []);
 
     const handleSignIn = async () => {
