@@ -4,7 +4,7 @@ import { gapi } from 'gapi-script';
 // Environment variables
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
-const SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
+const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file";
 
 export interface SheetData {
     clients: ClientRow[];
@@ -25,7 +25,10 @@ export const initGoogleClient = async () => {
                 gapi.client.init({
                     apiKey: API_KEY,
                     clientId: CLIENT_ID,
-                    discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                    discoveryDocs: [
+                        "https://sheets.googleapis.com/$discovery/rest?version=v4",
+                        "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
+                    ],
                     scope: SCOPES,
                 }).then(() => {
                     resolve();
