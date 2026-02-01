@@ -104,3 +104,43 @@ export const fetchSheetData = async (spreadsheetId: string): Promise<ClientRow[]
         throw error;
     }
 }
+
+export const createSpreadsheet = async (title: string): Promise<string> => {
+    try {
+        const response = await gapi.client.sheets.spreadsheets.create({
+            properties: {
+                title: title,
+            },
+        });
+        const spreadsheetId = response.result.spreadsheetId;
+
+        // Add Header Row
+        await gapi.client.sheets.spreadsheets.values.update({
+            spreadsheetId: spreadsheetId,
+            range: 'Sheet1!A1:E1',
+            valueInputOption: 'RAW',
+            resource: {
+                values: [['Name', 'Email', 'Phone', 'Status', 'Policy']]
+            }
+        });
+
+        return spreadsheetId;
+    } catch (error) {
+        console.error("Error creating spreadsheet", error);
+        throw error;
+    }
+};
+
+export const listSpreadsheets = async (): Promise<Array<{ id: string, name: string }>> => {
+    try {
+        const response = await gapi.client.drive.files.list({
+            q: "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false",
+            fields: 'files(id, name)',
+            pageSize: 10
+        });
+        return response.result.files || [];
+    } catch (error) {
+        console.error("Error listing spreadsheets", error);
+        throw error;
+    }
+};
