@@ -66,9 +66,21 @@ export const getIsSignedIn = () => {
 
 export const fetchSheetData = async (spreadsheetId: string): Promise<ClientRow[]> => {
     try {
+        // 1. Get the sheet name dynamically (don't assume 'Sheet1')
+        const meta = await gapi.client.sheets.spreadsheets.get({
+            spreadsheetId: spreadsheetId,
+            fields: 'sheets.properties.title'
+        });
+
+        const sheetName = meta.result.sheets?.[0]?.properties?.title;
+        if (!sheetName) {
+            throw new Error("No sheets found in the spreadsheet.");
+        }
+
+        // 2. Fetch data from that sheet
         const response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: spreadsheetId,
-            range: 'Sheet1!A2:E', // Assuming common columns, A2 to skip header
+            range: `${sheetName}!A2:E`, // Use the actual sheet name
         });
 
         const rows = response.result.values;

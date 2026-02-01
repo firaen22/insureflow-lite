@@ -53,11 +53,12 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
             }));
 
             onSync({ clients: mappedClients });
-            setStatus('Sync complete!');
-            setTimeout(() => setStatus(''), 2000);
-        } catch (e) {
+            setStatus(`Success! Imported ${mappedClients.length} clients.`);
+            setTimeout(() => setStatus(''), 4000);
+        } catch (e: any) {
             console.error(e);
-            setStatus('Sync failed. Check Sheet ID and permissions.');
+            const msg = e.result?.error?.message || e.message || 'Sync failed.';
+            setStatus(`Error: ${msg}`);
         }
     };
 
@@ -111,14 +112,18 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
                                         <p className="text-xs text-slate-500">
                                             Paste the ID from your Google Sheet URL.
                                         </p>
+                                        <div className="text-xs text-slate-400 mt-2 bg-slate-50 p-2 rounded">
+                                            <strong>Expected Columns (Row 1):</strong><br />
+                                            A: Name | B: Email | C: Phone | D: Status | E: Policy
+                                        </div>
                                     </div>
 
                                     <button
                                         onClick={handleSync}
                                         disabled={!sheetId || status === 'Syncing...'}
                                         className={`w-full py-2.5 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${!sheetId ? 'bg-slate-100 text-slate-400 cursor-not-allowed' :
-                                                status === 'Syncing...' ? 'bg-blue-100 text-blue-600 cursor-wait' :
-                                                    'bg-blue-600 hover:bg-blue-700 text-white'
+                                            status === 'Syncing...' ? 'bg-blue-100 text-blue-600 cursor-wait' :
+                                                'bg-blue-600 hover:bg-blue-700 text-white'
                                             }`}
                                     >
                                         {status === 'Syncing...' ? 'Syncing...' : 'Sync Data'}
