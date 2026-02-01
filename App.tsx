@@ -6,7 +6,7 @@ import { ClientsView } from './components/ClientsView';
 import { ProductLibraryView } from './components/ProductLibraryView';
 import { ClientDetailsView } from './components/ClientDetailsView';
 import { RemindersView } from './components/RemindersView';
-import { CloudSyncManager } from './components/CloudSyncManager';
+import { GoogleSheetsSync } from './components/GoogleSheetsSync';
 import { AppView, Language, Client, PolicyData, Product } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
@@ -180,7 +180,7 @@ const App: React.FC = () => {
           onAddProduct={handleAddProduct}
         />
       )}
-      <CloudSyncManager
+      <GoogleSheetsSync
         clients={clients}
         policies={policies}
         onSync={(newClients, newPolicies) => {

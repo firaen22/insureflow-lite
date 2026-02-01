@@ -1,22 +1,11 @@
 
 import { gapi } from 'gapi-script';
+import { Client, PolicyData } from '../types';
 
 // Environment variables
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file";
-
-export interface SheetData {
-    clients: ClientRow[];
-}
-
-export interface ClientRow {
-    name: string;
-    email: string;
-    phone: string;
-    status: string;
-    policy: string;
-}
 
 export const initGoogleClient = async () => {
     try {
@@ -67,70 +56,6 @@ export const getIsSignedIn = () => {
     return authInstance ? authInstance.isSignedIn.get() : false;
 }
 
-export const fetchSheetData = async (spreadsheetId: string): Promise<ClientRow[]> => {
-    try {
-        // 1. Get the sheet name dynamically (don't assume 'Sheet1')
-        const meta = await gapi.client.sheets.spreadsheets.get({
-            spreadsheetId: spreadsheetId,
-            fields: 'sheets.properties.title'
-        });
-
-        const sheetName = meta.result.sheets?.[0]?.properties?.title;
-        if (!sheetName) {
-            throw new Error("No sheets found in the spreadsheet.");
-        }
-
-        // 2. Fetch data from that sheet
-        const response = await gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: spreadsheetId,
-            range: `${sheetName}!A2:E`, // Use the actual sheet name
-        });
-
-        const rows = response.result.values;
-        if (!rows || rows.length === 0) {
-            return [];
-        }
-
-        return rows.map((row: any) => ({
-            name: row[0] || '',
-            email: row[1] || '',
-            phone: row[2] || '',
-            status: row[3] || 'New',
-            policy: row[4] || 'Pending',
-        }));
-
-    } catch (error) {
-        console.error("Error fetching sheet data", error);
-        throw error;
-    }
-}
-
-export const createSpreadsheet = async (title: string): Promise<string> => {
-    try {
-        const response = await gapi.client.sheets.spreadsheets.create({
-            properties: {
-                title: title,
-            },
-        });
-        const spreadsheetId = response.result.spreadsheetId;
-
-        // Add Header Row
-        await gapi.client.sheets.spreadsheets.values.update({
-            spreadsheetId: spreadsheetId,
-            range: 'Sheet1!A1:E1',
-            valueInputOption: 'RAW',
-            resource: {
-                values: [['Name', 'Email', 'Phone', 'Status', 'Policy']]
-            }
-        });
-
-        return spreadsheetId;
-    } catch (error) {
-        console.error("Error creating spreadsheet", error);
-        throw error;
-    }
-};
-
 export const listSpreadsheets = async (): Promise<Array<{ id: string, name: string }>> => {
     try {
         const response = await gapi.client.drive.files.list({
@@ -141,6 +66,161 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
         return response.result.files || [];
     } catch (error) {
         console.error("Error listing spreadsheets", error);
+        throw error;
+    }
+};
+
+export const createSpreadsheet = async (title: string): Promise<string> => {
+    try {
+        const response = await gapi.client.sheets.spreadsheets.create({
+            properties: {
+                title: title,
+            },
+            sheets: [
+                { properties: { title: 'Clients' } },
+                { properties: { title: 'Policies' } }
+            ]
+        });
+        const spreadsheetId = response.result.spreadsheetId;
+
+        // Initialize Headers
+        await gapi.client.sheets.spreadsheets.values.batchUpdate({
+            spreadsheetId: spreadsheetId,
+            resource: {
+                valueInputOption: 'RAW',
+                data: [
+                    {
+                        range: 'Clients!A1:Z1',
+                        values: [['ID', 'Name', 'Email', 'Phone', 'Birthday', 'Total Policies', 'Last Contact', 'Status', 'Tags']]
+                    },
+                    {
+                        range: 'Policies!A1:Z1',
+                        values: [['ID', 'Policy Number', 'Plan Name', 'Holder Name', 'Client Birthday', 'Type', 'Anniversary', 'Payment Mode', 'Premium', 'Status', 'Tags', 'Riders JSON', 'Extra Data JSON']]
+                    }
+                ]
+            }
+        });
+
+        return spreadsheetId;
+    } catch (error) {
+        console.error("Error creating spreadsheet", error);
+        throw error;
+    }
+};
+
+export const saveData = async (spreadsheetId: string, clients: Client[], policies: PolicyData[]) => {
+    try {
+        // Prepare Clients Data
+        const clientRows = clients.map(c => [
+            c.id, c.name, c.email, c.phone, c.birthday, c.totalPolicies, c.lastContact, c.status, JSON.stringify(c.tags)
+        ]);
+
+        // Prepare Policies Data
+        const policyRows = policies.map(p => [
+            p.id, p.policyNumber, p.planName, p.holderName, p.clientBirthday, p.type,
+            p.policyAnniversaryDate, p.paymentMode, p.premiumAmount, p.status,
+            JSON.stringify(p.extractedTags || []),
+            JSON.stringify(p.riders || []),
+            JSON.stringify({
+                medicalPlanType: p.medicalPlanType,
+                medicalExcess: p.medicalExcess,
+                sumInsured: p.sumInsured,
+                isMultipay: p.isMultipay,
+                policyEndDate: p.policyEndDate,
+                capitalInvested: p.capitalInvested,
+                accidentMedicalLimit: p.accidentMedicalLimit,
+                accidentSectionLimit: p.accidentSectionLimit,
+                accidentPhysioVisits: p.accidentPhysioVisits
+            })
+        ]);
+
+        // Write to Sheets
+        await gapi.client.sheets.spreadsheets.values.batchUpdate({
+            spreadsheetId: spreadsheetId,
+            resource: {
+                valueInputOption: 'RAW',
+                data: [
+                    { range: 'Clients!A2:Z', values: clientRows },
+                    { range: 'Policies!A2:Z', values: policyRows }
+                ]
+            }
+        });
+
+        // Clear potential leftover rows is hard without knowing length, 
+        // but for now we assume overwrite. 
+        // A better approach in production is to clear the sheet content first or track length.
+        // For 'lite' version, overwriting starting A2 is okay as long as new data >= old data.
+        // To be safe, let's clear data first? BatchClear is supported.
+        await gapi.client.sheets.spreadsheets.values.batchClear({
+            spreadsheetId: spreadsheetId,
+            resource: {
+                ranges: ['Clients!A2:Z10000', 'Policies!A2:Z10000']
+            }
+        });
+
+        // Re-write
+        await gapi.client.sheets.spreadsheets.values.batchUpdate({
+            spreadsheetId: spreadsheetId,
+            resource: {
+                valueInputOption: 'RAW',
+                data: [
+                    { range: 'Clients!A2', values: clientRows },
+                    { range: 'Policies!A2', values: policyRows }
+                ]
+            }
+        });
+
+    } catch (error) {
+        console.error("Error saving data", error);
+        throw error;
+    }
+};
+
+export const loadData = async (spreadsheetId: string): Promise<{ clients: Client[], policies: PolicyData[] }> => {
+    try {
+        const response = await gapi.client.sheets.spreadsheets.values.batchGet({
+            spreadsheetId: spreadsheetId,
+            ranges: ['Clients!A2:Z', 'Policies!A2:Z']
+        });
+
+        const clientRows = response.result.valueRanges?.[0].values || [];
+        const policyRows = response.result.valueRanges?.[1].values || [];
+
+        const clients: Client[] = clientRows.map((row: any) => ({
+            id: row[0],
+            name: row[1],
+            email: row[2],
+            phone: row[3],
+            birthday: row[4],
+            totalPolicies: Number(row[5]),
+            lastContact: row[6],
+            status: row[7],
+            tags: JSON.parse(row[8] || '[]')
+        }));
+
+        const policies: PolicyData[] = policyRows.map((row: any) => {
+            const extraData = JSON.parse(row[12] || '{}');
+            return {
+                id: row[0],
+                policyNumber: row[1],
+                planName: row[2],
+                holderName: row[3],
+                clientBirthday: row[4],
+                type: row[5],
+                policyAnniversaryDate: row[6],
+                paymentMode: row[7],
+                premiumAmount: Number(row[8]),
+                status: row[9],
+                extractedTags: JSON.parse(row[10] || '[]'),
+                riders: JSON.parse(row[11] || '[]'),
+                ...extraData
+            };
+        });
+
+        return { clients, policies };
+
+    } catch (error) {
+        console.error("Error loading data", error);
         throw error;
     }
 };
