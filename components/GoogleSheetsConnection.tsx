@@ -25,6 +25,38 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
             });
     }, []);
 
+    const handleCreateSheet = async () => {
+        setStatus('Creating new database...');
+        try {
+            const newId = await createSpreadsheet("InsureFlow Database");
+            setSheetId(newId);
+            setStatus('Database created! Syncing...');
+            setTimeout(() => handleSync(), 1500);
+        } catch (e: any) {
+            console.error(e);
+            setStatus(`Creation failed: ${e.message}`);
+            alert(`Creation Failed: ${e.message}`);
+        }
+    };
+
+    const handleShowPicker = async () => {
+        setStatus('Loading your sheets...');
+        try {
+            const files = await listSpreadsheets();
+            setAvailableSheets(files);
+            setShowPicker(true);
+            setStatus('');
+        } catch (e: any) {
+            console.error(e);
+            setStatus(`Load failed: ${e.message}`);
+        }
+    };
+
+    const selectSheet = (id: string) => {
+        setSheetId(id);
+        setShowPicker(false);
+    };
+
     const handleSignIn = async () => {
         try {
             await signIn();
