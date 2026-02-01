@@ -107,8 +107,59 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
       });
     }
 
-    // 2. Mock AI Logic (PDF/Image)
-    return new Promise((resolve) => {
+    // 2. Real/Mock AI Logic (PDF/Image)
+    const storedApiKey = localStorage.getItem('gemini_api_key');
+
+    return new Promise(async (resolve) => {
+      // If we have an API key and it's an image/pdf, try real analysis
+      if (storedApiKey && (file.type.startsWith('image/') || file.type === 'application/pdf')) {
+        try {
+          const { analyzePolicyImage } = await import('../services/gemini');
+          const aiResult = await analyzePolicyImage(file, storedApiKey);
+
+          const isNew = !products.some(p => p.name === aiResult.planName);
+
+          // Merge with PolicyData structure
+          const policyData: PolicyData = {
+            id: `ai-${Date.now()}`,
+            policyNumber: aiResult.policyNumber || 'Unknown',
+            planName: aiResult.planName || 'Unknown Plan',
+            holderName: aiResult.holderName || 'Unknown',
+            clientBirthday: aiResult.clientBirthday || '',
+            type: (aiResult.type as any) || 'Life',
+            policyAnniversaryDate: aiResult.policyAnniversaryDate || '',
+            paymentMode: (aiResult.paymentMode as any) || 'Yearly',
+            premiumAmount: aiResult.premiumAmount || 0,
+            status: 'Active',
+            extractedTags: [...(aiResult.extractedTags || []), 'AI Parsed'],
+            riders: [],
+            sumInsured: 0
+          };
+
+          resolve({
+            id,
+            file,
+            status: UploadStatus.COMPLETE,
+            data: policyData,
+            isNewProduct: isNew
+          });
+          return;
+
+        } catch (error) {
+          console.error("Real AI failed, falling back to mock or error", error);
+          // Fallthrough to mock logic if real AI fails? Or return error?
+          // Let's return error to inform user their key might be wrong
+          resolve({
+            id,
+            file,
+            status: UploadStatus.ERROR,
+            error: `AI Parsing Failed: ${(error as Error).message}`
+          });
+          return;
+        }
+      }
+
+      // Mock Fallback (if no key is provided)
       setTimeout(() => {
         // Enhanced Mock Logic: Check for Chinese characters in filename
         const isChineseContext = /[\u4e00-\u9fa5]/.test(file.name);
@@ -116,21 +167,21 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
 
         // Check Product Library
         const libraryMatch = products.find(p => p.name === mockPlanName);
-        let derivedTags: string[] = ['AI Parsed'];
+        let derivedTags: string[] = ['Mock Data'];
         let type = isChineseContext ? 'Medical' : 'Life';
         let isNew = true;
 
         if (libraryMatch) {
-          derivedTags = [...libraryMatch.defaultTags, 'AI Parsed'];
+          derivedTags = [...libraryMatch.defaultTags, 'Mock Data'];
           type = libraryMatch.type;
           isNew = false;
         }
 
         const mockResult: PolicyData = {
-          id: `ai-${Date.now()}`,
+          id: `mock-${Date.now()}`,
           policyNumber: isChineseContext ? 'AIA-HK-899' : 'POL-NEW-882',
           planName: mockPlanName,
-          holderName: isChineseContext ? '陳大文' : 'Robert Fox',
+          holderName: isChineseContext ? '陳大文 (Mock)' : 'Robert Fox (Mock)',
           clientBirthday: isChineseContext ? '1980-05-20' : '1992-11-15',
           type: type as any,
           policyAnniversaryDate: isChineseContext ? '20/05' : '14/08',
