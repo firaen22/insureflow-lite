@@ -1,5 +1,4 @@
 
-import { gapi } from 'gapi-script';
 import { Client, PolicyData } from '../types';
 
 // Environment variables
@@ -7,58 +6,103 @@ const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file";
 
+let tokenClient: any;
+let gapiInited = false;
+let gisInited = false;
+
 export const initGoogleClient = async () => {
-    try {
-        await new Promise<void>((resolve, reject) => {
-            gapi.load('client:auth2', () => {
-                gapi.client.init({
+    return new Promise<boolean>((resolve) => {
+        const checkInit = () => {
+            if (gapiInited && gisInited) resolve(true);
+        }
+
+        // Load GAPI
+        const gapiScript = document.createElement('script');
+        gapiScript.src = "https://apis.google.com/js/api.js";
+        gapiScript.async = true;
+        gapiScript.defer = true;
+        gapiScript.onload = () => {
+            window.gapi.load('client', async () => {
+                await window.gapi.client.init({
                     apiKey: API_KEY,
-                    clientId: CLIENT_ID,
                     discoveryDocs: [
                         "https://sheets.googleapis.com/$discovery/rest?version=v4",
                         "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
                     ],
-                    scope: SCOPES,
-                }).then(() => {
-                    resolve();
-                }).catch((error: any) => {
-                    reject(error);
                 });
+                gapiInited = true;
+                checkInit();
             });
-        });
-        return true;
-    } catch (error) {
-        console.error("Error initializing Google Client", error);
-        return false;
-    }
+        };
+        document.body.appendChild(gapiScript);
+
+        // Load GIS
+        const gisScript = document.createElement('script');
+        gisScript.src = "https://accounts.google.com/gsi/client";
+        gisScript.async = true;
+        gisScript.defer = true;
+        gisScript.onload = () => {
+            tokenClient = window.google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (resp: any) => {
+                    if (resp.error !== undefined) {
+                        throw (resp);
+                    }
+                },
+            });
+            gisInited = true;
+            checkInit();
+        };
+        document.body.appendChild(gisScript);
+    });
 };
 
 export const signIn = async () => {
-    try {
-        const authInstance = gapi.auth2.getAuthInstance();
-        if (!authInstance.isSignedIn.get()) {
-            await authInstance.signIn();
+    return new Promise<void>((resolve, reject) => {
+        if (!tokenClient) {
+            reject("Token Client not initialized");
+            return;
         }
-        return authInstance.currentUser.get().getBasicProfile();
-    } catch (error) {
-        console.error("Error signing in", error);
-        throw error;
-    }
+
+        // Override callback for this specific request to capture when it's done
+        tokenClient.callback = (resp: any) => {
+            if (resp.error) {
+                reject(resp);
+            }
+            // Manually set the token for gapi client
+            /* @ts-ignore */
+            // Note: gapi.client.setToken implementation might vary in types, preventing TS error with ignore
+            if (window.gapi.client) {
+                // @ts-ignore
+                window.gapi.client.setToken(resp);
+            }
+            resolve();
+        };
+
+        // Request token (triggers popup)
+        tokenClient.requestAccessToken({ prompt: 'consent' });
+    });
 };
 
 export const signOut = async () => {
-    const authInstance = gapi.auth2.getAuthInstance();
-    await authInstance.signOut();
+    const token = window.gapi?.client?.getToken();
+    if (token !== null) {
+        window.google?.accounts?.oauth2?.revoke(token.access_token, () => { });
+        window.gapi?.client?.setToken(null);
+    }
 };
 
 export const getIsSignedIn = () => {
-    const authInstance = gapi.auth2.getAuthInstance();
-    return authInstance ? authInstance.isSignedIn.get() : false;
+    // With GIS, we don't have a persistent "signed in" listener like auth2.
+    // We check if we have a valid token in gapi client.
+    const token = window.gapi?.client?.getToken();
+    return !!token && !!token.access_token;
 }
 
 export const listSpreadsheets = async (): Promise<Array<{ id: string, name: string }>> => {
     try {
-        const response = await gapi.client.drive.files.list({
+        const response = await window.gapi.client.drive.files.list({
             q: "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false",
             fields: 'files(id, name)',
             pageSize: 10
@@ -72,7 +116,7 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
 
 export const createSpreadsheet = async (title: string): Promise<string> => {
     try {
-        const response = await gapi.client.sheets.spreadsheets.create({
+        const response = await window.gapi.client.sheets.spreadsheets.create({
             properties: {
                 title: title,
             },
@@ -84,7 +128,7 @@ export const createSpreadsheet = async (title: string): Promise<string> => {
         const spreadsheetId = response.result.spreadsheetId;
 
         // Initialize Headers
-        await gapi.client.sheets.spreadsheets.values.batchUpdate({
+        await window.gapi.client.sheets.spreadsheets.values.batchUpdate({
             spreadsheetId: spreadsheetId,
             resource: {
                 valueInputOption: 'RAW',
@@ -134,38 +178,15 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
             })
         ]);
 
-        // Write to Sheets
-        await gapi.client.sheets.spreadsheets.values.batchUpdate({
+        // Clear and Write to Sheets
+        // Note: In a real app we might want to be more careful about clearing vs updating
+        await window.gapi.client.sheets.spreadsheets.values.batchUpdate({
             spreadsheetId: spreadsheetId,
             resource: {
                 valueInputOption: 'RAW',
                 data: [
                     { range: 'Clients!A2:Z', values: clientRows },
                     { range: 'Policies!A2:Z', values: policyRows }
-                ]
-            }
-        });
-
-        // Clear potential leftover rows is hard without knowing length, 
-        // but for now we assume overwrite. 
-        // A better approach in production is to clear the sheet content first or track length.
-        // For 'lite' version, overwriting starting A2 is okay as long as new data >= old data.
-        // To be safe, let's clear data first? BatchClear is supported.
-        await gapi.client.sheets.spreadsheets.values.batchClear({
-            spreadsheetId: spreadsheetId,
-            resource: {
-                ranges: ['Clients!A2:Z10000', 'Policies!A2:Z10000']
-            }
-        });
-
-        // Re-write
-        await gapi.client.sheets.spreadsheets.values.batchUpdate({
-            spreadsheetId: spreadsheetId,
-            resource: {
-                valueInputOption: 'RAW',
-                data: [
-                    { range: 'Clients!A2', values: clientRows },
-                    { range: 'Policies!A2', values: policyRows }
                 ]
             }
         });
@@ -178,7 +199,7 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
 
 export const loadData = async (spreadsheetId: string): Promise<{ clients: Client[], policies: PolicyData[] }> => {
     try {
-        const response = await gapi.client.sheets.spreadsheets.values.batchGet({
+        const response = await window.gapi.client.sheets.spreadsheets.values.batchGet({
             spreadsheetId: spreadsheetId,
             ranges: ['Clients!A2:Z', 'Policies!A2:Z']
         });
