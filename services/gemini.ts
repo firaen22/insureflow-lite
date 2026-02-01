@@ -1,7 +1,7 @@
 
 import { PolicyData } from '../types';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Partial<PolicyData>> => {
     return new Promise(async (resolve, reject) => {
