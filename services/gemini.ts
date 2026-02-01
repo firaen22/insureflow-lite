@@ -21,6 +21,8 @@ export const validateGeminiKey = async (apiKey: string): Promise<string[]> => {
     }
 };
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Partial<PolicyData>> => {
     const selectedModel = localStorage.getItem('gemini_model_id') || 'gemini-1.5-flash';
 
@@ -57,22 +59,56 @@ export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Pa
                 }]
             };
 
-            const response = await fetch(`${getGeminiUrl(selectedModel)}?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            let attempts = 0;
+            const maxAttempts = 3;
+            let response;
+            let finalError;
 
-            if (!response.ok) {
-                const errorBody = await response.text();
-                let errorMessage = response.statusText;
+            while (attempts < maxAttempts) {
                 try {
-                    const errorJson = JSON.parse(errorBody);
-                    errorMessage = errorJson.error?.message || errorBody;
-                } catch {
-                    errorMessage = errorBody;
+                    response = await fetch(`${getGeminiUrl(selectedModel)}?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429) {
+                        attempts++;
+                        if (attempts === maxAttempts) {
+                            throw new Error("Daily Quota Exceeded. Please try again later or upgrade your plan.");
+                        }
+                        const waitTime = 2000 * Math.pow(2, attempts - 1); // 2s, 4s
+                        console.warn(`Gemini 429 Hit. Retrying in ${waitTime}ms...`);
+                        await delay(waitTime);
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        const errorBody = await response.text();
+                        let errorMessage = response.statusText;
+                        try {
+                            const errorJson = JSON.parse(errorBody);
+                            errorMessage = errorJson.error?.message || errorBody;
+                        } catch {
+                            errorMessage = errorBody;
+                        }
+                        throw new Error(`Gemini API Error (${response.status}): ${errorMessage}`);
+                    }
+
+                    // Success!
+                    break;
+                } catch (e) {
+                    finalError = e;
+                    if ((e as Error).message.includes('Quota Exceeded')) throw e;
+                    // If network error, maybe retry? For now let's just break on non-429
+                    if (attempts === maxAttempts - 1) throw e;
+                    attempts++; // retry generic network errors too? safe not to for now unless determined
+                    break;
                 }
-                throw new Error(`Gemini API Error (${response.status}): ${errorMessage}`);
+            }
+
+            if (!response || !response.ok) {
+                throw finalError || new Error("Failed to connect to Gemini API");
             }
 
             const result = await response.json();
