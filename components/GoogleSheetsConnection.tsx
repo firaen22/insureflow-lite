@@ -145,6 +145,7 @@ export const GoogleSheetsConnection: React.FC<Props> = ({ t, onSync }) => {
                                 </>
                             )}
                         </div>
+                        <div className="text-xs text-slate-300 text-center mt-4">Debug v1.2</div>
                     </div>
                 </div>
             )}
