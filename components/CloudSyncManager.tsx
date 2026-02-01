@@ -181,6 +181,29 @@ export const CloudSyncManager: React.FC<Props> = ({ clients, policies, onSync })
                                         >
                                             ⬆️ Save to Drive
                                         </button>
+
+                                        <button
+                                            onClick={() => {
+                                                try {
+                                                    const data = exportDB();
+                                                    const blob = new Blob([data], { type: 'application/x-sqlite3' });
+                                                    const url = window.URL.createObjectURL(blob);
+                                                    const a = document.createElement('a');
+                                                    a.href = url;
+                                                    a.download = `insureflow-${new Date().toISOString().split('T')[0]}.sqlite`;
+                                                    document.body.appendChild(a);
+                                                    a.click();
+                                                    window.URL.revokeObjectURL(url);
+                                                    document.body.removeChild(a);
+                                                    setStatus('Downloaded to your computer!');
+                                                } catch (e: any) {
+                                                    setStatus(`Export Error: ${e.message}`);
+                                                }
+                                            }}
+                                            className="w-full py-3 px-4 bg-slate-800 text-white hover:bg-slate-900 rounded-lg font-medium flex justify-center gap-2"
+                                        >
+                                            💾 Download Backup (Local)
+                                        </button>
                                     </div>
 
                                     {lastSync && <div className="text-center text-xs text-slate-400">Last Sync: {lastSync}</div>}
