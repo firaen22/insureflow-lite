@@ -27,9 +27,32 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     const [connectionStatus, setConnectionStatus] = useState<'unknown' | 'connected' | 'error'>('unknown');
     const [statusMessage, setStatusMessage] = useState('');
 
+    // Gemini API Key State
+    const [apiKey, setApiKey] = useState('');
+    const [isKeySaved, setIsKeySaved] = useState(false);
+
     useEffect(() => {
         loadUserProfile();
+        const savedKey = localStorage.getItem('gemini_api_key');
+        if (savedKey) {
+            setApiKey(savedKey);
+            setIsKeySaved(true);
+        }
     }, []);
+
+    const handleSaveKey = () => {
+        if (apiKey.trim()) {
+            localStorage.setItem('gemini_api_key', apiKey.trim());
+            setIsKeySaved(true);
+            alert("API Key saved securely to your browser's local storage.");
+        }
+    };
+
+    const handleClearKey = () => {
+        localStorage.removeItem('gemini_api_key');
+        setApiKey('');
+        setIsKeySaved(false);
+    };
 
     const loadUserProfile = async () => {
         try {
