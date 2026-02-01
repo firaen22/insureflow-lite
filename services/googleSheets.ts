@@ -211,7 +211,44 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
             }
         });
 
-    } catch (error) {
+    } catch (error: any) {
+        // Auto-fix: Create Products sheet if missing
+        const msg = error.result?.error?.message || error.message || JSON.stringify(error);
+        if (msg.includes("Products") || msg.includes("Unable to parse range")) {
+            console.warn("Likely missing 'Products' sheet. Attempting to create it...");
+            try {
+                await window.gapi.client.sheets.spreadsheets.batchUpdate({
+                    spreadsheetId,
+                    resource: {
+                        requests: [
+                            {
+                                addSheet: {
+                                    properties: { title: 'Products' }
+                                }
+                            }
+                        ]
+                    }
+                });
+
+                // Initialize Headers for Products
+                await window.gapi.client.sheets.spreadsheets.values.update({
+                    spreadsheetId,
+                    range: 'Products!A1:Z1',
+                    valueInputOption: 'RAW',
+                    resource: {
+                        values: [['Name', 'Provider', 'Type', 'Default Tags']]
+                    }
+                });
+
+                // Retry Save
+                return saveData(spreadsheetId, clients, policies, products);
+
+            } catch (createError) {
+                console.error("Failed to auto-create Products sheet", createError);
+                throw error; // Throw original error
+            }
+        }
+
         console.error("Error saving data", error);
         throw error;
     }
@@ -268,7 +305,58 @@ export const loadData = async (spreadsheetId: string): Promise<{ clients: Client
 
         return { clients, policies, products };
 
-    } catch (error) {
+    } catch (error: any) {
+        // Fallback: If "Products" sheet is missing, try loading just Clients and Policies
+        const msg = error.result?.error?.message || error.message || JSON.stringify(error);
+        if (msg.includes("Products")) {
+            console.warn("Products sheet missing, falling back to legacy load.");
+            try {
+                const response = await window.gapi.client.sheets.spreadsheets.values.batchGet({
+                    spreadsheetId: spreadsheetId,
+                    ranges: ['Clients!A2:Z', 'Policies!A2:Z']
+                });
+
+                const clientRows = response.result.valueRanges?.[0].values || [];
+                const policyRows = response.result.valueRanges?.[1].values || [];
+
+                const clients: Client[] = clientRows.map((row: any) => ({
+                    id: row[0],
+                    name: row[1],
+                    email: row[2],
+                    phone: row[3],
+                    birthday: row[4],
+                    totalPolicies: Number(row[5]),
+                    lastContact: row[6],
+                    status: row[7],
+                    tags: JSON.parse(row[8] || '[]')
+                }));
+
+                const policies: PolicyData[] = policyRows.map((row: any) => {
+                    const extraData = JSON.parse(row[12] || '{}');
+                    return {
+                        id: row[0],
+                        policyNumber: row[1],
+                        planName: row[2],
+                        holderName: row[3],
+                        clientBirthday: row[4],
+                        type: row[5],
+                        policyAnniversaryDate: row[6],
+                        paymentMode: row[7],
+                        premiumAmount: Number(row[8]),
+                        status: row[9],
+                        extractedTags: JSON.parse(row[10] || '[]'),
+                        riders: JSON.parse(row[11] || '[]'),
+                        ...extraData
+                    };
+                });
+
+                return { clients, policies, products: [] };
+            } catch (retryError) {
+                console.error("Retry load failed", retryError);
+                throw retryError;
+            }
+        }
+
         console.error("Error loading data", error);
         throw error;
     }
