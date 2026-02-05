@@ -71,34 +71,35 @@ const validateGeminiKey = async (apiKey: string): Promise<string[]> => {
 // --- OpenAI/Kimi Implementation ---
 
 const validateOpenAIKey = async (apiKey: string, baseUrl: string): Promise<string[]> => {
-    const url = baseUrl ? `${baseUrl.replace(/\/$/, '')}/models` : 'https://api.openai.com/v1/models';
+    // Check if we are in development mode to optionally allow direct calls if proxy isn't running? 
+    // Actually, for Vercel, it's best to always use the proxy.
+
     try {
-        const response = await fetch(url, {
-            headers: { 'Authorization': `Bearer ${apiKey}` }
+        const response = await fetch('/api/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ apiKey, baseUrl })
         });
 
         if (!response.ok) {
-            let errorMsg = response.statusText;
-            try {
-                const text = await response.text();
-                // Try parsing as JSON first
-                try {
-                    const errorData = JSON.parse(text);
-                    errorMsg = errorData.error?.message || errorData.message || text;
-                } catch {
-                    // If not JSON, use the raw text
-                    errorMsg = text || response.statusText;
-                }
-            } catch (e) {
-                // Ignore
-            }
-            throw new Error(errorMsg || `HTTP Error ${response.status}`);
+            const errorData = await response.json().catch(() => ({ error: response.statusText }));
+            throw new Error(errorData.error || `Validation failed: ${response.status}`);
         }
 
         const data = await response.json();
-        return (data.data || []).map((m: any) => m.id);
+        const models = (data.data || []).map((m: any) => m.id);
+
+        // NVIDIA specific: Filter for vision models
+        if (baseUrl.includes('nvidia')) {
+            const visionModels = models.filter((m: string) =>
+                m.includes('vision') || m.includes('neva') || m.includes('fuyu') || m.includes('jamba')
+            );
+            return visionModels.length > 0 ? visionModels : models;
+        }
+
+        return models;
     } catch (error) {
-        console.error("OpenAI/Kimi Validation Error:", error);
+        console.error("Proxy Key Validation Error:", error);
         throw error;
     }
 }
@@ -181,11 +182,6 @@ const analyzeWithOpenAICompatible = async (file: File, apiKey: string, model: st
     const base64Data = await fileToGenerativePart(file);
     const dataUrl = `data:${file.type};base64,${base64Data}`;
 
-    // Note: Kimi / Moonshot currently supports file upload via specialized API for long-context, 
-    // but standard OpenAI-compatible 'vision' endpoints usually expect image_url.
-    // If Kimi doesn't support 'gpt-4-vision' style payloads, this might need specific file upload handling.
-    // Assuming standard OpenAI Vision compatibility for simplicity here.
-
     const payload = {
         model: model,
         messages: [
@@ -200,30 +196,31 @@ const analyzeWithOpenAICompatible = async (file: File, apiKey: string, model: st
         max_tokens: 4096
     };
 
-    const url = `${baseUrl.replace(/\/$/, '')}/chat/completions`;
-
     try {
-        const response = await fetch(url, {
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                apiKey,
+                baseUrl,
+                body: payload
+            })
         });
 
         if (!response.ok) {
-            const err = await response.text();
-            throw new Error(`AI Provider Error: ${err}`);
+            const errText = await response.text();
+            throw new Error(`AI Request Failed: ${errText}`);
         }
 
         const result = await response.json();
         const content = result.choices?.[0]?.message?.content;
-        if (!content) throw new Error("No content received");
+        if (!content) throw new Error("No content received from AI");
 
         return JSON.parse(content.replace(/```json/g, '').replace(/```/g, '').trim());
     } catch (e) {
-        console.error("OpenAI/Kimi Analysis Failed", e);
+        console.error("OpenAI/Kimi/NVIDIA Proxy Analysis Failed", e);
         throw e;
     }
 }
