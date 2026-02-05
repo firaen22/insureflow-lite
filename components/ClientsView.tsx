@@ -583,8 +583,8 @@ export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, 
                         {/* Dropdown Menu */}
                         {activeActionMenu === client.id && (
                           <>
-                            <div className="fixed inset-0 z-10" onClick={() => setActiveActionMenu(null)}></div>
-                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-20 py-1 animate-in fade-in zoom-in duration-100">
+                            <div className="fixed inset-0 z-40" onClick={() => setActiveActionMenu(null)}></div>
+                            <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl border border-slate-200 z-50 py-1 animate-in fade-in zoom-in duration-100 origin-top-right">
                               <button
                                 onClick={(e) => { e.stopPropagation(); openEditClientModal(client); }}
                                 className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-brand-600 flex items-center gap-2"
