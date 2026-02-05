@@ -260,7 +260,28 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             <input
                                 type="password"
                                 value={apiKey}
-                                onChange={(e) => setApiKey(e.target.value)}
+                                onChange={(e) => {
+                                    const newKey = e.target.value;
+                                    setApiKey(newKey);
+
+                                    // Auto-detect provider based on key prefix
+                                    if (newKey.startsWith('AIza')) {
+                                        if (settings.aiProvider !== 'gemini') {
+                                            onUpdateSettings({ ...settings, aiProvider: 'gemini' });
+                                        }
+                                    } else if (newKey.startsWith('nvapi-')) {
+                                        if (settings.aiProvider !== 'nvidia') {
+                                            onUpdateSettings({ ...settings, aiProvider: 'nvidia' });
+                                        }
+                                    } else if (newKey.startsWith('sk-')) {
+                                        // 'sk-' is used by OpenAI, Moonshot (Kimi), and others.
+                                        // Only switch if currently on a provider that definitely doesn't use sk- (like Gemini or NVIDIA)
+                                        // If user is already on Kimi or OpenAI, leave it as is to avoid overriding specific choice.
+                                        if (settings.aiProvider !== 'openai' && settings.aiProvider !== 'kimi') {
+                                            onUpdateSettings({ ...settings, aiProvider: 'openai' });
+                                        }
+                                    }
+                                }}
                                 placeholder={`Enter ${settings.aiProvider === 'gemini' ? 'Gemini' : 'API'} Key...`}
                                 className="flex-1 p-2 border border-slate-300 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                             />
