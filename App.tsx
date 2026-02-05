@@ -59,11 +59,16 @@ const App: React.FC = () => {
 
     // 2. Add/Update Client Locally
     setClients(prev => {
-      const existingClientIndex = prev.findIndex(c => c.name === policy.holderName);
+      const existingClientIndex = prev.findIndex(c =>
+        c.name === policy.holderName &&
+        (!policy.clientBirthday || !c.birthday || c.birthday === policy.clientBirthday)
+      );
 
       if (existingClientIndex >= 0) {
         const updatedClients = [...prev];
         const client = updatedClients[existingClientIndex];
+
+        // Update client info if new info is available
         updatedClients[existingClientIndex] = {
           ...client,
           totalPolicies: client.totalPolicies + 1,
