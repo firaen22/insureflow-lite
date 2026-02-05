@@ -30,6 +30,11 @@ export interface PolicyData {
   extractedTags?: string[]; // Tags derived from Product Library
   riders?: Rider[]; // Nested Rider Plans
 
+  // --- Savings / Cash Value ---
+  cashValue?: number; // Guaranteed Cash Value
+  accumulatedDividend?: number; // Non-Guaranteed / Accumulated Dividends
+  totalCashValue?: number; // Total Surrender Value
+
   // --- Plan Specific Features ---
 
   // Medical

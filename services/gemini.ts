@@ -49,6 +49,9 @@ export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Pa
             - name (string): Name of the rider.
             - type (string): "Medical", "Accident", "Critical Illness", "Waiver", "Other".
             - premiumAmount (number): Premium for this specific rider (if listed separately).
+        - cashValue (number): Guaranteed Cash Value from the latest statement.
+        - accumulatedDividend (number): Accumulated Dividends/Interest/Coupons.
+        - totalCashValue (number): Total Surrender Value / Cash Value (Sum of guaranteed + non-guaranteed).
 
         If a field is not found, use null or a reasonable guess based on context. 
         Support Traditional Chinese and English documents.
