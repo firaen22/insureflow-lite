@@ -461,8 +461,8 @@ export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, 
         </div >
       </div >
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm min-h-[400px] hover:shadow-md transition-shadow">
+        <div className="overflow-visible">
           <table className="w-full text-sm text-left">
             <thead className="bg-slate-50 text-slate-500 font-medium border-b border-slate-200">
               <tr>
