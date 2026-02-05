@@ -20,10 +20,23 @@ export const Layout: React.FC<LayoutProps> = ({
   t,
   children
 }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen bg-slate-50 overflow-hidden relative">
+      {/* Mobile Sidebar Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-slate-900/50 z-40 md:hidden animate-in fade-in duration-200"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white flex-shrink-0 hidden md:flex flex-col transition-all duration-300">
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex-col transition-transform duration-300 md:translate-x-0
+        ${isMobileMenuOpen ? 'translate-x-0 flex' : '-translate-x-full md:flex hidden'}
+      `}>
 
         <nav className="flex-1 px-4 py-6 space-y-2">
           <button
@@ -89,7 +102,10 @@ export const Layout: React.FC<LayoutProps> = ({
         {/* Header */}
         <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shadow-sm z-10">
           <div className="flex items-center md:hidden">
-            <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-md">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
+            >
               <Menu className="w-6 h-6" />
             </button>
           </div>

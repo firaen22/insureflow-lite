@@ -94,6 +94,9 @@ export interface AppSettings {
   theme: 'light' | 'dark';
   reminderDays: number;
   googleSheetId?: string;
+  aiProvider?: 'gemini' | 'openai' | 'kimi' | 'nvidia'; // Default 'gemini'
+  aiBaseUrl?: string; // For custom OpenAI/Kimi endpoints
+  aiModel?: string; // Selected model ID
 }
 
 export interface UserProfile {

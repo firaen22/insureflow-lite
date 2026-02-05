@@ -134,6 +134,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
       if (policy.accidentPhysioVisits) details.push({ label: t.policyCard.physio, value: `${policy.accidentPhysioVisits}` });
     }
 
+    // Cash Values (Any Type)
+    if (policy.cashValue) details.push({ label: 'Guaranteed Cash Value', value: `$${policy.cashValue.toLocaleString()}` });
+    if (policy.accumulatedDividend) details.push({ label: 'Accumulated Div.', value: `$${policy.accumulatedDividend.toLocaleString()}` });
+    if (policy.totalCashValue) details.push({ label: 'Total Surrender Value', value: `$${policy.totalCashValue.toLocaleString()}` });
+
     if (details.length === 0) return null;
 
     return (
@@ -601,6 +606,40 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
                     </div>
                   </div>
                 )}
+
+                {/* Policy Values (General) */}
+                <div className="mt-4 pt-3 border-t border-slate-200">
+                  <h5 className="text-[10px] bg-slate-200 text-slate-600 px-1 rounded inline-block mb-2">Statement Values</h5>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">Guaranteed Cash ($)</label>
+                      <input
+                        type="number"
+                        value={editingPolicy.cashValue || ''}
+                        onChange={e => handleUpdateField('cashValue', Number(e.target.value))}
+                        className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">Accumulated Div. ($)</label>
+                      <input
+                        type="number"
+                        value={editingPolicy.accumulatedDividend || ''}
+                        onChange={e => handleUpdateField('accumulatedDividend', Number(e.target.value))}
+                        className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-500"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-medium text-slate-600 mb-1">Total Surrender Value ($)</label>
+                      <input
+                        type="number"
+                        value={editingPolicy.totalCashValue || ''}
+                        onChange={e => handleUpdateField('totalCashValue', Number(e.target.value))}
+                        className="w-full px-2 py-1.5 text-sm border border-brand-300 bg-brand-50 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 font-medium"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

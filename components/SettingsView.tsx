@@ -199,57 +199,123 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
             </section>
 
-            {/* 3. AI Parsing Settings (Gemini API) */}
+            {/* 3. AI Parsing Settings (Pro) */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-brand-500" />
-                    AI Parsing Settings (Gemini API)
+                    AI Parsing Settings
                 </h2>
+
                 <div className="space-y-4">
-                    <p className="text-sm text-slate-600">
-                        Enter your Google Gemini API Key to enable automated policy parsing.
-                        This key is stored <strong>locally in your browser</strong>.
-                    </p>
-                    <div className="flex gap-2">
-                        <input
-                            type="password"
-                            value={apiKey}
-                            onChange={(e) => setApiKey(e.target.value)}
-                            placeholder="Enter Gemini API Key..."
-                            className="flex-1 p-2 border border-slate-300 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        />
-                        <button
-                            onClick={async () => {
-                                handleSaveKey();
-                                try {
-                                    setStatusMessage("Verifying key and fetching models...");
-                                    const { validateGeminiKey } = await import('../services/gemini');
-                                    const models = await validateGeminiKey(apiKey);
-                                    setAvailableModels(models);
-                                    if (models.includes('gemini-1.5-flash')) {
-                                        setSelectedModel('gemini-1.5-flash');
-                                        localStorage.setItem('gemini_model_id', 'gemini-1.5-flash');
-                                    } else if (models.length > 0) {
-                                        setSelectedModel(models[0]);
-                                        localStorage.setItem('gemini_model_id', models[0]);
-                                    }
-                                    alert(`Key Verified! Available models: ${models.join(', ')}`);
-                                } catch (e) {
-                                    alert(`Key Verification Failed: ${(e as Error).message}`);
-                                }
-                            }}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                    {/* Provider Select */}
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">AI Provider</label>
+                        <select
+                            value={settings.aiProvider || 'gemini'}
+                            onChange={(e) => onUpdateSettings({ ...settings, aiProvider: e.target.value as any })}
+                            className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
                         >
-                            Verify & Save
-                        </button>
-                        {isKeySaved && (
+                            <option value="gemini">Google Gemini</option>
+                            <option value="kimi">Kimi / Moonshot AI (OpenAI Compatible)</option>
+                            <option value="nvidia">NVIDIA NIM</option>
+                            <option value="openai">OpenAI (GPT-4 Vision)</option>
+                        </select>
+                    </div>
+
+                    {/* Base URL (Conditional) */}
+                    {(settings.aiProvider === 'kimi' || settings.aiProvider === 'openai' || settings.aiProvider === 'nvidia') && (
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">
+                                {settings.aiProvider === 'kimi' ? 'Moonshot API Base URL' :
+                                    settings.aiProvider === 'nvidia' ? 'NVIDIA Base URL' : 'OpenAI Base URL'}
+                            </label>
+                            <input
+                                type="text"
+                                value={settings.aiBaseUrl || (
+                                    settings.aiProvider === 'kimi' ? 'https://api.moonshot.cn/v1' :
+                                        settings.aiProvider === 'nvidia' ? 'https://integrate.api.nvidia.com/v1' :
+                                            'https://api.openai.com/v1'
+                                )}
+                                onChange={(e) => onUpdateSettings({ ...settings, aiBaseUrl: e.target.value })}
+                                placeholder="https://api.moonshot.cn/v1"
+                                className="w-full p-2 border border-slate-300 rounded-lg text-slate-700 text-sm"
+                            />
+                            <p className="text-xs text-slate-500 mt-1">
+                                {settings.aiProvider === 'kimi' ? "Default: https://api.moonshot.cn/v1" :
+                                    settings.aiProvider === 'nvidia' ? "Default: https://integrate.api.nvidia.com/v1" :
+                                        "Default: https://api.openai.com/v1"}
+                            </p>
+                        </div>
+                    )}
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">API Key</label>
+                        <p className="text-xs text-slate-500 mb-2">
+                            Stored locally in your browser.
+                        </p>
+                        <div className="flex gap-2">
+                            <input
+                                type="password"
+                                value={apiKey}
+                                onChange={(e) => setApiKey(e.target.value)}
+                                placeholder={`Enter ${settings.aiProvider === 'gemini' ? 'Gemini' : 'API'} Key...`}
+                                className="flex-1 p-2 border border-slate-300 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            />
                             <button
-                                onClick={handleClearKey}
-                                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-medium transition-colors"
+                                onClick={async () => {
+                                    handleSaveKey();
+                                    try {
+                                        setStatusMessage("Verifying key and fetching models...");
+                                        const { validateAIKey } = await import('../services/gemini');
+                                        const models = await validateAIKey(settings.aiProvider || 'gemini', apiKey, settings.aiBaseUrl);
+
+                                        setAvailableModels(models);
+
+                                        // Auto-select logic
+                                        let defaultModel = '';
+                                        if (settings.aiProvider === 'gemini') {
+                                            defaultModel = models.includes('gemini-1.5-flash') ? 'gemini-1.5-flash' : models[0];
+                                        } else if (settings.aiProvider === 'kimi') {
+                                            // Moonshot usually has moonshot-v1-8k, 32k, 128k
+                                            defaultModel = models.find(m => m.includes('moonshot-v1')) || models[0];
+                                        } else if (settings.aiProvider === 'nvidia') {
+                                            // Select a vision model if available
+                                            defaultModel = models.find(m => m.includes('llama-3.2-11b-vision')) ||
+                                                models.find(m => m.includes('neva')) ||
+                                                models.find(m => m.includes('vision')) ||
+                                                models[0];
+                                        } else {
+                                            defaultModel = models.includes('gpt-4-turbo') ? 'gpt-4-turbo' : models[0];
+                                        }
+
+                                        if (defaultModel) {
+                                            setSelectedModel(defaultModel);
+                                            localStorage.setItem('gemini_model_id', defaultModel);
+                                            // Ideally we save this to settings.aiModel too but for now we rely on local storage for the service
+                                        }
+
+                                        // Persist provider settings to LS for service access
+                                        localStorage.setItem('ai_provider', settings.aiProvider || 'gemini');
+                                        localStorage.setItem('ai_base_url', settings.aiBaseUrl || '');
+
+                                        alert(`Key Verified! Available models: ${models.join(', ')}`);
+                                    } catch (e) {
+                                        alert(`Key Verification Failed: ${(e as Error).message}`);
+                                    }
+                                }}
+                                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
                             >
-                                Clear
+                                Verify & Save
                             </button>
-                        )}
+                            {isKeySaved && (
+                                <button
+                                    onClick={handleClearKey}
+                                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     {availableModels.length > 0 && (

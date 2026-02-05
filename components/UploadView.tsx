@@ -546,6 +546,52 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                   </div>
                 </div>
 
+                {/* Policy Values Section */}
+                <div className="border-t border-slate-100 pt-4">
+                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-3">Policy Values (Statement)</label>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                      <label className="block text-[10px] text-slate-400 mb-1">Guaranteed Cash Value</label>
+                      <div className="relative">
+                        <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
+                        <input
+                          type="number"
+                          value={activeItem.data.cashValue || ''}
+                          onChange={e => handleUpdateCurrentField('cashValue', parseFloat(e.target.value))}
+                          placeholder="0.00"
+                          className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-slate-400 mb-1">Accumulated Div/Int</label>
+                      <div className="relative">
+                        <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
+                        <input
+                          type="number"
+                          value={activeItem.data.accumulatedDividend || ''}
+                          onChange={e => handleUpdateCurrentField('accumulatedDividend', parseFloat(e.target.value))}
+                          placeholder="0.00"
+                          className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-slate-400 mb-1 font-semibold text-brand-600">Total Surrender Value</label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
+                      <input
+                        type="number"
+                        value={activeItem.data.totalCashValue || ''}
+                        onChange={e => handleUpdateCurrentField('totalCashValue', parseFloat(e.target.value))}
+                        placeholder="0.00"
+                        className="w-full pl-5 p-1.5 border border-brand-200 bg-brand-50 rounded text-sm font-semibold text-brand-700"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 {/* Riders Section */}
                 <div className="border-t border-slate-100 pt-4">
                   <div className="flex justify-between items-center mb-3">
