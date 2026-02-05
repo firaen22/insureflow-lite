@@ -47,13 +47,23 @@ const getGeminiUrl = (model: string) => `https://generativelanguage.googleapis.c
 const validateGeminiKey = async (apiKey: string): Promise<string[]> => {
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-        if (!response.ok) throw new Error(response.statusText);
+        if (!response.ok) {
+            let errorMsg = response.statusText;
+            try {
+                const errorData = await response.json();
+                errorMsg = errorData.error?.message || JSON.stringify(errorData.error) || response.statusText;
+            } catch (e) {
+                // Ignore json parse error
+            }
+            throw new Error(errorMsg || `HTTP Error ${response.status}`);
+        }
 
         const data = await response.json();
         return (data.models || [])
             .filter((m: any) => m.supportedGenerationMethods?.includes('generateContent'))
             .map((m: any) => m.name.replace('models/', ''));
     } catch (error) {
+        console.error("Gemini Key Validation Error:", error);
         throw error;
     }
 };
@@ -66,11 +76,29 @@ const validateOpenAIKey = async (apiKey: string, baseUrl: string): Promise<strin
         const response = await fetch(url, {
             headers: { 'Authorization': `Bearer ${apiKey}` }
         });
-        if (!response.ok) throw new Error(response.statusText);
+
+        if (!response.ok) {
+            let errorMsg = response.statusText;
+            try {
+                const text = await response.text();
+                // Try parsing as JSON first
+                try {
+                    const errorData = JSON.parse(text);
+                    errorMsg = errorData.error?.message || errorData.message || text;
+                } catch {
+                    // If not JSON, use the raw text
+                    errorMsg = text || response.statusText;
+                }
+            } catch (e) {
+                // Ignore
+            }
+            throw new Error(errorMsg || `HTTP Error ${response.status}`);
+        }
 
         const data = await response.json();
         return (data.data || []).map((m: any) => m.id);
     } catch (error) {
+        console.error("OpenAI/Kimi Validation Error:", error);
         throw error;
     }
 }
