@@ -136,7 +136,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
             premiumAmount: aiResult.premiumAmount || 0,
             status: 'Active',
             extractedTags: [...(aiResult.extractedTags || []), 'AI Parsed'],
-            riders: [],
+            riders: aiResult.riders || [],
             sumInsured: 0
           };
 
@@ -193,7 +193,9 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
           premiumAmount: isChineseContext ? 12000 : 2500.00,
           status: 'Active',
           extractedTags: derivedTags,
-          riders: [],
+          riders: isChineseContext
+            ? [{ name: 'Medical Rider A', type: 'Medical', premiumAmount: 500 }]
+            : [{ name: 'Accidental Death', type: 'Accident', premiumAmount: 100 }],
           sumInsured: type === 'Life' ? 1000000 : 0
         };
 
@@ -244,6 +246,40 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
     setProcessedFiles(prev => prev.map(item => {
       if (item.id === selectedFileId && item.data) {
         return { ...item, data: { ...item.data, [field]: value } };
+      }
+      return item;
+    }));
+  };
+
+  const handleUpdateRider = (index: number, field: keyof Rider, value: any) => {
+    if (!selectedFileId) return;
+    setProcessedFiles(prev => prev.map(item => {
+      if (item.id === selectedFileId && item.data && item.data.riders) {
+        const newRiders = [...item.data.riders];
+        newRiders[index] = { ...newRiders[index], [field]: value };
+        return { ...item, data: { ...item.data, riders: newRiders } };
+      }
+      return item;
+    }));
+  };
+
+  const handleAddRider = () => {
+    if (!selectedFileId) return;
+    setProcessedFiles(prev => prev.map(item => {
+      if (item.id === selectedFileId && item.data) {
+        const newRider: Rider = { name: 'New Rider', type: 'Medical', premiumAmount: 0 };
+        return { ...item, data: { ...item.data, riders: [...(item.data.riders || []), newRider] } };
+      }
+      return item;
+    }));
+  };
+
+  const handleRemoveRider = (index: number) => {
+    if (!selectedFileId) return;
+    setProcessedFiles(prev => prev.map(item => {
+      if (item.id === selectedFileId && item.data && item.data.riders) {
+        const newRiders = item.data.riders.filter((_, i) => i !== index);
+        return { ...item, data: { ...item.data, riders: newRiders } };
       }
       return item;
     }));
@@ -342,39 +378,36 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
         </div>
       </div>
 
-      <div className="flex-1 flex gap-6 overflow-hidden">
+      <div className="flex-1 flex gap-4 overflow-hidden">
         {/* Left Sidebar: File List */}
-        <div className="w-1/3 bg-white rounded-xl border border-slate-200 overflow-y-auto">
+        <div className="w-64 bg-white rounded-xl border border-slate-200 overflow-y-auto flex-shrink-0">
           <div className="p-4 border-b border-slate-100 bg-slate-50 sticky top-0 font-semibold text-slate-700">
-            Uploaded Files
+            Files ({processedFiles.length})
           </div>
           <div className="divide-y divide-slate-100">
             {processedFiles.map(item => (
               <div
                 key={item.id}
                 onClick={() => setSelectedFileId(item.id)}
-                className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors flex items-center justify-between ${selectedFileId === item.id ? 'bg-brand-50 border-l-4 border-brand-500' : ''}`}
+                className={`p-3 cursor-pointer hover:bg-slate-50 transition-colors flex items-center justify-between ${selectedFileId === item.id ? 'bg-brand-50 border-l-4 border-brand-500' : ''}`}
               >
-                <div className="flex items-center gap-3 overflow-hidden">
+                <div className="flex items-center gap-2 overflow-hidden">
                   {item.status === UploadStatus.ANALYZING ? (
-                    <Loader2 className="w-5 h-5 text-brand-500 animate-spin flex-shrink-0" />
+                    <Loader2 className="w-4 h-4 text-brand-500 animate-spin flex-shrink-0" />
                   ) : item.status === UploadStatus.ERROR ? (
-                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                    <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
                   ) : (
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   )}
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-900 truncate">{item.file.name}</p>
-                    <p className="text-xs text-slate-500 truncate">
-                      {item.data ? item.data.planName : item.status}
-                    </p>
+                    <p className="text-xs font-medium text-slate-900 truncate">{item.file.name}</p>
                   </div>
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleRemoveItem(item.id); }}
                   className="text-slate-300 hover:text-red-500 p-1"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3 h-3" />
                 </button>
               </div>
             ))}
@@ -382,16 +415,37 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
           <div className="p-4">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full py-2 border border-dashed border-slate-300 text-slate-500 rounded-lg text-sm hover:border-brand-300 hover:text-brand-600 hover:bg-brand-50 transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2 border border-dashed border-slate-300 text-slate-500 rounded-lg text-xs hover:border-brand-300 hover:text-brand-600 hover:bg-brand-50 transition-colors flex items-center justify-center gap-2"
             >
-              <Plus className="w-4 h-4" />
-              Add More Files
+              <Plus className="w-3 h-3" />
+              Add More
             </button>
           </div>
         </div>
 
+        {/* Center Panel: Document Preview */}
+        <div className="flex-1 bg-slate-100 rounded-xl border border-slate-200 overflow-hidden relative flex items-center justify-center p-4">
+          {activeItem ? (
+            activeItem.file.type.includes('pdf') ? (
+              <iframe
+                src={URL.createObjectURL(activeItem.file)}
+                className="w-full h-full rounded shadow-sm"
+                title="PDF Preview"
+              />
+            ) : (
+              <img
+                src={URL.createObjectURL(activeItem.file)}
+                alt="Preview"
+                className="max-w-full max-h-full object-contain shadow-sm rounded bg-white"
+              />
+            )
+          ) : (
+            <p className="text-slate-400 font-medium">No file selected</p>
+          )}
+        </div>
+
         {/* Right Panel: Editor */}
-        <div className="flex-1 bg-white rounded-xl border border-slate-200 overflow-y-auto p-6">
+        <div className="w-[400px] bg-white rounded-xl border border-slate-200 overflow-y-auto p-6 flex-shrink-0 shadow-lg">
           {activeItem ? (
             activeItem.status === UploadStatus.COMPLETE && activeItem.data ? (
               <div className="space-y-6">
@@ -405,65 +459,147 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Plan Name</label>
                     <input
                       type="text"
                       value={activeItem.data.planName}
                       onChange={e => handleUpdateCurrentField('planName', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm font-bold"
+                      className="w-full p-2 border border-slate-300 rounded-lg text-sm font-bold shadow-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Policy Number</label>
-                    <input
-                      type="text"
-                      value={activeItem.data.policyNumber}
-                      onChange={e => handleUpdateCurrentField('policyNumber', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm font-mono"
-                    />
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Policy Number</label>
+                      <input
+                        type="text"
+                        value={activeItem.data.policyNumber}
+                        onChange={e => handleUpdateCurrentField('policyNumber', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Type</label>
+                      <select
+                        value={activeItem.data.type}
+                        onChange={e => handleUpdateCurrentField('type', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
+                      >
+                        <option value="Life">Life</option>
+                        <option value="Medical">Medical</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Critical Illness">Critical Illness</option>
+                        <option value="Accident">Accident</option>
+                      </select>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Holder Name</label>
-                    <input
-                      type="text"
-                      value={activeItem.data.holderName}
-                      onChange={e => handleUpdateCurrentField('holderName', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm"
-                    />
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Holder Name</label>
+                      <input
+                        type="text"
+                        value={activeItem.data.holderName}
+                        onChange={e => handleUpdateCurrentField('holderName', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Anniversary</label>
+                      <input
+                        type="text"
+                        placeholder="DD/MM"
+                        value={activeItem.data.policyAnniversaryDate}
+                        onChange={e => handleUpdateCurrentField('policyAnniversaryDate', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium ($)</label>
-                    <input
-                      type="number"
-                      value={activeItem.data.premiumAmount}
-                      onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm"
-                    />
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium</label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2 text-slate-400">$</span>
+                        <input
+                          type="number"
+                          value={activeItem.data.premiumAmount}
+                          onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
+                          className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Frequency</label>
+                      <select
+                        value={activeItem.data.paymentMode}
+                        onChange={e => handleUpdateCurrentField('paymentMode', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
+                      >
+                        <option value="Yearly">Yearly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+                      </select>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Anniversary (DD/MM)</label>
-                    <input
-                      type="text"
-                      value={activeItem.data.policyAnniversaryDate}
-                      onChange={e => handleUpdateCurrentField('policyAnniversaryDate', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Type</label>
-                    <select
-                      value={activeItem.data.type}
-                      onChange={e => handleUpdateCurrentField('type', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
+                </div>
+
+                {/* Riders Section */}
+                <div className="border-t border-slate-100 pt-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="block text-xs font-semibold text-slate-500 uppercase">Riders / Benefits</label>
+                    <button
+                      onClick={handleAddRider}
+                      className="text-xs text-brand-600 font-medium hover:text-brand-700 flex items-center gap-1"
                     >
-                      <option value="Life">Life</option>
-                      <option value="Medical">Medical</option>
-                      <option value="Savings">Savings</option>
-                      <option value="Critical Illness">Critical Illness</option>
-                      <option value="Accident">Accident</option>
-                    </select>
+                      <Plus className="w-3 h-3" /> Add Rider
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {activeItem.data.riders?.map((rider, idx) => (
+                      <div key={idx} className="bg-slate-50 p-3 rounded-lg border border-slate-200 relative group">
+                        <button
+                          onClick={() => handleRemoveRider(idx)}
+                          className="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <div className="space-y-2">
+                          <input
+                            type="text"
+                            value={rider.name}
+                            onChange={e => handleUpdateRider(idx, 'name', e.target.value)}
+                            placeholder="Rider Name"
+                            className="w-full p-1.5 border border-slate-300 rounded text-sm bg-white"
+                          />
+                          <div className="flex gap-2">
+                            <select
+                              value={rider.type}
+                              onChange={e => handleUpdateRider(idx, 'type', e.target.value)}
+                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                            >
+                              <option value="Medical">Medical</option>
+                              <option value="Accident">Accident</option>
+                              <option value="Critical Illness">Critical Illness</option>
+                              <option value="Other">Other</option>
+                            </select>
+                            <input
+                              type="number"
+                              value={rider.premiumAmount}
+                              onChange={e => handleUpdateRider(idx, 'premiumAmount', parseFloat(e.target.value))}
+                              placeholder="Premium"
+                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {(!activeItem.data.riders || activeItem.data.riders.length === 0) && (
+                      <p className="text-xs text-slate-400 italic text-center py-2">No riders detected.</p>
+                    )}
                   </div>
                 </div>
 
@@ -471,7 +607,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                   <label className="block text-xs font-semibold text-slate-500 uppercase mb-2">Tags</label>
                   <div className="flex flex-wrap gap-2">
                     {activeItem.data.extractedTags?.map((tag, idx) => (
-                      <span key={idx} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md flex items-center gap-1">
+                      <span key={idx} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-slate-200">
+                        <Tag className="w-3 h-3" />
                         {tag}
                       </span>
                     ))}

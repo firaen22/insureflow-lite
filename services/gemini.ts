@@ -45,6 +45,10 @@ export const analyzePolicyImage = async (file: File, apiKey: string): Promise<Pa
         - extractedTags (array of strings): Keywords like "High Value", "Term", "VHIS", etc.
         - clientBirthday (string): Format YYYY-MM-DD (e.g., "1990-01-01").
         - paymentMode (string): "Yearly" or "Monthly".
+        - riders (array of objects): Extract any rider/supplementary benefits. Each object should have:
+            - name (string): Name of the rider.
+            - type (string): "Medical", "Accident", "Critical Illness", "Waiver", "Other".
+            - premiumAmount (number): Premium for this specific rider (if listed separately).
 
         If a field is not found, use null or a reasonable guess based on context. 
         Support Traditional Chinese and English documents.
