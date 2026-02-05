@@ -35,10 +35,12 @@ const App: React.FC = () => {
     const savedClients = localStorage.getItem('insureflow_clients');
     const savedPolicies = localStorage.getItem('insureflow_policies');
     const savedProducts = localStorage.getItem('insureflow_products');
+    const savedSettings = localStorage.getItem('insureflow_settings');
 
     if (savedClients) setClients(JSON.parse(savedClients));
     if (savedPolicies) setPolicies(JSON.parse(savedPolicies));
     if (savedProducts) setProducts(JSON.parse(savedProducts));
+    if (savedSettings) setSettings(prev => ({ ...prev, ...JSON.parse(savedSettings) }));
   }, []);
 
   useEffect(() => {
@@ -52,6 +54,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('insureflow_products', JSON.stringify(products));
   }, [products]);
+
+  useEffect(() => {
+    localStorage.setItem('insureflow_settings', JSON.stringify(settings));
+  }, [settings]);
 
   const handleSavePolicy = async (policy: PolicyData, isNewProduct: boolean) => {
     // 1. Add Policy Locally

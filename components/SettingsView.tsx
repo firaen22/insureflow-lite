@@ -37,6 +37,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         loadUserProfile();
         const savedKey = localStorage.getItem('gemini_api_key');
         const savedModel = localStorage.getItem('gemini_model_id');
+        const cached = localStorage.getItem('cached_models');
         if (savedKey) {
             setApiKey(savedKey);
             setIsKeySaved(true);
@@ -44,13 +45,15 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         if (savedModel) {
             setSelectedModel(savedModel);
         }
+        if (cached) {
+            try { setAvailableModels(JSON.parse(cached)); } catch (e) { }
+        }
     }, []);
 
     const handleSaveKey = () => {
         if (apiKey.trim()) {
             localStorage.setItem('gemini_api_key', apiKey.trim());
             setIsKeySaved(true);
-            alert("API Key saved securely to your browser's local storage.");
         }
     };
 
@@ -291,16 +294,37 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                         if (defaultModel) {
                                             setSelectedModel(defaultModel);
                                             localStorage.setItem('gemini_model_id', defaultModel);
-                                            // Ideally we save this to settings.aiModel too but for now we rely on local storage for the service
                                         }
 
-                                        // Persist provider settings to LS for service access
+                                        // Persist provider settings
                                         localStorage.setItem('ai_provider', settings.aiProvider || 'gemini');
                                         localStorage.setItem('ai_base_url', settings.aiBaseUrl || '');
+                                        localStorage.setItem('cached_models', JSON.stringify(models));
 
                                         alert(`Key Verified! Available models: ${models.join(', ')}`);
                                     } catch (e) {
-                                        alert(`Key Verification Failed: ${(e as Error).message}`);
+                                        const provider = settings.aiProvider || 'gemini';
+                                        let fallbacks: string[] = [];
+
+                                        if (provider === 'nvidia') {
+                                            fallbacks = ['nvidia/neva-22b', 'meta/llama-3.2-11b-vision-instruct', 'meta/llama-3.2-90b-vision-instruct', 'nvidia/llama-3.1-nemotron-70b-instruct'];
+                                        } else if (provider === 'kimi') {
+                                            fallbacks = ['moonshot-v1-8k', 'moonshot-v1-32k', 'moonshot-v1-128k'];
+                                        } else if (provider === 'openai') {
+                                            fallbacks = ['gpt-4o', 'gpt-4-turbo', 'gpt-4o-mini'];
+                                        }
+
+                                        if (fallbacks.length > 0) {
+                                            setAvailableModels(fallbacks);
+                                            setSelectedModel(fallbacks[0]);
+                                            localStorage.setItem('gemini_model_id', fallbacks[0]);
+                                            localStorage.setItem('cached_models', JSON.stringify(fallbacks));
+                                            localStorage.setItem('ai_provider', provider);
+                                            localStorage.setItem('ai_base_url', settings.aiBaseUrl || '');
+                                            alert(`Connection check failed (${(e as Error).message}), but enabled standard models for ${provider}. You can proceed.`);
+                                        } else {
+                                            alert(`Key Verification Failed: ${(e as Error).message}`);
+                                        }
                                     }
                                 }}
                                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
