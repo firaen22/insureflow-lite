@@ -24,6 +24,7 @@ export interface PolicyData {
   clientBirthday?: string; // New field for capturing birthday
   type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident';
   policyAnniversaryDate: string; // Format: DD/MM
+  maturityDate?: string; // YYYY-MM-DD (New field)
   paymentMode: PaymentMode;
   premiumAmount: number; // Base Premium
   status: 'Active' | 'Pending' | 'Expired';
