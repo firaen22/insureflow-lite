@@ -20,8 +20,8 @@ Fields to extract:
 - planName (string): The name of the insurance plan.
 - policyNumber (string): The policy ID/Number.
 - holderName (string): The name of the policyholder.
-- premiumAmount (number): Annual premium amount (remove currency symbols).
-- sumInsured (number): The Sum Insured / Face Amount of the basic plan.
+- premiumAmount (number): Annual premium amount for the BASIC PLAN only (remove currency symbols). If unsure, use Total Premium.
+- sumInsured (number): The Sum Insured / Face Amount / Principal Amount of the basic plan.
 - policyAnniversaryDate (string): Format DD/MM (e.g., "01/01").
 - type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident". Infer from content.
 - extractedTags (array of strings): Keywords like "High Value", "Term", "VHIS", etc.
@@ -30,14 +30,16 @@ Fields to extract:
 - riders (array of objects): Extract any rider/supplementary benefits. Each object should have:
     - name (string): Name of the rider.
     - type (string): "Medical", "Accident", "Critical Illness", "Waiver", "Other".
-    - premiumAmount (number): Premium for this specific rider (if listed separately).
+    - premiumAmount (number): Premium for this specific rider.
     - sumInsured (number): Sum Insured / Benefit Amount for this rider.
 - cashValue (number): Guaranteed Cash Value from the latest statement.
 - accumulatedDividend (number): Accumulated Dividends/Interest/Coupons.
 - totalCashValue (number): Total Surrender Value / Cash Value (Sum of guaranteed + non-guaranteed).
 
-If a field is not found, use null or a reasonable guess based on context. 
-Support Traditional Chinese and English documents.
+Important:
+- For numeric fields, remove commas (e.g., "1,000" -> 1000).
+- If a field is not found, use null.
+- Support Traditional Chinese and English documents.
 `;
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
