@@ -14,6 +14,15 @@ let tokenClient: any;
 let gapiInited = false;
 let gisInited = false;
 
+export const getDebugInfo = () => {
+    return {
+        clientIdPresent: !!CLIENT_ID,
+        apiKeyPresent: !!API_KEY,
+        clientIdSnippet: CLIENT_ID ? CLIENT_ID.substring(0, 10) + '...' : 'MISSING',
+        gapiInited,
+        gisInited
+    };
+}
 export const initGoogleClient = async () => {
     return new Promise<boolean>((resolve, reject) => {
         const checkInit = () => {
