@@ -11,6 +11,8 @@ import { SettingsView } from './components/SettingsView';
 import { AppView, Language, Client, PolicyData, Product, AppSettings } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   // Settings State
@@ -170,83 +172,103 @@ const App: React.FC = () => {
     : [];
 
   return (
-    <Layout
-      currentView={currentView}
-      onChangeView={setCurrentView}
-      language={settings.language}
-      onToggleLanguage={() => setSettings(prev => ({ ...prev, language: prev.language === 'en' ? 'zh' : 'en' }))}
-      t={t}
-    >
-      {currentView === AppView.DASHBOARD && (
-        <DashboardView t={t.dashboard} clients={clients} policies={policies} />
-      )}
-      {currentView === AppView.UPLOAD && (
-        <UploadView t={t.upload} products={products} onSave={handleSavePolicy} />
-      )}
-      {currentView === AppView.CLIENTS && (
-        <ClientsView
-          t={t.clients}
-          clients={clients}
-          policies={policies}
-          products={products}
-          onUpdateClient={handleUpdateClient}
-          onAddClient={handleAddClient}
-          onAddPolicy={handleManualPolicyAdd}
-          onViewDetails={handleViewClientDetails}
-        />
-      )}
-      {currentView === AppView.CLIENT_DETAILS && selectedClient && (
-        <ClientDetailsView
-          t={t.clientDetails}
-          client={selectedClient}
-          policies={selectedClientPolicies}
-          products={products}
-          onUpdatePolicy={handleUpdatePolicy}
-          onDeletePolicy={handleDeletePolicy}
-          onBack={handleBackToClients}
-        />
-      )}
-      {currentView === AppView.REMINDERS && (
-        <RemindersView
-          t={t.reminders}
-          policies={policies}
-          clients={clients}
-          onUploadRenewal={() => setCurrentView(AppView.UPLOAD)}
-          reminderDays={settings.reminderDays}
-        />
-      )}
-      {currentView === AppView.PRODUCTS && (
-        <ProductLibraryView
-          t={t.products}
-          products={products}
-          onUpdateProduct={handleUpdateProduct}
-          onAddProduct={handleAddProduct}
-        />
-      )}
-      {currentView === AppView.SETTINGS && (
-        <SettingsView
-          settings={settings}
-          onUpdateSettings={setSettings}
-          spreadsheetId={spreadsheetId}
-          setSpreadsheetId={setSpreadsheetId}
-          clients={clients}
-          policies={policies}
-          products={products}
-        />
-      )}
-      <GoogleSheetsSync
-        clients={clients}
-        policies={policies}
-        products={products}
-        onSync={(newClients, newPolicies, newProducts) => {
-          if (newClients) setClients(newClients);
-          if (newPolicies) setPolicies(newPolicies);
-          if (newProducts) setProducts(newProducts);
-        }}
-        spreadsheetId={spreadsheetId}
-        setSpreadsheetId={setSpreadsheetId}
-      />
-    </Layout>
+    <>
+      <SignedOut>
+        <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-bold text-slate-900">InsureFlow Lite</h1>
+            <p className="text-slate-500">Please sign in to continue</p>
+            <SignInButton mode="modal">
+              <button className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition">
+                Sign In
+              </button>
+            </SignInButton>
+          </div>
+        </div>
+      </SignedOut>
+      <SignedIn>
+        <Layout
+          currentView={currentView}
+          onChangeView={setCurrentView}
+          language={settings.language}
+          onToggleLanguage={() => setSettings(prev => ({ ...prev, language: prev.language === 'en' ? 'zh' : 'en' }))}
+          t={t}
+        >
+          <div className="absolute top-4 right-20 z-10">
+            <UserButton />
+          </div>
+          {currentView === AppView.DASHBOARD && (
+            <DashboardView t={t.dashboard} clients={clients} policies={policies} />
+          )}
+          {currentView === AppView.UPLOAD && (
+            <UploadView t={t.upload} products={products} onSave={handleSavePolicy} />
+          )}
+          {currentView === AppView.CLIENTS && (
+            <ClientsView
+              t={t.clients}
+              clients={clients}
+              policies={policies}
+              products={products}
+              onUpdateClient={handleUpdateClient}
+              onAddClient={handleAddClient}
+              onAddPolicy={handleManualPolicyAdd}
+              onViewDetails={handleViewClientDetails}
+            />
+          )}
+          {currentView === AppView.CLIENT_DETAILS && selectedClient && (
+            <ClientDetailsView
+              t={t.clientDetails}
+              client={selectedClient}
+              policies={selectedClientPolicies}
+              products={products}
+              onUpdatePolicy={handleUpdatePolicy}
+              onDeletePolicy={handleDeletePolicy}
+              onBack={handleBackToClients}
+            />
+          )}
+          {currentView === AppView.REMINDERS && (
+            <RemindersView
+              t={t.reminders}
+              policies={policies}
+              clients={clients}
+              onUploadRenewal={() => setCurrentView(AppView.UPLOAD)}
+              reminderDays={settings.reminderDays}
+            />
+          )}
+          {currentView === AppView.PRODUCTS && (
+            <ProductLibraryView
+              t={t.products}
+              products={products}
+              onUpdateProduct={handleUpdateProduct}
+              onAddProduct={handleAddProduct}
+            />
+          )}
+          {currentView === AppView.SETTINGS && (
+            <SettingsView
+              settings={settings}
+              onUpdateSettings={setSettings}
+              spreadsheetId={spreadsheetId}
+              setSpreadsheetId={setSpreadsheetId}
+              clients={clients}
+              policies={policies}
+              products={products}
+            />
+          )}
+          <GoogleSheetsSync
+            clients={clients}
+            policies={policies}
+            products={products}
+            onSync={(newClients, newPolicies, newProducts) => {
+              if (newClients) setClients(newClients);
+              if (newPolicies) setPolicies(newPolicies);
+              if (newProducts) setProducts(newProducts);
+            }}
+            spreadsheetId={spreadsheetId}
+            setSpreadsheetId={setSpreadsheetId}
+          />
+        </Layout>
+      </SignedIn>
+    </>
   );
 };
 
