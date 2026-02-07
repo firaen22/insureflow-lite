@@ -122,8 +122,7 @@ const App: React.FC = () => {
           const syncResult = await syncOnLogin();
           if (syncResult.data && syncResult.spreadsheetId) {
             console.log("Auto-sync: Data loaded successfully");
-            setSyncStatus('Loaded');
-            setTimeout(() => setSyncStatus(''), 3000);
+            setSyncStatus('Synced');
             setSpreadsheetId(syncResult.spreadsheetId);
             if (syncResult.data.clients) setClients(syncResult.data.clients);
             if (syncResult.data.policies) setPolicies(syncResult.data.policies);
@@ -152,7 +151,7 @@ const App: React.FC = () => {
         await saveData(spreadsheetId, clients, policies, products);
         console.log("Auto-sync: Save successful at " + new Date().toLocaleTimeString());
         setSyncStatus('Saved');
-        setTimeout(() => setSyncStatus(''), 3000); // Clear after 3s
+        setTimeout(() => setSyncStatus('Synced'), 2000); // Revert to Synced
       } catch (error: any) {
         console.error("Auto-sync: Save failed", error);
         setSyncStatus('Save Error');
