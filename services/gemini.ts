@@ -179,6 +179,11 @@ const analyzeWithGemini = async (file: File, apiKey: string, model: string): Pro
 };
 
 const analyzeWithOpenAICompatible = async (file: File, apiKey: string, model: string, baseUrl: string): Promise<Partial<PolicyData>> => {
+    // OpenAI/NVIDIA providers do not support PDF uploads via this endpoint
+    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        throw new Error("This AI provider supports Images (JPG/PNG) only. Please use the Gemini provider for PDF documents.");
+    }
+
     const base64Data = await fileToGenerativePart(file);
     const dataUrl = `data:${file.type};base64,${base64Data}`;
 
@@ -211,7 +216,17 @@ const analyzeWithOpenAICompatible = async (file: File, apiKey: string, model: st
 
         if (!response.ok) {
             const errText = await response.text();
-            throw new Error(`AI Request Failed: ${errText}`);
+            let msg = errText;
+            try {
+                const json = JSON.parse(errText);
+                msg = json.error?.message || json.error || errText;
+            } catch (e) { }
+
+            if (typeof msg === 'string' && msg.includes('cannot identify image file')) {
+                msg = "Unsupported image format or corrupted file. Please try a standard JPG or PNG.";
+            }
+
+            throw new Error(msg);
         }
 
         const result = await response.json();
