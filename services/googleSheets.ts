@@ -30,7 +30,7 @@ export const initGoogleClient = async () => {
                 try {
                     await window.gapi.client.init({
                         apiKey: API_KEY || '',
-                        discoveryDocs: [],
+                        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4", "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
                     });
 
                     await window.gapi.client.load('sheets', 'v4');
