@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.60.0",
     "@types/gapi": "^0.0.47",
     "gapi-script": "^1.2.0",
     "lucide-react": "^0.563.0",
