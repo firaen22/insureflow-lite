@@ -19,6 +19,7 @@ export const getDebugInfo = () => {
         clientIdPresent: !!CLIENT_ID,
         apiKeyPresent: !!API_KEY,
         clientIdSnippet: CLIENT_ID ? CLIENT_ID.substring(0, 10) + '...' : 'MISSING',
+        apiKeySnippet: API_KEY ? `"${API_KEY.substring(0, 5)}...${API_KEY.substring(API_KEY.length - 5)}"` : 'MISSING',
         gapiInited,
         gisInited
     };
