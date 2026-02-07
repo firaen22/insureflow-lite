@@ -30,7 +30,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
   };
 
   // Calculate stats
-  const totalAnnualPremium = policies.reduce((sum, p) => {
+  const totalPremiums = policies.reduce((acc, p) => {
     // Base premium
     let policyTotal = p.premiumAmount;
 
@@ -45,8 +45,10 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
     if (p.paymentMode === 'Quarterly') annualMultiplier = 4;
     if (p.paymentMode === 'Half-Yearly') annualMultiplier = 2;
 
-    return sum + (policyTotal * annualMultiplier);
-  }, 0);
+    const curr = p.currency || 'HKD';
+    acc[curr] = (acc[curr] || 0) + (policyTotal * annualMultiplier);
+    return acc;
+  }, {} as Record<string, number>);
 
   const handleEditClick = (policy: PolicyData) => {
     setEditingPolicy({ ...policy });
@@ -123,6 +125,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
               ${policies.map(p => {
       let totalPrem = p.premiumAmount;
       if (p.riders) totalPrem += p.riders.reduce((s, r) => s + r.premiumAmount, 0);
+      const curr = p.currency || 'HKD';
       return `
                   <tr>
                     <td>${p.policyNumber}</td>
@@ -130,7 +133,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
                     <td>${p.type}</td>
                     <td>${p.policyAnniversaryDate}</td>
                     <td>${p.maturityDate || '-'}</td>
-                    <td>$${totalPrem.toLocaleString()}</td>
+                    <td>${curr} $${totalPrem.toLocaleString()}</td>
                     <td>${p.paymentMode}</td>
                     <td><span class="badge ${p.status === 'Active' ? 'active' : 'pending'}">${p.status}</span></td>
                   </tr>
@@ -139,7 +142,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
               
               <tr class="total-row">
                 <td colspan="5" style="text-align: right; padding-right: 15px;">Total Annual Premium (Est.)</td>
-                <td colspan="3">$${totalAnnualPremium.toLocaleString()}</td>
+                <td colspan="3">
+                  ${Object.entries(totalPremiums).map(([c, v]) => `<div>${c} $${v.toLocaleString()}</div>`).join('')}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -414,7 +419,16 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
           {/* Stats Summary Card */}
           <div className="bg-brand-600 rounded-xl shadow-md p-6 text-white">
             <h3 className="text-brand-100 text-sm font-medium mb-1">{t.totalAnnualPremium}</h3>
-            <p className="text-3xl font-bold mb-4">${totalAnnualPremium.toLocaleString()}</p>
+            {Object.keys(totalPremiums).length > 0 ? (
+              Object.entries(totalPremiums).map(([curr, val]) => (
+                <p key={curr} className="text-3xl font-bold mb-1 last:mb-4">
+                  <span className="text-lg opacity-80 mr-1">{curr}</span>
+                  ${val.toLocaleString()}
+                </p>
+              ))
+            ) : (
+              <p className="text-3xl font-bold mb-4">$0</p>
+            )}
 
             <div className="flex items-center justify-between text-sm border-t border-brand-500 pt-4 mt-2">
               <span className="text-brand-100">{t.totalPolicies}</span>
@@ -450,7 +464,10 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
                         <p className="text-xs text-slate-500 font-mono">{t.policyCard.policyNo}: {policy.policyNumber}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg font-bold text-brand-700">${totalPolicyPrem.toLocaleString()}</p>
+                        <p className="text-lg font-bold text-brand-700">
+                          <span className="text-sm font-normal text-slate-500 mr-1">{policy.currency || 'HKD'}</span>
+                          ${totalPolicyPrem.toLocaleString()}
+                        </p>
                         <p className="text-xs text-slate-500">{policy.paymentMode}</p>
                       </div>
                     </div>
@@ -753,13 +770,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.premium} ($)</label>
-                  <input
-                    type="number"
-                    value={editingPolicy.premiumAmount}
-                    onChange={e => handleUpdateField('premiumAmount', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  />
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.premium}</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={editingPolicy.currency || 'HKD'}
+                      onChange={e => handleUpdateField('currency', e.target.value)}
+                      className="w-20 px-2 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                    >
+                      <option value="HKD">HKD</option>
+                      <option value="USD">USD</option>
+                    </select>
+                    <div className="relative flex-1">
+                      <span className="absolute left-3 top-2 text-slate-500">$</span>
+                      <input
+                        type="number"
+                        value={editingPolicy.premiumAmount}
+                        onChange={e => handleUpdateField('premiumAmount', Number(e.target.value))}
+                        className="w-full pl-6 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div>

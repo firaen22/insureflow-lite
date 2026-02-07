@@ -32,9 +32,9 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
   // --- CSV Template & Parsing ---
 
   const downloadTemplate = () => {
-    const headers = ['PolicyNumber', 'PlanName', 'HolderName', 'Birthday(YYYY-MM-DD)', 'Anniversary(DD/MM)', 'Premium', 'PaymentMode', 'Type'];
+    const headers = ['PolicyNumber', 'PlanName', 'HolderName', 'Birthday(YYYY-MM-DD)', 'Anniversary(DD/MM)', 'Premium', 'PaymentMode', 'Type', 'Currency'];
     const rows = [
-      ['POL-001', 'Example Care Plan', 'John Doe', '1990-01-01', '01/01', '1200', 'Yearly', 'Medical']
+      ['POL-001', 'Example Care Plan', 'John Doe', '1990-01-01', '01/01', '1200', 'Yearly', 'Medical', 'HKD']
     ];
     const csvContent = "data:text/csv;charset=utf-8,"
       + headers.join(",") + "\n"
@@ -66,6 +66,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
         premiumAmount: parseFloat(row[5]) || 0,
         paymentMode: (row[6]?.trim() as any) || 'Yearly',
         type: (row[7]?.trim() as any) || 'Life',
+        currency: (row[8]?.trim() as any) || 'HKD',
         status: 'Active',
         extractedTags: ['Imported'],
         riders: []
@@ -134,6 +135,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
             policyAnniversaryDate: aiResult.policyAnniversaryDate || '',
             paymentMode: (aiResult.paymentMode as any) || 'Yearly',
             premiumAmount: aiResult.premiumAmount || 0,
+            currency: (aiResult.currency as 'USD' | 'HKD') || 'HKD',
             status: 'Active',
             extractedTags: [...(aiResult.extractedTags || []), 'AI Parsed'],
             riders: aiResult.riders || [],
@@ -191,6 +193,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
           policyAnniversaryDate: isChineseContext ? '20/05' : '14/08',
           paymentMode: isChineseContext ? 'Yearly' : 'Monthly',
           premiumAmount: isChineseContext ? 12000 : 2500.00,
+          currency: isChineseContext ? 'HKD' : 'USD',
           status: 'Active',
           extractedTags: derivedTags,
           riders: isChineseContext
@@ -520,15 +523,25 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-2 text-slate-400">$</span>
-                        <input
-                          type="number"
-                          value={activeItem.data.premiumAmount}
-                          onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
-                          className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
-                        />
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium & Currency</label>
+                      <div className="flex gap-2">
+                        <select
+                          value={activeItem.data.currency || 'HKD'}
+                          onChange={e => handleUpdateCurrentField('currency', e.target.value)}
+                          className="w-20 p-2 border border-slate-300 rounded-lg text-sm bg-white font-medium"
+                        >
+                          <option value="HKD">HKD</option>
+                          <option value="USD">USD</option>
+                        </select>
+                        <div className="relative flex-1">
+                          <span className="absolute left-3 top-2 text-slate-400">$</span>
+                          <input
+                            type="number"
+                            value={activeItem.data.premiumAmount}
+                            onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
+                            className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
+                          />
+                        </div>
                       </div>
                     </div>
                     <div>

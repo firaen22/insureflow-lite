@@ -89,7 +89,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
   }).sort((a, b) => a.nextDueDate.getTime() - b.nextDueDate.getTime());
 
   // Calculate stats
-  const totalPremium = policies.reduce((sum, p) => sum + p.premiumAmount, 0);
+  const totalByCurrency = policies.reduce((acc, p) => {
+    const c = p.currency || 'HKD';
+    acc[c] = (acc[c] || 0) + p.premiumAmount;
+    return acc;
+  }, {} as Record<string, number>);
   const activePoliciesCount = policies.filter(p => p.status === 'Active').length;
 
   return (
@@ -137,7 +141,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
             </span>
           </div>
           <p className="text-slate-500 text-sm font-medium">{t.premiumRevenue}</p>
-          <h3 className="text-2xl font-bold text-slate-800">${(totalPremium / 1000).toFixed(1)}k</h3>
+          <div className="flex flex-col gap-1">
+            {Object.entries(totalByCurrency).length > 0 ? (
+              Object.entries(totalByCurrency).map(([c, v]) => (
+                <h3 key={c} className="text-xl font-bold text-slate-800">{c} ${(v / 1000).toFixed(1)}k</h3>
+              ))
+            ) : (
+              <h3 className="text-2xl font-bold text-slate-800">$0.0k</h3>
+            )}
+          </div>
         </div>
 
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
@@ -180,7 +192,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-slate-900">${policy.premiumAmount}</p>
+                  <p className="text-sm font-bold text-slate-900">
+                    <span className="text-xs font-normal text-gray-500 mr-1">{policy.currency || 'HKD'}</span>
+                    ${policy.premiumAmount}
+                  </p>
                 </div>
               </div>
             )) : (

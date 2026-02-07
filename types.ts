@@ -26,6 +26,7 @@ export interface PolicyData {
   policyAnniversaryDate: string; // Format: DD/MM
   maturityDate?: string; // YYYY-MM-DD (New field)
   paymentMode: PaymentMode;
+  currency: 'USD' | 'HKD';
   premiumAmount: number; // Base Premium
   status: 'Active' | 'Pending' | 'Expired';
   extractedTags?: string[]; // Tags derived from Product Library

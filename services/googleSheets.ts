@@ -284,7 +284,9 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
                 capitalInvested: p.capitalInvested,
                 accidentMedicalLimit: p.accidentMedicalLimit,
                 accidentSectionLimit: p.accidentSectionLimit,
-                accidentPhysioVisits: p.accidentPhysioVisits
+                accidentPhysioVisits: p.accidentPhysioVisits,
+                maturityDate: p.maturityDate,
+                currency: p.currency
             })
         ]);
 
@@ -387,6 +389,7 @@ export const loadData = async (spreadsheetId: string): Promise<{ clients: Client
                 status: row[9],
                 extractedTags: JSON.parse(row[10] || '[]'),
                 riders: JSON.parse(row[11] || '[]'),
+                currency: 'HKD',
                 ...extraData
             };
         });
@@ -441,6 +444,7 @@ export const loadData = async (spreadsheetId: string): Promise<{ clients: Client
                         status: row[9],
                         extractedTags: JSON.parse(row[10] || '[]'),
                         riders: JSON.parse(row[11] || '[]'),
+                        currency: 'HKD',
                         ...extraData
                     };
                 });
