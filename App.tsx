@@ -48,20 +48,62 @@ const App: React.FC = () => {
 
   const { getToken, userId } = useAuth();
 
-  // 1. Auto-Init and Load from Google Sheets
+  // 1. Clerk Token Sync (Restored with Safety Check)
+  useEffect(() => {
+    const syncGoogleToken = async () => {
+      try {
+        // Attempt to get token from Clerk (in case "oauth_google" template is configured for Access Tokens)
+        const token = await getToken({ template: "oauth_google" });
+
+        if (token) {
+          // SAFETY CHECK: Clerk often returns a JWT (starts with 'ey') by default.
+          // Google Sheets API needs an OAuth Access Token (opaque, often starts with 'ya29').
+          // Passing a JWT to GAPI causes "Invalid authentication credentials".
+          if (token.startsWith('ey')) {
+            console.warn("Clerk returned a JWT, not a Google Access Token. Ignoring to prevent auth errors. Configure your Clerk 'oauth_google' template to return the access_token if possible, or use the manual 'Sign In' button.");
+            return;
+          }
+
+          console.log("Successfully retrieved potential Google Access Token from Clerk");
+          setGoogleToken(token);
+
+          // Re-init Google Client to pick up the token
+          await initGoogleClient();
+
+          // Attempt Auto-Sync
+          if (getIsSignedIn()) {
+            const syncResult = await syncOnLogin();
+            if (syncResult.data) {
+              console.log("Clerk-based Auto-sync successful", syncResult.data);
+              if (syncResult.spreadsheetId) setSpreadsheetId(syncResult.spreadsheetId);
+              if (syncResult.data.clients) setClients(syncResult.data.clients);
+              if (syncResult.data.policies) setPolicies(syncResult.data.policies);
+              if (syncResult.data.products) setProducts(syncResult.data.products);
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to sync Google Token from Clerk", e);
+      }
+    };
+
+    if (userId) {
+      syncGoogleToken();
+    }
+  }, [userId, getToken]);
+
+  // 2. Auto-Init and Load from Google Sheets (LocalStorage Fallback)
   useEffect(() => {
     const initAndSync = async () => {
       try {
         await initGoogleClient();
         // Check if we have a token (from localStorage or GAPI)
         if (getIsSignedIn()) {
-          console.log("Auto-sync: User is signed in, attempting to load data...");
+          console.log("Auto-sync: User is signed in via LocalStorage, attempting to load data...");
           const syncResult = await syncOnLogin();
           if (syncResult.data && syncResult.spreadsheetId) {
             console.log("Auto-sync: Data loaded successfully");
             setSpreadsheetId(syncResult.spreadsheetId);
-            // Only update if we actually have data, to avoid blowing away local work with empty arrays?
-            // Actually, syncOnLogin returns the full state. Best to trust it if it succeeded.
             if (syncResult.data.clients) setClients(syncResult.data.clients);
             if (syncResult.data.policies) setPolicies(syncResult.data.policies);
             if (syncResult.data.products) setProducts(syncResult.data.products);
@@ -72,11 +114,10 @@ const App: React.FC = () => {
       }
     };
 
-    // Slight delay to ensure DOM is ready? Not strictly necessary but safe.
     initAndSync();
   }, []);
 
-  // 2. Auto-Save to Google Sheets
+  // 3. Auto-Save to Google Sheets
   useEffect(() => {
     if (!spreadsheetId) return;
 
