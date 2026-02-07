@@ -2,29 +2,29 @@ import { Client, PolicyData, Product, Language } from './types';
 
 // Product Library System
 export const PRODUCT_LIBRARY: Product[] = [
-  { 
-    name: 'CEO Medical Plan', 
-    provider: 'AIA', 
-    type: 'Medical', 
-    defaultTags: ['AIA', 'Medical', 'High-End', 'Global Cover'] 
+  {
+    name: 'CEO Medical Plan',
+    provider: 'AIA',
+    type: 'Medical',
+    defaultTags: ['AIA', 'Medical', 'High-End', 'Global Cover']
   },
-  { 
-    name: 'Crisis Cover Prudential', 
-    provider: 'Prudential', 
-    type: 'Critical Illness', 
-    defaultTags: ['Prudential', 'Critical Illness', 'Lump Sum'] 
+  {
+    name: 'Crisis Cover Prudential',
+    provider: 'Prudential',
+    type: 'Critical Illness',
+    defaultTags: ['Prudential', 'Critical Illness', 'Lump Sum']
   },
-  { 
-    name: 'SunLife Wealth Builder', 
-    provider: 'Sunlife', 
-    type: 'Savings', 
-    defaultTags: ['Sunlife', 'Savings', 'Dividend'] 
+  {
+    name: 'SunLife Wealth Builder',
+    provider: 'Sunlife',
+    type: 'Savings',
+    defaultTags: ['Sunlife', 'Savings', 'Dividend']
   },
-  { 
-    name: 'Home Protect Plus', 
-    provider: 'AIG', 
-    type: 'Property', 
-    defaultTags: ['AIG', 'Home', 'Fire'] 
+  {
+    name: 'Home Protect Plus',
+    provider: 'AIG',
+    type: 'Property',
+    defaultTags: ['AIG', 'Home', 'Fire']
   }
 ];
 
@@ -132,7 +132,8 @@ export const TRANSLATIONS = {
         status: 'Status',
         actions: 'Actions',
         noTags: 'No tags',
-        notFound: 'No clients found matching your search.'
+        notFound: 'No clients found matching your search.',
+        deleteConfirm: 'Are you sure you want to delete this client and all their policies?'
       }
     },
     clientDetails: {
@@ -152,24 +153,24 @@ export const TRANSLATIONS = {
       saveChanges: 'Save Changes',
       cancel: 'Cancel',
       policyCard: {
-          basePlan: 'Base Plan',
-          policyNo: 'Policy No.',
-          status: 'Status',
-          anniversary: 'Anniversary',
-          paymentMode: 'Payment Mode',
-          premium: 'Premium',
-          riders: 'Riders & Supplementary',
-          type: 'Type',
-          // Specifics
-          roomType: 'Room Type',
-          excess: 'Medical Excess',
-          sumInsured: 'Sum Insured',
-          multipay: 'Multipay Feature',
-          endDate: 'Policy End Date',
-          capital: 'Capital Invested',
-          accidentLimit: 'Accident Medical Limit',
-          sectionLimit: 'Section Limit',
-          physio: 'Physio Visits/Year'
+        basePlan: 'Base Plan',
+        policyNo: 'Policy No.',
+        status: 'Status',
+        anniversary: 'Anniversary',
+        paymentMode: 'Payment Mode',
+        premium: 'Premium',
+        riders: 'Riders & Supplementary',
+        type: 'Type',
+        // Specifics
+        roomType: 'Room Type',
+        excess: 'Medical Excess',
+        sumInsured: 'Sum Insured',
+        multipay: 'Multipay Feature',
+        endDate: 'Policy End Date',
+        capital: 'Capital Invested',
+        accidentLimit: 'Accident Medical Limit',
+        sectionLimit: 'Section Limit',
+        physio: 'Physio Visits/Year'
       }
     },
     products: {
@@ -189,11 +190,11 @@ export const TRANSLATIONS = {
         noProducts: 'No products found.'
       },
       form: {
-          name: 'Product Name',
-          provider: 'Provider',
-          type: 'Category',
-          tags: 'Tags',
-          addTag: 'Add Tag'
+        name: 'Product Name',
+        provider: 'Provider',
+        type: 'Category',
+        tags: 'Tags',
+        addTag: 'Add Tag'
       }
     },
     reminders: {
@@ -316,7 +317,8 @@ export const TRANSLATIONS = {
         status: '狀態',
         actions: '操作',
         noTags: '無標籤',
-        notFound: '未找到符合搜尋條件的客戶。'
+        notFound: '未找到符合搜尋條件的客戶。',
+        deleteConfirm: '您確定要刪除此客戶及其所有保單嗎？'
       }
     },
     clientDetails: {
@@ -336,24 +338,24 @@ export const TRANSLATIONS = {
       saveChanges: '儲存變更',
       cancel: '取消',
       policyCard: {
-          basePlan: '基本計劃',
-          policyNo: '保單號碼',
-          status: '狀態',
-          anniversary: '週年日',
-          paymentMode: '繳費模式',
-          premium: '保費',
-          riders: '附約及附加利益',
-          type: '類型',
-          // Specifics
-          roomType: '病房級別',
-          excess: '醫療自負額',
-          sumInsured: '保額',
-          multipay: '多重保障',
-          endDate: '保單終止日',
-          capital: '投資本金',
-          accidentLimit: '意外醫療限額',
-          sectionLimit: '分項限額',
-          physio: '物理治療次數/年'
+        basePlan: '基本計劃',
+        policyNo: '保單號碼',
+        status: '狀態',
+        anniversary: '週年日',
+        paymentMode: '繳費模式',
+        premium: '保費',
+        riders: '附約及附加利益',
+        type: '類型',
+        // Specifics
+        roomType: '病房級別',
+        excess: '醫療自負額',
+        sumInsured: '保額',
+        multipay: '多重保障',
+        endDate: '保單終止日',
+        capital: '投資本金',
+        accidentLimit: '意外醫療限額',
+        sectionLimit: '分項限額',
+        physio: '物理治療次數/年'
       }
     },
     products: {
@@ -373,11 +375,11 @@ export const TRANSLATIONS = {
         noProducts: '未找到產品。'
       },
       form: {
-          name: '產品名稱',
-          provider: '供應商',
-          type: '類別',
-          tags: '標籤',
-          addTag: '新增標籤'
+        name: '產品名稱',
+        provider: '供應商',
+        type: '類別',
+        tags: '標籤',
+        addTag: '新增標籤'
       }
     },
     reminders: {
@@ -402,62 +404,63 @@ export const TRANSLATIONS = {
 // Assuming current demo date is roughly Oct 1st, 2023 for context
 
 export const MOCK_CLIENTS: Client[] = [
-  { 
-    id: 'c1', 
-    name: 'Alice Johnson', 
-    email: 'alice.j@example.com', 
-    phone: '+1 (555) 123-4567', 
-    birthday: '1985-10-05', 
-    totalPolicies: 2, 
-    lastContact: '2023-10-15', 
+  {
+    id: 'c1',
+    name: 'Alice Johnson',
+    email: 'alice.j@example.com',
+    phone: '+1 (555) 123-4567',
+    birthday: '1985-10-05',
+    totalPolicies: 2,
+    lastContact: '2023-10-15',
     status: 'Active',
-    tags: ['AIA', 'Life', 'Medical'] 
+    tags: ['AIA', 'Life', 'Medical']
   },
-  { 
-    id: 'c2', 
-    name: 'Michael Chen', 
-    email: 'm.chen@techcorp.com', 
-    phone: '+1 (555) 987-6543', 
-    birthday: '1990-10-12', 
-    totalPolicies: 1, 
-    lastContact: '2023-10-12', 
+  {
+    id: 'c2',
+    name: 'Michael Chen',
+    email: 'm.chen@techcorp.com',
+    phone: '+1 (555) 987-6543',
+    birthday: '1990-10-12',
+    totalPolicies: 1,
+    lastContact: '2023-10-12',
     status: 'Lead',
-    tags: ['Prudential', 'Accident'] 
+    tags: ['Prudential', 'Accident']
   },
-  { 
-    id: 'c3', 
-    name: 'Sarah Connor', 
-    email: 's.connor@sky.net', 
-    phone: '+1 (555) 456-7890', 
-    birthday: '1978-11-20', 
-    totalPolicies: 3, 
-    lastContact: '2023-09-28', 
+  {
+    id: 'c3',
+    name: 'Sarah Connor',
+    email: 's.connor@sky.net',
+    phone: '+1 (555) 456-7890',
+    birthday: '1978-11-20',
+    totalPolicies: 3,
+    lastContact: '2023-09-28',
     status: 'Active',
-    tags: ['Sunlife', 'Home', 'Critical Illness', 'VIP'] 
+    tags: ['Sunlife', 'Home', 'Critical Illness', 'VIP']
   },
-  { 
-    id: 'c4', 
-    name: 'James Wright', 
-    email: 'j.wright@law.com', 
-    phone: '+1 (555) 234-5678', 
-    birthday: '1982-05-15', 
-    totalPolicies: 1, 
-    lastContact: '2023-10-18', 
+  {
+    id: 'c4',
+    name: 'James Wright',
+    email: 'j.wright@law.com',
+    phone: '+1 (555) 234-5678',
+    birthday: '1982-05-15',
+    totalPolicies: 1,
+    lastContact: '2023-10-18',
     status: 'Active',
-    tags: ['AIA', 'Maid'] 
+    tags: ['AIA', 'Maid']
   },
 ];
 
 export const RECENT_POLICIES: PolicyData[] = [
-  { 
-    id: 'p1', 
-    policyNumber: 'POL-88329', 
-    planName: 'CEO Medical Plan', 
-    holderName: 'Alice Johnson', 
+  {
+    id: 'p1',
+    policyNumber: 'POL-88329',
+    planName: 'CEO Medical Plan',
+    holderName: 'Alice Johnson',
     type: 'Medical', // Updated to Medical
-    policyAnniversaryDate: '25/10', 
-    paymentMode: 'Yearly', 
-    premiumAmount: 1200, 
+    policyAnniversaryDate: '25/10',
+    paymentMode: 'Yearly',
+    currency: 'HKD',
+    premiumAmount: 1200,
     status: 'Active',
     medicalPlanType: 'Private', // High end
     medicalExcess: 5000,
@@ -465,48 +468,51 @@ export const RECENT_POLICIES: PolicyData[] = [
       { name: 'Dental Care Plus', type: 'Medical', premiumAmount: 200 }
     ]
   },
-  { 
-    id: 'p2', 
-    policyNumber: 'POL-99120', 
+  {
+    id: 'p2',
+    policyNumber: 'POL-99120',
     planName: 'Accident Safe 360', // Renamed for Context
-    holderName: 'Sarah Connor', 
+    holderName: 'Sarah Connor',
     type: 'Accident', // Changed to Accident
-    policyAnniversaryDate: '15/05', 
-    paymentMode: 'Half-Yearly', 
-    premiumAmount: 850, 
+    policyAnniversaryDate: '15/05',
+    paymentMode: 'Half-Yearly',
+    currency: 'HKD',
+    premiumAmount: 850,
     status: 'Active',
     sumInsured: 1000000, // Death/Critical
     accidentMedicalLimit: 50000,
     accidentPhysioVisits: 15
   },
-  { 
-    id: 'p3', 
-    policyNumber: 'POL-77212', 
-    planName: 'Home Protect Plus', 
-    holderName: 'James Wright', 
-    type: 'Property', 
-    policyAnniversaryDate: '01/11', 
-    paymentMode: 'Yearly', 
-    premiumAmount: 2400, 
+  {
+    id: 'p3',
+    policyNumber: 'POL-77212',
+    planName: 'Home Protect Plus',
+    holderName: 'James Wright',
+    type: 'Property',
+    policyAnniversaryDate: '01/11',
+    paymentMode: 'Yearly',
+    currency: 'USD',
+    premiumAmount: 2400,
     status: 'Pending',
     riders: [
-        { name: 'Flood Protection', type: 'Property', premiumAmount: 150 },
-        { name: 'Theft Cover', type: 'Property', premiumAmount: 100 }
+      { name: 'Flood Protection', type: 'Property', premiumAmount: 150 },
+      { name: 'Theft Cover', type: 'Property', premiumAmount: 100 }
     ]
   },
   // Added new Mock Policy for CI
   {
-      id: 'p4',
-      policyNumber: 'POL-CI-2022',
-      planName: 'Crisis Cover Multi',
-      holderName: 'Alice Johnson',
-      type: 'Critical Illness',
-      policyAnniversaryDate: '01/02',
-      paymentMode: 'Monthly',
-      premiumAmount: 300,
-      status: 'Active',
-      sumInsured: 500000,
-      isMultipay: true
+    id: 'p4',
+    policyNumber: 'POL-CI-2022',
+    planName: 'Crisis Cover Multi',
+    holderName: 'Alice Johnson',
+    type: 'Critical Illness',
+    policyAnniversaryDate: '01/02',
+    paymentMode: 'Monthly',
+    currency: 'HKD',
+    premiumAmount: 300,
+    status: 'Active',
+    sumInsured: 500000,
+    isMultipay: true
   }
 ];
 

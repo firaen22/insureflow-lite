@@ -295,15 +295,23 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
             p.name, p.provider, p.type, JSON.stringify(p.defaultTags)
         ]);
 
-        // Clear and Write to Sheets
+        // Clear existing data first to handle deletions
+        await window.gapi.client.sheets.spreadsheets.values.batchClear({
+            spreadsheetId: spreadsheetId,
+            resource: {
+                ranges: ['Clients!A2:Z', 'Policies!A2:Z', 'Products!A2:Z']
+            }
+        });
+
+        // Write new data
         await window.gapi.client.sheets.spreadsheets.values.batchUpdate({
             spreadsheetId: spreadsheetId,
             resource: {
                 valueInputOption: 'RAW',
                 data: [
-                    { range: 'Clients!A2:Z', values: clientRows },
-                    { range: 'Policies!A2:Z', values: policyRows },
-                    { range: 'Products!A2:Z', values: productRows }
+                    { range: 'Clients!A2', values: clientRows },
+                    { range: 'Policies!A2', values: policyRows },
+                    { range: 'Products!A2', values: productRows }
                 ]
             }
         });

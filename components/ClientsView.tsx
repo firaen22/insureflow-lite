@@ -12,6 +12,7 @@ interface ClientsViewProps {
   onAddClient: (client: Client) => void;
   onAddPolicy: (policy: PolicyData, clientId: string) => void;
   onViewDetails: (client: Client) => void;
+  onDeleteClient: (clientId: string) => void;
 }
 
 // Predefined color palette for tags
@@ -24,7 +25,7 @@ const TAG_COLORS = [
   { name: 'Slate', class: 'bg-slate-100 text-slate-700 border-slate-200', dot: 'bg-slate-500' },
 ];
 
-export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, products, onUpdateClient, onAddClient, onAddPolicy, onViewDetails }) => {
+export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, products, onUpdateClient, onAddClient, onAddPolicy, onViewDetails, onDeleteClient }) => {
   // State for search
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -262,6 +263,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, 
         paymentMode: newPolicyForm.paymentMode || 'Yearly',
         premiumAmount: Number(newPolicyForm.premiumAmount) || 0,
         status: newPolicyForm.status || 'Active',
+        currency: 'HKD',
         extractedTags: [newPolicyForm.type || 'Life'],
         riders: newPolicyForm.riders || []
       };
@@ -593,7 +595,13 @@ export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, 
                               </button>
                               <div className="border-t border-slate-100 my-1"></div>
                               <button
-                                onClick={(e) => { e.stopPropagation(); /* Add delete logic if needed later */ setActiveActionMenu(null); }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (confirm(t.table.deleteConfirm || "Are you sure you want to delete this client and all their policies?")) {
+                                    onDeleteClient(client.id);
+                                  }
+                                  setActiveActionMenu(null);
+                                }}
                                 className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                               >
                                 <Trash2 className="w-4 h-4" /> Delete

@@ -281,6 +281,18 @@ const App: React.FC = () => {
     setCurrentView(AppView.CLIENTS);
   };
 
+  const handleDeleteClient = (clientId: string) => {
+    // 1. Remove Client
+    setClients(prev => prev.filter(c => c.id !== clientId));
+    // 2. Remove Linked Policies
+    const clientName = clients.find(c => c.id === clientId)?.name;
+    if (clientName) {
+      setPolicies(prev => prev.filter(p => p.holderName !== clientName));
+    }
+  };
+
+
+
   const handleUpdateProduct = (updatedProduct: Product, originalName: string) => {
     setProducts(prev => prev.map(p => p.name === originalName ? updatedProduct : p));
   };
@@ -341,6 +353,7 @@ const App: React.FC = () => {
               onAddClient={handleAddClient}
               onAddPolicy={handleManualPolicyAdd}
               onViewDetails={handleViewClientDetails}
+              onDeleteClient={handleDeleteClient}
             />
           )}
           {currentView === AppView.CLIENT_DETAILS && selectedClient && (
