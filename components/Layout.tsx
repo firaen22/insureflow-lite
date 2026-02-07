@@ -123,14 +123,19 @@ export const Layout: React.FC<LayoutProps> = ({
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                   : ['Error', 'Auth'].some(s => syncStatus.includes(s))
                     ? 'bg-red-50 text-red-700 border-red-200'
-                    : 'bg-blue-50 text-blue-700 border-blue-200'
+                    : ['Not Connected'].some(s => syncStatus.includes(s))
+                      ? 'bg-slate-100 text-slate-500 border-slate-200'
+                      : 'bg-blue-50 text-blue-700 border-blue-200'
                 }
               `}>
-                {['Saving', 'Syncing', 'Loading'].some(s => syncStatus.includes(s)) && (
+                {['Saving', 'Syncing', 'Loading', 'Connecting'].some(s => syncStatus.includes(s)) && (
                   <div className="w-2 h-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
                 )}
                 {['Saved', 'Synced', 'Loaded'].some(s => syncStatus.includes(s)) && (
                   <span className="text-emerald-500">✓</span>
+                )}
+                {['Not Connected'].some(s => syncStatus.includes(s)) && (
+                  <div className="w-2 h-2 rounded-full bg-slate-400" />
                 )}
                 {syncStatus}
               </div>

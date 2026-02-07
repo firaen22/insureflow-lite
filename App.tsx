@@ -24,7 +24,7 @@ const App: React.FC = () => {
   });
   const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
 
-  const [syncStatus, setSyncStatus] = useState<string>('');
+  const [syncStatus, setSyncStatus] = useState<string>('Not Connected');
 
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
@@ -128,8 +128,10 @@ const App: React.FC = () => {
             if (syncResult.data.policies) setPolicies(syncResult.data.policies);
             if (syncResult.data.products) setProducts(syncResult.data.products);
           } else {
-            setSyncStatus('');
+            setSyncStatus('Not Connected');
           }
+        } else {
+          setSyncStatus('Not Connected');
         }
       } catch (e) {
         console.error("Auto-sync initialization failed", e);
@@ -391,7 +393,11 @@ const App: React.FC = () => {
               if (newProducts) setProducts(newProducts);
             }}
             spreadsheetId={spreadsheetId}
-            setSpreadsheetId={setSpreadsheetId}
+            setSpreadsheetId={(id: string | null) => {
+              setSpreadsheetId(id);
+              if (!id) setSyncStatus('Not Connected');
+              else setSyncStatus('Synced');
+            }}
           />
         </Layout>
       </SignedIn>
