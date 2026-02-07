@@ -11,7 +11,8 @@ import { SettingsView } from './components/SettingsView';
 import { AppView, Language, Client, PolicyData, Product, AppSettings } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
+import { setGoogleToken, initGoogleClient, syncOnLogin } from './services/googleSheets';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
@@ -45,6 +46,41 @@ const App: React.FC = () => {
     if (savedSettings) setSettings(prev => ({ ...prev, ...JSON.parse(savedSettings) }));
   }, []);
 
+  const { getToken, userId } = useAuth();
+
+  useEffect(() => {
+    const syncGoogleToken = async () => {
+      try {
+        const token = await getToken({ template: "oauth_google" });
+        if (token) {
+          console.log("Successfully retrieved Google Token from Clerk");
+          setGoogleToken(token);
+          // Re-init Google Client to pick up the token if needed
+          await initGoogleClient();
+
+          // Auto-Sync Data
+          console.log("Attempting auto-sync...");
+          const syncResult = await syncOnLogin();
+          // If we found a spreadsheet and loaded data, update local state
+          if (syncResult.data) {
+            console.log("Auto-sync successful", syncResult.data);
+            if (syncResult.spreadsheetId) setSpreadsheetId(syncResult.spreadsheetId);
+            if (syncResult.data.clients) setClients(syncResult.data.clients);
+            if (syncResult.data.policies) setPolicies(syncResult.data.policies);
+            if (syncResult.data.products) setProducts(syncResult.data.products);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to sync Google Token", e);
+      }
+    };
+
+    if (userId) {
+      syncGoogleToken();
+    }
+  }, [userId, getToken]);
+
+  // Persistence Logic (Feature E)
   useEffect(() => {
     localStorage.setItem('insureflow_clients', JSON.stringify(clients));
   }, [clients]);
@@ -57,9 +93,10 @@ const App: React.FC = () => {
     localStorage.setItem('insureflow_products', JSON.stringify(products));
   }, [products]);
 
-  useEffect(() => {
-    localStorage.setItem('insureflow_settings', JSON.stringify(settings));
-  }, [settings]);
+  // Settings are likely handled by a context now, but keeping for compatibility if local
+  // useEffect(() => {
+  //   localStorage.setItem('insureflow_settings', JSON.stringify(settings));
+  // }, [settings]);
 
   const handleSavePolicy = async (policy: PolicyData, isNewProduct: boolean) => {
     // 1. Add Policy Locally

@@ -24,10 +24,21 @@ export const getDebugInfo = () => {
         gisInited
     };
 }
+// Obsolete initGoogleClient removed - using new one below
+
+export const setGoogleToken = (token: string) => {
+    if (window.gapi && window.gapi.client) {
+        window.gapi.client.setToken({ access_token: token });
+        gapiInited = true; // Assume GAPI is ready if we are setting token
+    }
+    // Also store for later init if gapi is not ready
+    window.localStorage.setItem('google_access_token', token);
+};
+
 export const initGoogleClient = async () => {
     return new Promise<boolean>((resolve, reject) => {
         const checkInit = () => {
-            if (gapiInited && gisInited) resolve(true);
+            if (gapiInited) resolve(true);
         }
 
         // Load GAPI
@@ -50,6 +61,12 @@ export const initGoogleClient = async () => {
                         console.warn("Error loading API specs, but proceeding:", loadErr);
                     }
 
+                    // Check for external token
+                    const externalToken = window.localStorage.getItem('google_access_token');
+                    if (externalToken) {
+                        window.gapi.client.setToken({ access_token: externalToken });
+                    }
+
                     gapiInited = true;
                     checkInit();
                 } catch (err: any) {
@@ -68,7 +85,7 @@ export const initGoogleClient = async () => {
         gisScript.defer = true;
         gisScript.onload = () => {
             if (!CLIENT_ID) {
-                reject(new Error("Google Client ID is missing"));
+                // Don't reject if we are using Clerk token
                 return;
             }
             try {
@@ -84,15 +101,21 @@ export const initGoogleClient = async () => {
                 gisInited = true;
                 checkInit();
             } catch (err: any) {
-                reject(new Error("GIS Init failed: " + err.message));
+                console.warn("GIS Init failed (might be fine if using Clerk token): " + err.message);
+                gisInited = true;
+                checkInit();
             }
         };
-        gisScript.onerror = () => reject(new Error("Failed to load GIS script"));
+        gisScript.onerror = () => console.warn("Failed to load GIS script");
         document.body.appendChild(gisScript);
     });
 };
 
 export const signIn = async () => {
+    // If we have a Clerk token, we don't need this local sign in
+    const token = window.gapi?.client?.getToken();
+    if (token) return Promise.resolve();
+
     return new Promise<void>((resolve, reject) => {
         if (!tokenClient) {
             reject(new Error("Token Client not initialized. Please refresh the page or check your internet connection."));
@@ -107,7 +130,6 @@ export const signIn = async () => {
             }
             // Manually set the token for gapi client
             /* @ts-ignore */
-            // Note: gapi.client.setToken implementation might vary in types, preventing TS error with ignore
             if (window.gapi.client) {
                 // @ts-ignore
                 window.gapi.client.setToken(resp);
@@ -407,7 +429,42 @@ export const loadData = async (spreadsheetId: string): Promise<{ clients: Client
             }
         }
 
+
         console.error("Error loading data", error);
         throw error;
+    }
+};
+
+export const findMainSpreadsheet = async (): Promise<{ id: string, name: string } | null> => {
+    try {
+        const sheets = await listSpreadsheets();
+        const existing = sheets.find(s => s.name === "InsureFlow Data");
+        return existing || null;
+    } catch (error) {
+        console.error("Error finding main spreadsheet:", error);
+        return null;
+    }
+}
+
+export const syncOnLogin = async (): Promise<{
+    spreadsheetId: string | null;
+    data: { clients: Client[], policies: PolicyData[], products: Product[] } | null;
+    error?: string;
+}> => {
+    try {
+        const sheet = await findMainSpreadsheet();
+        if (!sheet) {
+            return { spreadsheetId: null, data: null };
+        }
+
+        const data = await loadData(sheet.id);
+        return { spreadsheetId: sheet.id, data };
+    } catch (error: any) {
+        console.error("Sync on login failed:", error);
+        return {
+            spreadsheetId: null,
+            data: null,
+            error: error.message || "Failed to sync"
+        };
     }
 };
