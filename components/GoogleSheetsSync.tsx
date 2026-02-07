@@ -219,10 +219,7 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
                                         </div>
                                     )}
 
-                                    <div className="mt-4 p-2 bg-gray-100 rounded text-xs text-gray-500 font-mono">
-                                        <p>Debug Info:</p>
-                                        <pre>{JSON.stringify(getDebugInfo(), null, 2)}</pre>
-                                    </div>
+
                                 </>
                             )}
                         </div>
