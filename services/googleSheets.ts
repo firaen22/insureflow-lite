@@ -4,6 +4,10 @@ import { Client, PolicyData, Product } from '../types';
 // Environment variables
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+
+if (!CLIENT_ID || !API_KEY) {
+    console.warn("VITE_GOOGLE_CLIENT_ID or VITE_GOOGLE_API_KEY is missing. Google Sheets sync will not work.");
+}
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file";
 
 let tokenClient: any;
@@ -11,7 +15,7 @@ let gapiInited = false;
 let gisInited = false;
 
 export const initGoogleClient = async () => {
-    return new Promise<boolean>((resolve) => {
+    return new Promise<boolean>((resolve, reject) => {
         const checkInit = () => {
             if (gapiInited && gisInited) resolve(true);
         }
@@ -23,24 +27,23 @@ export const initGoogleClient = async () => {
         gapiScript.defer = true;
         gapiScript.onload = () => {
             window.gapi.load('client', async () => {
-                await window.gapi.client.init({
-                    apiKey: API_KEY,
-                    discoveryDocs: [], // Explicitly load below
-                });
+                try {
+                    await window.gapi.client.init({
+                        apiKey: API_KEY || '',
+                        discoveryDocs: [],
+                    });
 
-                // Explicitly load APIs
-                await window.gapi.client.load('sheets', 'v4');
-                await window.gapi.client.load('drive', 'v3');
+                    await window.gapi.client.load('sheets', 'v4');
+                    await window.gapi.client.load('drive', 'v3');
 
-                console.log("GAPI Client loaded", {
-                    sheets: !!window.gapi.client.sheets,
-                    drive: !!window.gapi.client.drive
-                });
-
-                gapiInited = true;
-                checkInit();
+                    gapiInited = true;
+                    checkInit();
+                } catch (err: any) {
+                    reject(new Error("GAPI Init failed: " + JSON.stringify(err)));
+                }
             });
         };
+        gapiScript.onerror = () => reject(new Error("Failed to load GAPI script"));
         document.body.appendChild(gapiScript);
 
         // Load GIS
@@ -49,18 +52,27 @@ export const initGoogleClient = async () => {
         gisScript.async = true;
         gisScript.defer = true;
         gisScript.onload = () => {
-            tokenClient = window.google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: (resp: any) => {
-                    if (resp.error !== undefined) {
-                        throw (resp);
-                    }
-                },
-            });
-            gisInited = true;
-            checkInit();
+            if (!CLIENT_ID) {
+                reject(new Error("Google Client ID is missing"));
+                return;
+            }
+            try {
+                tokenClient = window.google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID,
+                    scope: SCOPES,
+                    callback: (resp: any) => {
+                        if (resp.error !== undefined) {
+                            console.error("Token Callback Error:", resp);
+                        }
+                    },
+                });
+                gisInited = true;
+                checkInit();
+            } catch (err: any) {
+                reject(new Error("GIS Init failed: " + err.message));
+            }
         };
+        gisScript.onerror = () => reject(new Error("Failed to load GIS script"));
         document.body.appendChild(gisScript);
     });
 };
@@ -68,14 +80,15 @@ export const initGoogleClient = async () => {
 export const signIn = async () => {
     return new Promise<void>((resolve, reject) => {
         if (!tokenClient) {
-            reject("Token Client not initialized");
+            reject(new Error("Token Client not initialized. Please refresh the page or check your internet connection."));
             return;
         }
 
         // Override callback for this specific request to capture when it's done
         tokenClient.callback = (resp: any) => {
             if (resp.error) {
-                reject(resp);
+                reject(new Error(JSON.stringify(resp)));
+                return;
             }
             // Manually set the token for gapi client
             /* @ts-ignore */

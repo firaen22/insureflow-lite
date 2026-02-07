@@ -30,13 +30,18 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
 
     useEffect(() => {
         const init = async () => {
-            const initialized = await initGoogleClient();
-            if (initialized) {
-                const signedIn = getIsSignedIn();
-                setIsSignedIn(signedIn);
-                if (signedIn) {
-                    checkSpreadsheets();
+            try {
+                const initialized = await initGoogleClient();
+                if (initialized) {
+                    const signedIn = getIsSignedIn();
+                    setIsSignedIn(signedIn);
+                    if (signedIn) {
+                        checkSpreadsheets();
+                    }
                 }
+            } catch (error: any) {
+                console.error("Google Client Init Error:", error);
+                setStatus(`Initialization failed: ${error.message || error}`);
             }
         };
         init();
@@ -62,12 +67,14 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
     };
 
     const handleSignIn = async () => {
+        setStatus('Signing in...');
         try {
             await signIn();
             setIsSignedIn(true);
             checkSpreadsheets();
         } catch (error: any) {
-            setStatus(`Sign in failed: ${error.message}`);
+            const msg = error.message || (typeof error === 'string' ? error : JSON.stringify(error));
+            setStatus(`Sign in failed: ${msg}`);
         }
     };
 
