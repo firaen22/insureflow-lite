@@ -157,9 +157,7 @@ export const Layout: React.FC<LayoutProps> = ({
               <Bell className="w-5 h-5" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
             </button>
-            <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold text-sm">
-              AD
-            </div>
+
           </div>
         </header>
 
