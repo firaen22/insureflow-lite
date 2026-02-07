@@ -111,21 +111,21 @@ export const initGoogleClient = async () => {
     });
 };
 
-export const signIn = async () => {
+export const signIn = async (options: { prompt?: string } = { prompt: 'consent' }) => {
     // If we have a Clerk token, we don't need this local sign in
-    const token = window.gapi?.client?.getToken();
-    if (token) return Promise.resolve();
+    // const token = window.gapi?.client?.getToken();
+    // if (token) return Promise.resolve(); // Force re-sign in if called explicitly? No, let's allow re-sign in to refresh.
 
     return new Promise<void>((resolve, reject) => {
         if (!tokenClient) {
-            reject(new Error("Token Client not initialized. Please refresh the page or check your internet connection."));
+            reject(new Error("Token Client not initialized. Please refresh the page."));
             return;
         }
 
         // Override callback for this specific request to capture when it's done
         tokenClient.callback = (resp: any) => {
             if (resp.error) {
-                reject(new Error(JSON.stringify(resp)));
+                reject(resp); // Pass full response for error handling
                 return;
             }
             // Manually set the token for gapi client
@@ -134,12 +134,30 @@ export const signIn = async () => {
                 // @ts-ignore
                 window.gapi.client.setToken(resp);
             }
+
+            // Persist valid token
+            if (resp.access_token) {
+                window.localStorage.setItem('google_access_token', resp.access_token);
+            }
+
             resolve();
         };
 
-        // Request token (triggers popup)
-        tokenClient.requestAccessToken({ prompt: 'consent' });
+        // Request token
+        tokenClient.requestAccessToken({ prompt: options.prompt });
     });
+};
+
+export const trySilentSignIn = async () => {
+    try {
+        console.log("Attempting silent Google Sign-In...");
+        await signIn({ prompt: 'none' });
+        console.log("Silent Sign-In successful!");
+        return true;
+    } catch (error: any) {
+        console.warn("Silent Sign-In failed (interaction required or other error):", error);
+        return false;
+    }
 };
 
 export const signOut = async () => {

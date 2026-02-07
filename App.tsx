@@ -12,7 +12,7 @@ import { AppView, Language, Client, PolicyData, Product, AppSettings } from './t
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
 import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
-import { setGoogleToken, initGoogleClient, syncOnLogin, saveData, getIsSignedIn } from './services/googleSheets';
+import { setGoogleToken, initGoogleClient, syncOnLogin, saveData, getIsSignedIn, trySilentSignIn } from './services/googleSheets';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
@@ -23,6 +23,8 @@ const App: React.FC = () => {
     reminderDays: 60
   });
   const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
+
+  const [syncStatus, setSyncStatus] = useState<string>('');
 
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
@@ -72,18 +74,23 @@ const App: React.FC = () => {
 
           // Attempt Auto-Sync
           if (getIsSignedIn()) {
+            setSyncStatus('Syncing...');
             const syncResult = await syncOnLogin();
             if (syncResult.data) {
               console.log("Clerk-based Auto-sync successful", syncResult.data);
+              setSyncStatus('Synced');
               if (syncResult.spreadsheetId) setSpreadsheetId(syncResult.spreadsheetId);
               if (syncResult.data.clients) setClients(syncResult.data.clients);
               if (syncResult.data.policies) setPolicies(syncResult.data.policies);
               if (syncResult.data.products) setProducts(syncResult.data.products);
+            } else {
+              setSyncStatus('');
             }
           }
         }
       } catch (e) {
         console.error("Failed to sync Google Token from Clerk", e);
+        setSyncStatus('Sync Error');
       }
     };
 
@@ -92,25 +99,42 @@ const App: React.FC = () => {
     }
   }, [userId, getToken]);
 
-  // 2. Auto-Init and Load from Google Sheets (LocalStorage Fallback)
+  // 2. Auto-Init and Load from Google Sheets (LocalStorage Fallback + Silent Sign-In)
   useEffect(() => {
     const initAndSync = async () => {
       try {
         await initGoogleClient();
+
         // Check if we have a token (from localStorage or GAPI)
-        if (getIsSignedIn()) {
-          console.log("Auto-sync: User is signed in via LocalStorage, attempting to load data...");
+        let signedIn = getIsSignedIn();
+
+        // If NOT signed in, try Silent Sign-In (if authorized before)
+        if (!signedIn) {
+          // Only if we haven't explicitly signed out recently? 
+          // For now, always try silent sign-in on fresh load.
+          const silentSuccess = await trySilentSignIn();
+          if (silentSuccess) signedIn = true;
+        }
+
+        if (signedIn) {
+          console.log("Auto-sync: User is signed in via LocalStorage or Silent Auth, attempting to load data...");
+          setSyncStatus('Loading...');
           const syncResult = await syncOnLogin();
           if (syncResult.data && syncResult.spreadsheetId) {
             console.log("Auto-sync: Data loaded successfully");
+            setSyncStatus('Loaded');
+            setTimeout(() => setSyncStatus(''), 3000);
             setSpreadsheetId(syncResult.spreadsheetId);
             if (syncResult.data.clients) setClients(syncResult.data.clients);
             if (syncResult.data.policies) setPolicies(syncResult.data.policies);
             if (syncResult.data.products) setProducts(syncResult.data.products);
+          } else {
+            setSyncStatus('');
           }
         }
       } catch (e) {
         console.error("Auto-sync initialization failed", e);
+        setSyncStatus('Sync Error');
       }
     };
 
@@ -123,15 +147,20 @@ const App: React.FC = () => {
 
     const timeoutId = setTimeout(async () => {
       console.log("Auto-sync: Saving changes to Google Sheets...");
+      setSyncStatus('Saving...');
       try {
         await saveData(spreadsheetId, clients, policies, products);
         console.log("Auto-sync: Save successful at " + new Date().toLocaleTimeString());
+        setSyncStatus('Saved');
+        setTimeout(() => setSyncStatus(''), 3000); // Clear after 3s
       } catch (error: any) {
         console.error("Auto-sync: Save failed", error);
+        setSyncStatus('Save Error');
         // If auth error, stop trying to save to prevent loops/spam
         const msg = error.message || JSON.stringify(error);
         if (msg.includes("401") || msg.includes("403") || msg.includes("invalid authentication")) {
           setSpreadsheetId(null); // Disconnect
+          setSyncStatus('Auth Error');
           alert("Google Sheets session expired. Please sign in again via the sync button.");
         }
       }
@@ -290,6 +319,7 @@ const App: React.FC = () => {
           language={settings.language}
           onToggleLanguage={() => setSettings(prev => ({ ...prev, language: prev.language === 'en' ? 'zh' : 'en' }))}
           t={t}
+          syncStatus={syncStatus}
         >
           <div className="absolute top-4 right-20 z-10">
             <UserButton />
