@@ -557,6 +557,20 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                       </select>
                     </div>
                   </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sum Insured / Face Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-2 text-slate-400">$</span>
+                      <input
+                        type="number"
+                        value={activeItem.data.sumInsured || ''}
+                        onChange={e => handleUpdateCurrentField('sumInsured', parseFloat(e.target.value))}
+                        placeholder="0"
+                        className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Policy Values Section */}
@@ -638,7 +652,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                             <select
                               value={rider.type}
                               onChange={e => handleUpdateRider(idx, 'type', e.target.value)}
-                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
                             >
                               <option value="Medical">Medical</option>
                               <option value="Accident">Accident</option>
@@ -647,10 +661,17 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                             </select>
                             <input
                               type="number"
+                              value={rider.sumInsured || ''}
+                              onChange={e => handleUpdateRider(idx, 'sumInsured', parseFloat(e.target.value))}
+                              placeholder="Sum Insured"
+                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                            />
+                            <input
+                              type="number"
                               value={rider.premiumAmount}
                               onChange={e => handleUpdateRider(idx, 'premiumAmount', parseFloat(e.target.value))}
                               placeholder="Premium"
-                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
                             />
                           </div>
                         </div>

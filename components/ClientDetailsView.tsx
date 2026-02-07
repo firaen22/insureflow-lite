@@ -507,6 +507,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
                                 <span className="text-slate-600">{rider.name}</span>
                                 <div className="flex items-center gap-3">
                                   <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 rounded">{rider.type}</span>
+                                  {rider.sumInsured && <span className="text-[10px] text-slate-500 mr-2">SI: ${rider.sumInsured.toLocaleString()}</span>}
                                   <span className="font-medium text-slate-700 w-16 text-right">+${rider.premiumAmount.toLocaleString()}</span>
                                 </div>
                               </div>
@@ -647,8 +648,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
                   </div>
                 )}
 
-                {/* Life/CI/Accident Sum Insured */}
-                {['Life', 'Critical Illness', 'Accident'].includes(editingPolicy.type) && (
+                {/* Life/CI/Accident/Rider Sum Insured */}
+                {['Life', 'Critical Illness', 'Accident', 'Rider'].includes(editingPolicy.type) && (
                   <div className="mb-3">
                     <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.sumInsured} ($)</label>
                     <input
@@ -903,6 +904,15 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
                               <option value="Life">Life</option>
                               <option value="Critical Illness">Critical Illness</option>
                             </select>
+                          </div>
+                          <div className="flex-1">
+                            <input
+                              type="number"
+                              value={rider.sumInsured || ''}
+                              placeholder="SI ($)"
+                              onChange={(e) => handleUpdateRider(idx, 'sumInsured', parseFloat(e.target.value))}
+                              className="w-full px-2 py-1 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white"
+                            />
                           </div>
                         </div>
                       </div>
