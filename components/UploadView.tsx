@@ -306,6 +306,21 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
 
   const activeItem = processedFiles.find(p => p.id === selectedFileId);
 
+  // --- Preview URL Management ---
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (activeItem?.file) {
+      const url = URL.createObjectURL(activeItem.file);
+      setPreviewUrl(url);
+
+      // Cleanup previous URL when component unmounts or file changes
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [activeItem?.file]);
+
   // --- Render ---
 
   if (viewMode === 'upload' && processedFiles.length === 0) {
@@ -428,16 +443,16 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
 
         {/* Center Panel: Document Preview */}
         <div className="flex-1 bg-slate-100 rounded-xl border border-slate-200 overflow-hidden relative flex items-center justify-center p-4">
-          {activeItem ? (
+          {activeItem && previewUrl ? (
             activeItem.file.type.includes('pdf') ? (
               <iframe
-                src={URL.createObjectURL(activeItem.file)}
+                src={previewUrl}
                 className="w-full h-full rounded shadow-sm"
                 title="PDF Preview"
               />
             ) : (
               <img
-                src={URL.createObjectURL(activeItem.file)}
+                src={previewUrl}
                 alt="Preview"
                 className="max-w-full max-h-full object-contain shadow-sm rounded bg-white"
               />
