@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
 import { TRANSLATIONS } from '../constants';
-import { Search, Plus, MoreHorizontal, Shield, Tag, Box, HeartPulse, Home, Car, AlertTriangle, PiggyBank, Briefcase, Pencil, X, Check, Save } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, Shield, Tag, Box, HeartPulse, Home, Car, AlertTriangle, PiggyBank, Briefcase, Pencil, X, Check, Save, Layers } from 'lucide-react';
 
 interface ProductLibraryViewProps {
   t: typeof TRANSLATIONS['en']['products'];
@@ -12,14 +12,14 @@ interface ProductLibraryViewProps {
 
 export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, products, onUpdateProduct, onAddProduct }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [originalName, setOriginalName] = useState<string>(''); // To track name changes
   const [newTagInput, setNewTagInput] = useState('');
 
-  const filteredProducts = products.filter(product => 
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.provider.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.type.toLowerCase().includes(searchTerm.toLowerCase())
@@ -34,6 +34,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
       case 'Critical Illness': return <AlertTriangle className="w-4 h-4" />;
       case 'Savings': return <PiggyBank className="w-4 h-4" />;
       case 'Accident': return <Briefcase className="w-4 h-4" />;
+      case 'Rider': return <Layers className="w-4 h-4" />;
       default: return <Box className="w-4 h-4" />;
     }
   };
@@ -46,6 +47,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
       case 'Property': return 'bg-orange-50 text-orange-700 border-orange-100';
       case 'Critical Illness': return 'bg-purple-50 text-purple-700 border-purple-100';
       case 'Savings': return 'bg-emerald-50 text-emerald-700 border-emerald-100';
+      case 'Rider': return 'bg-indigo-50 text-indigo-700 border-indigo-100';
       default: return 'bg-gray-50 text-gray-700 border-gray-100';
     }
   };
@@ -58,10 +60,10 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
 
   const handleAddClick = () => {
     setEditingProduct({
-        name: '',
-        provider: '',
-        type: 'Life',
-        defaultTags: []
+      name: '',
+      provider: '',
+      type: 'Life',
+      defaultTags: []
     });
     setOriginalName('');
     setIsModalOpen(true);
@@ -69,28 +71,28 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
 
   const handleSave = () => {
     if (editingProduct && editingProduct.name) {
-        if (originalName) {
-            onUpdateProduct(editingProduct, originalName);
-        } else {
-            onAddProduct(editingProduct);
-        }
-        setIsModalOpen(false);
-        setEditingProduct(null);
+      if (originalName) {
+        onUpdateProduct(editingProduct, originalName);
+      } else {
+        onAddProduct(editingProduct);
+      }
+      setIsModalOpen(false);
+      setEditingProduct(null);
     }
   };
 
   const handleAddTag = () => {
     if (editingProduct && newTagInput.trim()) {
-        const updatedTags = [...editingProduct.defaultTags, newTagInput.trim()];
-        setEditingProduct({ ...editingProduct, defaultTags: updatedTags });
-        setNewTagInput('');
+      const updatedTags = [...editingProduct.defaultTags, newTagInput.trim()];
+      setEditingProduct({ ...editingProduct, defaultTags: updatedTags });
+      setNewTagInput('');
     }
   };
 
   const handleRemoveTag = (index: number) => {
     if (editingProduct) {
-        const updatedTags = editingProduct.defaultTags.filter((_, i) => i !== index);
-        setEditingProduct({ ...editingProduct, defaultTags: updatedTags });
+      const updatedTags = editingProduct.defaultTags.filter((_, i) => i !== index);
+      setEditingProduct({ ...editingProduct, defaultTags: updatedTags });
     }
   };
 
@@ -101,7 +103,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
           <h1 className="text-2xl font-bold text-slate-800">{t.title}</h1>
           <p className="text-slate-500 text-sm mt-1">{t.subtitle}</p>
         </div>
-        <button 
+        <button
           onClick={handleAddClick}
           className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-sm w-full md:w-auto justify-center"
         >
@@ -115,8 +117,8 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
         <div className="p-4 border-b border-slate-200 bg-slate-50/50">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder={t.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -162,10 +164,10 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button 
-                        onClick={() => handleEditClick(product)}
-                        className="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100"
-                        title={t.editProduct}
+                    <button
+                      onClick={() => handleEditClick(product)}
+                      className="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100"
+                      title={t.editProduct}
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
@@ -194,99 +196,100 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
               <h3 className="font-bold text-slate-800">
                 {originalName ? t.editProduct : t.addProduct}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.name}</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={editingProduct.name}
-                  onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.provider}</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={editingProduct.provider}
-                  onChange={(e) => setEditingProduct({...editingProduct, provider: e.target.value})}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, provider: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.type}</label>
-                <select 
+                <select
                   value={editingProduct.type}
-                  onChange={(e) => setEditingProduct({...editingProduct, type: e.target.value as any})}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, type: e.target.value as any })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
                 >
-                    <option value="Life">Life</option>
-                    <option value="Medical">Medical</option>
-                    <option value="Auto">Auto</option>
-                    <option value="Property">Property</option>
-                    <option value="Critical Illness">Critical Illness</option>
-                    <option value="Savings">Savings</option>
-                    <option value="Accident">Accident</option>
+                  <option value="Life">Life</option>
+                  <option value="Medical">Medical</option>
+                  <option value="Auto">Auto</option>
+                  <option value="Property">Property</option>
+                  <option value="Critical Illness">Critical Illness</option>
+                  <option value="Savings">Savings</option>
+                  <option value="Accident">Accident</option>
+                  <option value="Rider">Rider</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">{t.form.tags}</label>
                 <div className="flex gap-2 mb-2">
-                    <input 
-                        type="text" 
-                        value={newTagInput}
-                        onChange={(e) => setNewTagInput(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleAddTag();
-                            }
-                        }}
-                        placeholder={t.form.addTag}
-                        className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                    />
-                    <button 
-                        onClick={handleAddTag}
-                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-medium transition-colors"
-                    >
-                        <Plus className="w-4 h-4" />
-                    </button>
+                  <input
+                    type="text"
+                    value={newTagInput}
+                    onChange={(e) => setNewTagInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddTag();
+                      }
+                    }}
+                    placeholder={t.form.addTag}
+                    className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  />
+                  <button
+                    onClick={handleAddTag}
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
                 </div>
                 <div className="flex flex-wrap gap-2 min-h-[24px]">
-                    {editingProduct.defaultTags.map((tag, idx) => (
-                        <span key={idx} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-brand-50 text-brand-700 border border-brand-100">
-                            {tag}
-                            <button 
-                                onClick={() => handleRemoveTag(idx)}
-                                className="ml-1.5 text-brand-400 hover:text-brand-600"
-                            >
-                                <X className="w-3 h-3" />
-                            </button>
-                        </span>
-                    ))}
+                  {editingProduct.defaultTags.map((tag, idx) => (
+                    <span key={idx} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-brand-50 text-brand-700 border border-brand-100">
+                      {tag}
+                      <button
+                        onClick={() => handleRemoveTag(idx)}
+                        className="ml-1.5 text-brand-400 hover:text-brand-600"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
 
             <div className="p-5 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="px-4 py-2 text-slate-600 font-medium hover:text-slate-800"
               >
                 {t.cancel}
               </button>
-              <button 
+              <button
                 onClick={handleSave}
                 className="px-4 py-2 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 shadow-sm flex items-center gap-2"
               >

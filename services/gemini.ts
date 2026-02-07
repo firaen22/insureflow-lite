@@ -21,6 +21,7 @@ Fields to extract:
 - policyNumber (string): The policy ID/Number.
 - holderName (string): The name of the policyholder.
 - premiumAmount (number): Annual premium amount (remove currency symbols).
+- sumInsured (number): The Sum Insured / Face Amount of the basic plan.
 - policyAnniversaryDate (string): Format DD/MM (e.g., "01/01").
 - type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident". Infer from content.
 - extractedTags (array of strings): Keywords like "High Value", "Term", "VHIS", etc.
@@ -30,6 +31,7 @@ Fields to extract:
     - name (string): Name of the rider.
     - type (string): "Medical", "Accident", "Critical Illness", "Waiver", "Other".
     - premiumAmount (number): Premium for this specific rider (if listed separately).
+    - sumInsured (number): Sum Insured / Benefit Amount for this rider.
 - cashValue (number): Guaranteed Cash Value from the latest statement.
 - accumulatedDividend (number): Accumulated Dividends/Interest/Coupons.
 - totalCashValue (number): Total Surrender Value / Cash Value (Sum of guaranteed + non-guaranteed).

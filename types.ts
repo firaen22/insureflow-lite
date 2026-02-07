@@ -6,7 +6,7 @@ export type PaymentMode = 'Yearly' | 'Half-Yearly' | 'Quarterly' | 'Monthly';
 export interface Product {
   name: string;
   provider: string;
-  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident';
+  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Rider';
   defaultTags: string[];
 }
 
@@ -14,6 +14,7 @@ export interface Rider {
   name: string;
   type: string;
   premiumAmount: number;
+  sumInsured?: number;
 }
 
 export interface PolicyData {
