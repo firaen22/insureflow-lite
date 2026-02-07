@@ -12,7 +12,7 @@ import { AppView, Language, Client, PolicyData, Product, AppSettings } from './t
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
 import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
-import { setGoogleToken, initGoogleClient, syncOnLogin } from './services/googleSheets';
+import { setGoogleToken, initGoogleClient, syncOnLogin, saveData, getIsSignedIn } from './services/googleSheets';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
@@ -48,39 +48,56 @@ const App: React.FC = () => {
 
   const { getToken, userId } = useAuth();
 
-  //   useEffect(() => {
-  //     const syncGoogleToken = async () => {
-  //       try {
-  //         // CAUTION: This assumes a Clerk template named "oauth_google" is configured to return
-  //         // the Google Access Token (not a JWT). If not configured, this injects an invalid token.
-  //         const token = await getToken({ template: "oauth_google" });
-  //         if (token) {
-  //           console.log("Successfully retrieved Google Token from Clerk");
-  //           setGoogleToken(token);
-  //           // Re-init Google Client to pick up the token if needed
-  //           await initGoogleClient();
+  // 1. Auto-Init and Load from Google Sheets
+  useEffect(() => {
+    const initAndSync = async () => {
+      try {
+        await initGoogleClient();
+        // Check if we have a token (from localStorage or GAPI)
+        if (getIsSignedIn()) {
+          console.log("Auto-sync: User is signed in, attempting to load data...");
+          const syncResult = await syncOnLogin();
+          if (syncResult.data && syncResult.spreadsheetId) {
+            console.log("Auto-sync: Data loaded successfully");
+            setSpreadsheetId(syncResult.spreadsheetId);
+            // Only update if we actually have data, to avoid blowing away local work with empty arrays?
+            // Actually, syncOnLogin returns the full state. Best to trust it if it succeeded.
+            if (syncResult.data.clients) setClients(syncResult.data.clients);
+            if (syncResult.data.policies) setPolicies(syncResult.data.policies);
+            if (syncResult.data.products) setProducts(syncResult.data.products);
+          }
+        }
+      } catch (e) {
+        console.error("Auto-sync initialization failed", e);
+      }
+    };
 
-  //           // Auto-Sync Data
-  //           console.log("Attempting auto-sync...");
-  //           const syncResult = await syncOnLogin();
-  //           // If we found a spreadsheet and loaded data, update local state
-  //           if (syncResult.data) {
-  //             console.log("Auto-sync successful", syncResult.data);
-  //             if (syncResult.spreadsheetId) setSpreadsheetId(syncResult.spreadsheetId);
-  //             if (syncResult.data.clients) setClients(syncResult.data.clients);
-  //             if (syncResult.data.policies) setPolicies(syncResult.data.policies);
-  //             if (syncResult.data.products) setProducts(syncResult.data.products);
-  //           }
-  //         }
-  //       } catch (e) {
-  //         console.error("Failed to sync Google Token", e);
-  //       }
-  //     };
+    // Slight delay to ensure DOM is ready? Not strictly necessary but safe.
+    initAndSync();
+  }, []);
 
-  //     if (userId) {
-  //       syncGoogleToken();
-  //     }
-  //   }, [userId, getToken]);
+  // 2. Auto-Save to Google Sheets
+  useEffect(() => {
+    if (!spreadsheetId) return;
+
+    const timeoutId = setTimeout(async () => {
+      console.log("Auto-sync: Saving changes to Google Sheets...");
+      try {
+        await saveData(spreadsheetId, clients, policies, products);
+        console.log("Auto-sync: Save successful at " + new Date().toLocaleTimeString());
+      } catch (error: any) {
+        console.error("Auto-sync: Save failed", error);
+        // If auth error, stop trying to save to prevent loops/spam
+        const msg = error.message || JSON.stringify(error);
+        if (msg.includes("401") || msg.includes("403") || msg.includes("invalid authentication")) {
+          setSpreadsheetId(null); // Disconnect
+          alert("Google Sheets session expired. Please sign in again via the sync button.");
+        }
+      }
+    }, 3000); // 3-second debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [clients, policies, products, spreadsheetId]);
 
   // Persistence Logic (Feature E)
   useEffect(() => {
