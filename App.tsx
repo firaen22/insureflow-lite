@@ -48,37 +48,39 @@ const App: React.FC = () => {
 
   const { getToken, userId } = useAuth();
 
-  useEffect(() => {
-    const syncGoogleToken = async () => {
-      try {
-        const token = await getToken({ template: "oauth_google" });
-        if (token) {
-          console.log("Successfully retrieved Google Token from Clerk");
-          setGoogleToken(token);
-          // Re-init Google Client to pick up the token if needed
-          await initGoogleClient();
+  //   useEffect(() => {
+  //     const syncGoogleToken = async () => {
+  //       try {
+  //         // CAUTION: This assumes a Clerk template named "oauth_google" is configured to return
+  //         // the Google Access Token (not a JWT). If not configured, this injects an invalid token.
+  //         const token = await getToken({ template: "oauth_google" });
+  //         if (token) {
+  //           console.log("Successfully retrieved Google Token from Clerk");
+  //           setGoogleToken(token);
+  //           // Re-init Google Client to pick up the token if needed
+  //           await initGoogleClient();
 
-          // Auto-Sync Data
-          console.log("Attempting auto-sync...");
-          const syncResult = await syncOnLogin();
-          // If we found a spreadsheet and loaded data, update local state
-          if (syncResult.data) {
-            console.log("Auto-sync successful", syncResult.data);
-            if (syncResult.spreadsheetId) setSpreadsheetId(syncResult.spreadsheetId);
-            if (syncResult.data.clients) setClients(syncResult.data.clients);
-            if (syncResult.data.policies) setPolicies(syncResult.data.policies);
-            if (syncResult.data.products) setProducts(syncResult.data.products);
-          }
-        }
-      } catch (e) {
-        console.error("Failed to sync Google Token", e);
-      }
-    };
+  //           // Auto-Sync Data
+  //           console.log("Attempting auto-sync...");
+  //           const syncResult = await syncOnLogin();
+  //           // If we found a spreadsheet and loaded data, update local state
+  //           if (syncResult.data) {
+  //             console.log("Auto-sync successful", syncResult.data);
+  //             if (syncResult.spreadsheetId) setSpreadsheetId(syncResult.spreadsheetId);
+  //             if (syncResult.data.clients) setClients(syncResult.data.clients);
+  //             if (syncResult.data.policies) setPolicies(syncResult.data.policies);
+  //             if (syncResult.data.products) setProducts(syncResult.data.products);
+  //           }
+  //         }
+  //       } catch (e) {
+  //         console.error("Failed to sync Google Token", e);
+  //       }
+  //     };
 
-    if (userId) {
-      syncGoogleToken();
-    }
-  }, [userId, getToken]);
+  //     if (userId) {
+  //       syncGoogleToken();
+  //     }
+  //   }, [userId, getToken]);
 
   // Persistence Logic (Feature E)
   useEffect(() => {
@@ -260,6 +262,7 @@ const App: React.FC = () => {
               products={products}
               onUpdatePolicy={handleUpdatePolicy}
               onDeletePolicy={handleDeletePolicy}
+              onUpdateClient={handleUpdateClient}
               onBack={handleBackToClients}
             />
           )}

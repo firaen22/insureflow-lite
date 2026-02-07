@@ -87,6 +87,24 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
         setStatus('');
     };
 
+    const handleAuthError = (error: any) => {
+        const msg = error.result?.error?.message || error.message || JSON.stringify(error);
+
+        // Detect common auth errors
+        if (msg.includes("invalid authentication credentials") ||
+            msg.includes("401") ||
+            msg.includes("403") ||
+            (error.result?.error?.code === 401)) { // Explicit 401 check
+
+            console.warn("Auth error detected, signing out...", error);
+            handleSignOut();
+            setStatus('Session expired or invalid. Please sign in again.');
+        } else {
+            console.error("Operation failed:", error);
+            setStatus(`Failed: ${msg}`);
+        }
+    };
+
     const handleCreate = async () => {
         setStatus('Creating new spreadsheet...');
         try {
@@ -97,9 +115,7 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
             const sheets = await listSpreadsheets();
             setAvailableSheets(sheets);
         } catch (error: any) {
-            console.error("Create spreadsheet error:", error);
-            const msg = error.result?.error?.message || error.message || JSON.stringify(error);
-            setStatus(`Create failed: ${msg}`);
+            handleAuthError(error);
         }
     };
 
@@ -111,8 +127,7 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
             setLastSync(new Date().toLocaleTimeString());
             setStatus('Saved successfully!');
         } catch (error: any) {
-            console.error(error);
-            setStatus(`Save failed: ${error.message}`);
+            handleAuthError(error);
         }
     };
 
@@ -125,8 +140,7 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
             setLastSync(new Date().toLocaleTimeString());
             setStatus(`Loaded ${data.clients.length} clients, ${data.policies.length} policies, and ${data.products.length} products.`);
         } catch (error: any) {
-            console.error(error);
-            setStatus(`Load failed: ${error.message}`);
+            handleAuthError(error);
         }
     };
 

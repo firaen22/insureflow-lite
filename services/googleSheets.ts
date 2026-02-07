@@ -144,10 +144,15 @@ export const signIn = async () => {
 
 export const signOut = async () => {
     const token = window.gapi?.client?.getToken();
-    if (token !== null) {
-        window.google?.accounts?.oauth2?.revoke(token.access_token, () => { });
-        window.gapi?.client?.setToken(null);
+    if (token !== null && token.access_token) {
+        try {
+            window.google?.accounts?.oauth2?.revoke(token.access_token, () => { });
+        } catch (e) {
+            console.warn("Revoke failed", e);
+        }
     }
+    window.gapi?.client?.setToken(null);
+    window.localStorage.removeItem('google_access_token');
 };
 
 export const getIsSignedIn = () => {
