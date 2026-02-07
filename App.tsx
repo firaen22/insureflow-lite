@@ -19,7 +19,6 @@ const App: React.FC = () => {
   // Settings State
   const [settings, setSettings] = useState<AppSettings>({
     language: 'en',
-    theme: 'light',
     reminderDays: 60
   });
   const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);

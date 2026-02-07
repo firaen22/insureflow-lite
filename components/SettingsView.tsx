@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppSettings, UserProfile, Client, PolicyData, Product } from '../types';
-import { Languages, Database, Cloud, Bell, Trash2, Download, RefreshCw, User, Moon, Sun, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
+import { Languages, Database, Cloud, Bell, Trash2, Download, RefreshCw, User, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
 import { getUserProfile, listSpreadsheets } from '../services/googleSheets';
 
 interface SettingsViewProps {
@@ -167,7 +167,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     Preferences
                 </h2>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">Language</label>
                         <select
@@ -178,26 +178,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             <option value="en">English (English)</option>
                             <option value="zh">Traditional Chinese (繁體中文)</option>
                         </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Theme</label>
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => onUpdateSettings({ ...settings, theme: 'light' })}
-                                className={`flex-1 flex items-center justify-center gap-2 p-2 border rounded-lg transition-colors ${settings.theme === 'light' ? 'bg-brand-50 border-brand-500 text-brand-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
-                                    }`}
-                            >
-                                <Sun className="w-4 h-4" /> Light
-                            </button>
-                            <button
-                                onClick={() => onUpdateSettings({ ...settings, theme: 'dark' })}
-                                className={`flex-1 flex items-center justify-center gap-2 p-2 border rounded-lg transition-colors ${settings.theme === 'dark' ? 'bg-brand-50 border-brand-500 text-brand-700' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
-                                    }`}
-                                title="Dark mode is coming soon"
-                            >
-                                <Moon className="w-4 h-4" /> Dark
-                            </button>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -391,10 +371,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         </div>
                     )}
                 </div>
-            </section>
+            </section >
 
             {/* 4. Google Sheets Connection */}
-            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            < section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200" >
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Cloud className="w-5 h-5 text-brand-500" />
                     Connection
@@ -427,10 +407,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         )}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* 5. Rules */}
-            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            < section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200" >
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Bell className="w-5 h-5 text-brand-500" />
                     Rules & Notifications
@@ -447,10 +427,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         max="365"
                     />
                 </div>
-            </section>
+            </section >
 
             {/* 6. Data Management */}
-            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            < section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200" >
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Database className="w-5 h-5 text-brand-500" />
                     Data Management
@@ -471,8 +451,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         Clear Local Cache
                     </button>
                 </div>
-            </section>
+            </section >
 
-        </div>
+        </div >
     );
 };

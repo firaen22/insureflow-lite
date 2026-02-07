@@ -93,7 +93,6 @@ export enum UploadStatus {
 
 export interface AppSettings {
   language: Language;
-  theme: 'light' | 'dark';
   reminderDays: number;
   googleSheetId?: string;
   aiProvider?: 'gemini' | 'openai' | 'kimi' | 'nvidia'; // Default 'gemini'
