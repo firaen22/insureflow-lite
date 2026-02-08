@@ -515,10 +515,3 @@ export const RECENT_POLICIES: PolicyData[] = [
     isMultipay: true
   }
 ];
-
-export const CHART_DATA = [
-  { name: 'Life', value: 400 },
-  { name: 'Medical', value: 300 },
-  { name: 'Auto', value: 300 },
-  { name: 'Property', value: 200 },
-];

@@ -1,5 +1,5 @@
 
-import { Client, PolicyData, Product } from '../types';
+import { Client, PolicyData, Product, UserProfile } from '../types';
 
 // Environment variables
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -180,7 +180,7 @@ export const getIsSignedIn = () => {
     return !!token && !!token.access_token;
 }
 
-export const getUserProfile = async (): Promise<{ name: string, email: string, picture: string }> => {
+export const getUserProfile = async (): Promise<UserProfile> => {
     const token = window.gapi?.client?.getToken();
     if (!token) throw new Error("Not signed in");
 
@@ -359,6 +359,38 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
     }
 };
 
+const parseClient = (row: any): Client => ({
+    id: row[0],
+    name: row[1],
+    email: row[2],
+    phone: row[3],
+    birthday: row[4],
+    totalPolicies: Number(row[5]),
+    lastContact: row[6],
+    status: row[7],
+    tags: JSON.parse(row[8] || '[]')
+});
+
+const parsePolicy = (row: any): PolicyData => {
+    const extraData = JSON.parse(row[12] || '{}');
+    return {
+        id: row[0],
+        policyNumber: row[1],
+        planName: row[2],
+        holderName: row[3],
+        clientBirthday: row[4],
+        type: row[5],
+        policyAnniversaryDate: row[6],
+        paymentMode: row[7],
+        premiumAmount: Number(row[8]),
+        status: row[9],
+        extractedTags: JSON.parse(row[10] || '[]'),
+        riders: JSON.parse(row[11] || '[]'),
+        currency: 'HKD',
+        ...extraData
+    };
+};
+
 export const loadData = async (spreadsheetId: string): Promise<{ clients: Client[], policies: PolicyData[], products: Product[] }> => {
     try {
         const response = await window.gapi.client.sheets.spreadsheets.values.batchGet({
@@ -370,37 +402,8 @@ export const loadData = async (spreadsheetId: string): Promise<{ clients: Client
         const policyRows = response.result.valueRanges?.[1].values || [];
         const productRows = response.result.valueRanges?.[2].values || [];
 
-        const clients: Client[] = clientRows.map((row: any) => ({
-            id: row[0],
-            name: row[1],
-            email: row[2],
-            phone: row[3],
-            birthday: row[4],
-            totalPolicies: Number(row[5]),
-            lastContact: row[6],
-            status: row[7],
-            tags: JSON.parse(row[8] || '[]')
-        }));
-
-        const policies: PolicyData[] = policyRows.map((row: any) => {
-            const extraData = JSON.parse(row[12] || '{}');
-            return {
-                id: row[0],
-                policyNumber: row[1],
-                planName: row[2],
-                holderName: row[3],
-                clientBirthday: row[4],
-                type: row[5],
-                policyAnniversaryDate: row[6],
-                paymentMode: row[7],
-                premiumAmount: Number(row[8]),
-                status: row[9],
-                extractedTags: JSON.parse(row[10] || '[]'),
-                riders: JSON.parse(row[11] || '[]'),
-                currency: 'HKD',
-                ...extraData
-            };
-        });
+        const clients: Client[] = clientRows.map(parseClient);
+        const policies: PolicyData[] = policyRows.map(parsePolicy);
 
         const products: Product[] = productRows.map((row: any) => ({
             name: row[0],
@@ -425,37 +428,8 @@ export const loadData = async (spreadsheetId: string): Promise<{ clients: Client
                 const clientRows = response.result.valueRanges?.[0].values || [];
                 const policyRows = response.result.valueRanges?.[1].values || [];
 
-                const clients: Client[] = clientRows.map((row: any) => ({
-                    id: row[0],
-                    name: row[1],
-                    email: row[2],
-                    phone: row[3],
-                    birthday: row[4],
-                    totalPolicies: Number(row[5]),
-                    lastContact: row[6],
-                    status: row[7],
-                    tags: JSON.parse(row[8] || '[]')
-                }));
-
-                const policies: PolicyData[] = policyRows.map((row: any) => {
-                    const extraData = JSON.parse(row[12] || '{}');
-                    return {
-                        id: row[0],
-                        policyNumber: row[1],
-                        planName: row[2],
-                        holderName: row[3],
-                        clientBirthday: row[4],
-                        type: row[5],
-                        policyAnniversaryDate: row[6],
-                        paymentMode: row[7],
-                        premiumAmount: Number(row[8]),
-                        status: row[9],
-                        extractedTags: JSON.parse(row[10] || '[]'),
-                        riders: JSON.parse(row[11] || '[]'),
-                        currency: 'HKD',
-                        ...extraData
-                    };
-                });
+                const clients: Client[] = clientRows.map(parseClient);
+                const policies: PolicyData[] = policyRows.map(parsePolicy);
 
                 return { clients, policies, products: [] };
             } catch (retryError) {

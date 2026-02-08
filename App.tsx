@@ -183,9 +183,7 @@ const App: React.FC = () => {
   }, [products]);
 
   // Settings are likely handled by a context now, but keeping for compatibility if local
-  // useEffect(() => {
-  //   localStorage.setItem('insureflow_settings', JSON.stringify(settings));
-  // }, [settings]);
+
 
   const handleSavePolicy = async (policy: PolicyData, isNewProduct: boolean) => {
     // 1. Add Policy Locally
