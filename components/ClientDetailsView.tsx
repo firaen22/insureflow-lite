@@ -32,14 +32,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
   };
 
   const handleShareCase = async () => {
+    // 1. Confirm Intent
     if (!confirm("This will create a new Google Sheet with this client's data for joint collaboration. Continue?")) return;
+
+    // 2. Ask for Email (Optional)
+    const email = prompt("Enter the email address of the collaborator to auto-share with (optional):", "");
 
     setIsSharing(true);
     try {
       const { shareClientData } = await import('../services/googleSheets');
-      const result = await shareClientData(client, policies);
+      // Pass the email (even if empty string/null) to the service
+      const result = await shareClientData(client, policies, email || undefined);
+
       if (result.success && result.url) {
         setSharedSheetUrl(result.url);
+
+        let msg = "Joint Case Sheet created successfully!";
+        if (email) msg += `\nShared with: ${email}`;
+        else msg += "\n(No email provided, please share manually via the 'Share' button in Google Sheets)";
+
+        alert(msg);
         window.open(result.url, '_blank');
       }
     } catch (e: any) {
