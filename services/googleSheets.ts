@@ -265,9 +265,7 @@ const moveFileToFolder = async (fileId: string, folderId: string) => {
         });
     } catch (error) {
         console.error("Error moving file to folder:", error);
-        // Don't throw, as the file is created, just not moved
     }
-}
 };
 
 export const organizeFileInAppFolder = async (fileId: string) => {
