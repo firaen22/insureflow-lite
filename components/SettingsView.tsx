@@ -371,10 +371,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         </div>
                     )}
                 </div>
-            </section >
+            </section>
 
             {/* 4. Google Sheets Connection */}
-            < section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200" >
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Cloud className="w-5 h-5 text-brand-500" />
                     Connection
@@ -407,10 +407,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         )}
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* 5. Rules */}
-            < section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200" >
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Bell className="w-5 h-5 text-brand-500" />
                     Rules & Notifications
@@ -427,10 +427,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         max="365"
                     />
                 </div>
-            </section >
+            </section>
 
             {/* 6. Data Management */}
-            < section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200" >
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Database className="w-5 h-5 text-brand-500" />
                     Data Management
@@ -451,8 +451,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         Clear Local Cache
                     </button>
                 </div>
-            </section >
+            </section>
 
-        </div >
+        </div>
     );
 };
