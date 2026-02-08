@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Phone, Calendar, Clock, Shield, Tag, Layers, Download, ExternalLink, Pencil, Trash2, Save, X, Plus, ChevronDown, Activity, DollarSign, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Calendar, Clock, Shield, Tag, Layers, Download, ExternalLink, Pencil, Trash2, Save, X, Plus, ChevronDown, Activity, DollarSign, AlertTriangle, Users, Link } from 'lucide-react';
 import { Client, PolicyData, Product, Rider } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -18,6 +18,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
   const [editingPolicy, setEditingPolicy] = useState<PolicyData | null>(null);
   const [isEditingClient, setIsEditingClient] = useState(false);
   const [editedClient, setEditedClient] = useState<Client>({ ...client });
+  const [isSharing, setIsSharing] = useState(false);
+  const [sharedSheetUrl, setSharedSheetUrl] = useState<string | null>(null);
 
   // Reset editedClient if prop changes
   React.useEffect(() => {
@@ -27,6 +29,24 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
   const handleSaveClient = () => {
     onUpdateClient(editedClient);
     setIsEditingClient(false);
+  };
+
+  const handleShareCase = async () => {
+    if (!confirm("This will create a new Google Sheet with this client's data for joint collaboration. Continue?")) return;
+
+    setIsSharing(true);
+    try {
+      const { shareClientData } = await import('../services/googleSheets');
+      const result = await shareClientData(client, policies);
+      if (result.success && result.url) {
+        setSharedSheetUrl(result.url);
+        window.open(result.url, '_blank');
+      }
+    } catch (e: any) {
+      alert(`Failed to create shared sheet: ${e.message}`);
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   // Calculate stats
@@ -292,6 +312,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({ t, client,
           <Download className="w-4 h-4" />
           <span>Report</span>
         </button>
+        <button
+          onClick={handleShareCase}
+          disabled={isSharing}
+          className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm text-sm font-medium ml-2 disabled:opacity-50"
+          title="Create a shared Google Sheet for joint case collaboration"
+        >
+          {isSharing ? <Activity className="w-4 h-4 animate-spin" /> : <Users className="w-4 h-4" />}
+          <span>Share Case</span>
+        </button>
+        {sharedSheetUrl && (
+          <a
+            href={sharedSheetUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm text-sm font-medium ml-2"
+          >
+            <Link className="w-4 h-4" />
+            <span>View</span>
+          </a>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
