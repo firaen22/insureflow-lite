@@ -5,6 +5,7 @@ import { UploadView } from './components/UploadView';
 import { ClientsView } from './components/ClientsView';
 import { ProductLibraryView } from './components/ProductLibraryView';
 import { ClientDetailsView } from './components/ClientDetailsView';
+import { LoginPage } from './components/LoginPage';
 import { RemindersView } from './components/RemindersView';
 import { GoogleSheetsSync } from './components/GoogleSheetsSync';
 import { SettingsView } from './components/SettingsView';
@@ -310,17 +311,7 @@ const App: React.FC = () => {
   return (
     <>
       <SignedOut>
-        <div className="h-screen w-full flex items-center justify-center bg-slate-50">
-          <div className="text-center space-y-4">
-            <h1 className="text-3xl font-bold text-slate-900">InsureFlow Lite</h1>
-            <p className="text-slate-500">Please sign in to continue</p>
-            <SignInButton mode="modal">
-              <button className="px-6 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition">
-                Sign In
-              </button>
-            </SignInButton>
-          </div>
-        </div>
+        <LoginPage />
       </SignedOut>
       <SignedIn>
         <Layout
