@@ -192,8 +192,8 @@ export const getUserProfile = async (): Promise<UserProfile> => {
         });
         const data = await response.json();
         return {
-            name: data.name,
-            email: data.email,
+            name: data.name || 'User',
+            email: data.email || '',
             picture: data.picture
         };
     } catch (error) {

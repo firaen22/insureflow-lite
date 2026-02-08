@@ -133,11 +133,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                     <img src={userProfile.picture} alt="Profile" className="w-12 h-12 rounded-full" />
                                 ) : (
                                     <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-xl">
-                                        {userProfile.name.charAt(0)}
+                                        {userProfile.name?.charAt(0) || '?'}
                                     </div>
                                 )}
                                 <div>
-                                    <p className="font-medium text-slate-900">{userProfile.name}</p>
+                                    <p className="font-medium text-slate-900">{userProfile.name || 'User'}</p>
                                     <p className="text-sm text-slate-500">{userProfile.email}</p>
                                 </div>
                             </>
