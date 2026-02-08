@@ -216,11 +216,68 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
     }
 };
 
+const ensureAppFolder = async (folderName: string = "Insureflow"): Promise<string> => {
+    try {
+        // Check if folder exists
+        const response = await window.gapi.client.drive.files.list({
+            q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed=false`,
+            fields: 'files(id, name)',
+            pageSize: 1
+        });
+
+        const files = response.result.files;
+        if (files && files.length > 0) {
+            return files[0].id;
+        }
+
+        // Create folder if it doesn't exist
+        const createResponse = await window.gapi.client.drive.files.create({
+            resource: {
+                name: folderName,
+                mimeType: 'application/vnd.google-apps.folder'
+            },
+            fields: 'id'
+        });
+
+        return createResponse.result.id;
+    } catch (error) {
+        console.error("Error ensuring app folder:", error);
+        throw error;
+    }
+};
+
+const moveFileToFolder = async (fileId: string, folderId: string) => {
+    try {
+        // Retrieve the existing parents to remove
+        const file = await window.gapi.client.drive.files.get({
+            fileId: fileId,
+            fields: 'parents'
+        });
+
+        const previousParents = file.result.parents?.join(',') || '';
+
+        // Move the file to the new folder
+        await window.gapi.client.drive.files.update({
+            fileId: fileId,
+            addParents: folderId,
+            removeParents: previousParents,
+            fields: 'id, parents'
+        });
+    } catch (error) {
+        console.error("Error moving file to folder:", error);
+        // Don't throw, as the file is created, just not moved
+    }
+};
+
 export const createSpreadsheet = async (title: string): Promise<string> => {
     try {
         if (!window.gapi.client.sheets) {
             throw new Error("Google Sheets API not loaded. Please refresh the page.");
         }
+
+        // Ensure folder exists
+        const folderId = await ensureAppFolder();
+
         const response = await window.gapi.client.sheets.spreadsheets.create({
             properties: {
                 title: title,
@@ -232,6 +289,10 @@ export const createSpreadsheet = async (title: string): Promise<string> => {
             ]
         });
         const spreadsheetId = response.result.spreadsheetId;
+
+        if (spreadsheetId) {
+            await moveFileToFolder(spreadsheetId, folderId);
+        }
 
         // Initialize Headers
         await window.gapi.client.sheets.spreadsheets.values.batchUpdate({
@@ -487,6 +548,9 @@ export const shareClientData = async (client: Client, policies: PolicyData[], sh
 
         const title = `Joint Case: ${client.name} - InsureFlow Collaboration`;
 
+        // Ensure folder exists
+        const folderId = await ensureAppFolder();
+
         // 1. Create a new Spreadsheet
         const createResponse = await window.gapi.client.sheets.spreadsheets.create({
             resource: {
@@ -500,6 +564,8 @@ export const shareClientData = async (client: Client, policies: PolicyData[], sh
 
         const spreadsheetId = createResponse.result.spreadsheetId;
         if (!spreadsheetId) throw new Error("Failed to create spreadsheet");
+
+        await moveFileToFolder(spreadsheetId, folderId);
 
         // 2. Prepare Data
         const clientHeaders = ['Name', 'Email', 'Phone', 'Birthday', 'Status', 'Notes'];
