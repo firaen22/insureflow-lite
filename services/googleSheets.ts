@@ -218,6 +218,7 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
 
 const ensureAppFolder = async (folderName: string = "Insureflow"): Promise<string> => {
     try {
+        console.log(`[ensureAppFolder] Checking for folder: ${folderName}`);
         // Check if folder exists
         const response = await window.gapi.client.drive.files.list({
             q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed=false`,
@@ -227,9 +228,11 @@ const ensureAppFolder = async (folderName: string = "Insureflow"): Promise<strin
 
         const files = response.result.files;
         if (files && files.length > 0) {
+            console.log(`[ensureAppFolder] Found existing folder: ${files[0].id}`);
             return files[0].id;
         }
 
+        console.log(`[ensureAppFolder] Creating new folder: ${folderName}`);
         // Create folder if it doesn't exist
         const createResponse = await window.gapi.client.drive.files.create({
             resource: {
@@ -239,6 +242,7 @@ const ensureAppFolder = async (folderName: string = "Insureflow"): Promise<strin
             fields: 'id'
         });
 
+        console.log(`[ensureAppFolder] Created folder: ${createResponse.result.id}`);
         return createResponse.result.id;
     } catch (error) {
         console.error("Error ensuring app folder:", error);
@@ -248,21 +252,31 @@ const ensureAppFolder = async (folderName: string = "Insureflow"): Promise<strin
 
 const moveFileToFolder = async (fileId: string, folderId: string) => {
     try {
+        console.log(`[moveFileToFolder] Moving file ${fileId} to folder ${folderId}`);
         // Retrieve the existing parents to remove
         const file = await window.gapi.client.drive.files.get({
             fileId: fileId,
             fields: 'parents'
         });
 
-        const previousParents = file.result.parents?.join(',') || '';
+        const previousParents = file.result.parents || [];
+        console.log(`[moveFileToFolder] Current parents:`, previousParents);
+
+        if (previousParents.includes(folderId)) {
+            console.log(`[moveFileToFolder] File is already in the target folder.`);
+            return;
+        }
+
+        const previousParentsString = previousParents.join(',');
 
         // Move the file to the new folder
         await window.gapi.client.drive.files.update({
             fileId: fileId,
             addParents: folderId,
-            removeParents: previousParents,
+            removeParents: previousParentsString,
             fields: 'id, parents'
         });
+        console.log(`[moveFileToFolder] Successfully moved file.`);
     } catch (error) {
         console.error("Error moving file to folder:", error);
     }
