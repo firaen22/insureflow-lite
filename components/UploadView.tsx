@@ -139,7 +139,10 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
             status: 'Active',
             extractedTags: [...(aiResult.extractedTags || []), 'AI Parsed'],
             riders: aiResult.riders || [],
-            sumInsured: 0
+            sumInsured: aiResult.sumInsured || 0,
+            cashValue: aiResult.cashValue || 0,
+            accumulatedDividend: aiResult.accumulatedDividend || 0,
+            totalCashValue: aiResult.totalCashValue || 0
           };
 
           resolve({

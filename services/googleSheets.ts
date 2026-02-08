@@ -286,7 +286,10 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
                 accidentSectionLimit: p.accidentSectionLimit,
                 accidentPhysioVisits: p.accidentPhysioVisits,
                 maturityDate: p.maturityDate,
-                currency: p.currency
+                currency: p.currency,
+                cashValue: p.cashValue,
+                accumulatedDividend: p.accumulatedDividend,
+                totalCashValue: p.totalCashValue
             })
         ]);
 
