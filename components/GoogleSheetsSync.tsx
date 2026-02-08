@@ -58,6 +58,8 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
             const existing = sheets.find(s => s.name === "InsureFlow Data");
             if (existing) {
                 setSpreadsheetId(existing.id);
+                // Migrate to folder if needed (async, non-blocking)
+                import('../services/googleSheets').then(m => m.organizeFileInAppFolder(existing.id));
                 setStatus(`Connected to "${existing.name}"`);
             } else {
                 setStatus('No "InsureFlow Data" sheet found.');

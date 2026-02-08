@@ -267,7 +267,18 @@ const moveFileToFolder = async (fileId: string, folderId: string) => {
         console.error("Error moving file to folder:", error);
         // Don't throw, as the file is created, just not moved
     }
+}
 };
+
+export const organizeFileInAppFolder = async (fileId: string) => {
+    try {
+        const folderId = await ensureAppFolder();
+        await moveFileToFolder(fileId, folderId);
+        console.log(`Organized file ${fileId} into Insureflow folder.`);
+    } catch (error) {
+        console.error("Error organizing file:", error);
+    }
+}
 
 export const createSpreadsheet = async (title: string): Promise<string> => {
     try {
