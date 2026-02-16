@@ -139,6 +139,7 @@ export const TRANSLATIONS = {
     },
     clientDetails: {
       backToClients: 'Back to Clients',
+      generateReport: 'Generate Report',
       contactInfo: 'Contact Information',
       policiesHeld: 'Policies Held',
       totalAnnualPremium: 'Total Annual Premium',
@@ -326,6 +327,7 @@ export const TRANSLATIONS = {
     },
     clientDetails: {
       backToClients: '返回客戶列表',
+      generateReport: '生成報告',
       contactInfo: '聯絡資訊',
       policiesHeld: '持有保單',
       totalAnnualPremium: '年度總保費',

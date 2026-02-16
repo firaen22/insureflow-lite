@@ -644,6 +644,21 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                   </div>
                 </div>
 
+                {/* Multipay Option for Critical Illness */}
+                {activeItem.data.type === 'Critical Illness' && (
+                  <div className="mb-3">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={activeItem.data.isMultipay || false}
+                        onChange={e => handleUpdateCurrentField('isMultipay', e.target.checked)}
+                        className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                      />
+                      <span className="text-sm text-slate-700 font-medium">Multipay Feature (多重保障)</span>
+                    </label>
+                  </div>
+                )}
+
                 {/* Policy Values Section */}
                 <div className="border-t border-slate-100 pt-4">
                   <label className="block text-xs font-semibold text-slate-500 uppercase mb-3">Policy Values (Statement)</label>
@@ -836,6 +851,6 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
         onChange={onFileChange}
         accept=".pdf,.jpg,.png,.csv"
       />
-    </div>
+    </div >
   );
 };

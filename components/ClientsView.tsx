@@ -30,10 +30,16 @@ export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, 
   const [searchTerm, setSearchTerm] = useState('');
 
   // State for system tags
-  const [systemTags, setSystemTags] = useState([
-    'Medical', 'Accident', 'Critical Illness', 'Life', 'Home', 'Maid',
-    'Sunlife', 'Prudential', 'AIA'
-  ]);
+  // State for system tags
+  const [systemTags, setSystemTags] = useState(() => {
+    const defaults = ['Medical', 'Accident', 'Critical Illness', 'Life', 'Home', 'Maid', 'Hospital Income', 'Sunlife', 'Prudential', 'AIA'];
+    // Extract unique tags from existing clients
+    const clientTags = new Set<string>();
+    clients.forEach(c => c.tags.forEach(t => clientTags.add(t)));
+
+    // Merge defaults with unique client tags, avoiding duplicates
+    return Array.from(new Set([...defaults, ...Array.from(clientTags)]));
+  });
 
   // State for tag colors (mapping tag name to css class)
   const [tagColors, setTagColors] = useState<Record<string, string>>({
