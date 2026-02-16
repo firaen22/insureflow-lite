@@ -78,6 +78,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   };
 
   // --- Calculations for Summary ---
+  const isClientInsured = (p: PolicyData) => !p.insuredName || p.insuredName.trim() === '' || p.insuredName === client.name;
+
   const totalAnnualPremiumHKD = policies.reduce((sum, p) => {
     let amount = p.premiumAmount || 0;
     if (p.currency === 'USD') amount = amount * 7.8;
@@ -85,6 +87,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   }, 0);
 
   const totalCISumInsuredHKD = policies.reduce((sum, p) => {
+    if (!isClientInsured(p)) return sum; // Only sum if client is insured
+
     let val = 0;
     // Base Plan
     if (p.type === 'Critical Illness') {
@@ -102,6 +106,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   }, 0);
 
   const totalLifeSumInsuredHKD = policies.reduce((sum, p) => {
+    if (!isClientInsured(p)) return sum; // Only sum if client is insured
+
     let val = 0;
     if (p.type === 'Life') {
       val += p.sumInsured || 0;
@@ -275,6 +281,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <td className="px-4 py-4 align-top">
                         <div className="font-bold text-slate-800">{policy.planName}</div>
                         <div className="text-xs font-mono text-slate-500 mt-0.5">{policy.policyNumber}</div>
+                        {policy.insuredName && policy.insuredName !== client.name && (
+                          <div className="text-[10px] bg-slate-100 text-slate-600 px-1.5 rounded mt-1 inline-flex items-center gap-1 border border-slate-200" title="Insured Person">
+                            <Shield className="w-3 h-3" /> Insured: {policy.insuredName}
+                          </div>
+                        )}
                         {policy.medicalPlanType && (
                           <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded mt-1 inline-block">
                             {policy.medicalPlanType}
@@ -385,6 +396,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Insured Name</label>
+                    <input
+                      type="text"
+                      value={editingPolicy.insuredName || ''}
+                      onChange={e => handleUpdateField('insuredName', e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      placeholder="Same as holder"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.type}</label>
                     <div className="relative">
