@@ -109,13 +109,21 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   }, 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 print:space-y-4">
+      <style>{`
+        @media print {
+          @page { margin: 1cm; size: A4; }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .no-print { display: none !important; }
+          .print-break-inside-avoid { break-inside: avoid; }
+        }
+      `}</style>
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
-            className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors"
+            className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors print:hidden"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -140,7 +148,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         {/* Left Column: Client Info & Summary */}
         <div className="space-y-6">
           {/* Summary Totals Card */}
-          <div className="bg-gradient-to-br from-brand-600 to-brand-700 rounded-xl shadow-md p-6 text-white">
+          <div className="bg-slate-900 rounded-xl shadow-md p-6 text-white print:bg-slate-900 print:text-white">
             <h3 className="text-brand-100 text-sm font-medium mb-4 flex items-center gap-2">
               <Shield className="w-4 h-4" /> Protection Summary (HKD)
             </h3>
@@ -215,7 +223,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               </h3>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto print:overflow-visible">
               <table className="w-full text-sm text-left">
                 <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                   <tr>
@@ -225,7 +233,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <th className="px-4 py-3 text-right">{t.policyCard.premium}</th>
                     <th className="px-4 py-3 min-w-[180px]">{t.policyCard.riders}</th>
                     <th className="px-4 py-3 text-center">{t.policyCard.status}</th>
-                    <th className="px-4 py-3 text-right"></th>
+                    <th className="px-4 py-3 text-right print:hidden"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -282,7 +290,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           policy.status === 'Pending' ? 'bg-amber-500' : 'bg-red-500'
                           }`} title={policy.status}></span>
                       </td>
-                      <td className="px-4 py-4 align-top text-right">
+                      <td className="px-4 py-4 align-top text-right print:hidden">
                         <div className="flex justify-end gap-1 opacity-10 md:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => setEditingPolicy(policy)}
@@ -316,7 +324,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* Edit Policy Modal */}
       {editingPolicy && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
           <div className="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h3 className="font-bold text-slate-800">{t.editPolicy}</h3>
