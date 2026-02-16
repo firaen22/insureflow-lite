@@ -556,7 +556,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, 
                     </div>
                   </td>
                   <td className="px-6 py-4 text-slate-600">
-                    <span className="font-medium">{client.totalPolicies}</span> Policies
+                    <span className="font-medium">{policies.filter(p => p.holderName === client.name).length}</span> Policies
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-600'
