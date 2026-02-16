@@ -355,6 +355,26 @@ const App: React.FC = () => {
     setProducts(prev => [newProduct, ...prev]);
   };
 
+  const handleMergeProducts = (masterProduct: Product, productsToDelete: string[]) => {
+    // 1. Update Policies: Replace old plan names with the master plan name
+    setPolicies(prev => prev.map(p => {
+      if (productsToDelete.includes(p.planName)) {
+        return {
+          ...p,
+          planName: masterProduct.name,
+          type: masterProduct.type,
+          company: p.company || masterProduct.provider // Use master provider if company is missing
+        };
+      }
+      return p;
+    }));
+
+    // 2. Remove old products from Library
+    setProducts(prev => prev.filter(p => !productsToDelete.includes(p.name)));
+
+    alert(`Successfully merged ${productsToDelete.length} duplicates into "${masterProduct.name}". ${policies.filter(p => productsToDelete.includes(p.planName)).length} policies updated.`);
+  };
+
   const selectedClient = clients.find(c => c.id === selectedClientId);
   const selectedClientPolicies = selectedClient
     ? policies.filter(p => p.holderName === selectedClient.name)
@@ -435,6 +455,7 @@ const App: React.FC = () => {
               products={products}
               onUpdateProduct={handleUpdateProduct}
               onAddProduct={handleAddProduct}
+              onMergeProducts={handleMergeProducts}
             />
           )}
           {currentView === AppView.SETTINGS && (

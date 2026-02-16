@@ -8,10 +8,16 @@ interface ProductLibraryViewProps {
   products: Product[];
   onUpdateProduct: (product: Product, originalName: string) => void;
   onAddProduct: (product: Product) => void;
+  onMergeProducts: (masterProduct: Product, productsToDelete: string[]) => void;
 }
 
-export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, products, onUpdateProduct, onAddProduct }) => {
+export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, products, onUpdateProduct, onAddProduct, onMergeProducts }) => {
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Selection State
+  const [selectedProductNames, setSelectedProductNames] = useState<string[]>([]);
+  const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
+  const [masterProductName, setMasterProductName] = useState<string>('');
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +30,64 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
     product.provider.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSelectProduct = (name: string) => {
+    setSelectedProductNames(prev =>
+      prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
+    );
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedProductNames(filteredProducts.map(p => p.name));
+    } else {
+      setSelectedProductNames([]);
+    }
+  };
+
+  const handleMergeClick = () => {
+    if (selectedProductNames.length < 2) return;
+    setMasterProductName(selectedProductNames[0]);
+    setIsMergeModalOpen(true);
+  };
+
+  const handleExecuteMerge = () => {
+    const masterProduct = products.find(p => p.name === masterProductName);
+    if (!masterProduct) return;
+
+    const productsToDelete = selectedProductNames.filter(name => name !== masterProductName);
+    onMergeProducts(masterProduct, productsToDelete);
+
+    setIsMergeModalOpen(false);
+    setSelectedProductNames([]);
+  };
+
+  const handleScanDuplicates = () => {
+    // Basic scanner: find products with identical names (case insensitive) or very similar
+    const duplicates: string[] = [];
+    const seen = new Set<string>();
+
+    products.forEach(p => {
+      const normalized = p.name.toLowerCase().replace(/\s+/g, '');
+      products.forEach(other => {
+        if (p.name !== other.name) {
+          const otherNormalized = other.name.toLowerCase().replace(/\s+/g, '');
+          if (normalized === otherNormalized || normalized.includes(otherNormalized) || otherNormalized.includes(normalized)) {
+            duplicates.push(p.name);
+            duplicates.push(other.name);
+          }
+        }
+      });
+    });
+
+    if (duplicates.length > 0) {
+      const uniqueDupes = Array.from(new Set(duplicates));
+      setSelectedProductNames(uniqueDupes);
+      alert(`Found ${uniqueDupes.length} potential duplicates. They have been selected for you.`);
+    } else {
+      alert("No obvious duplicates found.");
+    }
+  };
 
   const getTypeIcon = (type: Product['type']) => {
     switch (type) {
@@ -96,6 +160,11 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
     }
   };
 
+  const HK_PROVIDERS = [
+    'AIA', 'Prudential', 'Manulife', 'Sun Life', 'FWD', 'AXA',
+    'China Life', 'HSBC Life', 'BOC Life', 'Bupa', 'Cigna', 'Zurich'
+  ];
+
   return (
     <div className="space-y-6 relative">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -103,19 +172,28 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
           <h1 className="text-2xl font-bold text-slate-800">{t.title}</h1>
           <p className="text-slate-500 text-sm mt-1">{t.subtitle}</p>
         </div>
-        <button
-          onClick={handleAddClick}
-          className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-sm w-full md:w-auto justify-center"
-        >
-          <Plus className="w-4 h-4" />
-          <span>{t.addProduct}</span>
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleScanDuplicates}
+            className="px-4 py-2 text-brand-600 border border-brand-200 bg-brand-50 rounded-lg hover:bg-brand-100 transition-colors flex items-center space-x-2"
+          >
+            <AlertTriangle className="w-4 h-4" />
+            <span>Standardize Library</span>
+          </button>
+          <button
+            onClick={handleAddClick}
+            className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-sm w-full md:w-auto justify-center"
+          >
+            <Plus className="w-4 h-4" />
+            <span>{t.addProduct}</span>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        {/* Search Bar */}
-        <div className="p-4 border-b border-slate-200 bg-slate-50/50">
-          <div className="relative max-w-md">
+        {/* Search & Actions Bar */}
+        <div className="p-4 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
+          <div className="relative max-w-md flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
@@ -125,12 +203,34 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
               className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             />
           </div>
+
+          {selectedProductNames.length > 0 && (
+            <div className="flex items-center gap-4 ml-4 animate-in fade-in slide-in-from-right-4">
+              <span className="text-sm font-medium text-slate-600">{selectedProductNames.length} Selected</span>
+              <button
+                disabled={selectedProductNames.length < 2}
+                onClick={handleMergeClick}
+                className="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <Layers className="w-4 h-4" />
+                Merge Duplicates
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-slate-50 text-slate-500 font-medium border-b border-slate-200">
               <tr>
+                <th className="px-6 py-4 w-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedProductNames.length === filteredProducts.length && filteredProducts.length > 0}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                  />
+                </th>
                 <th className="px-6 py-4 w-1/3">{t.table.name}</th>
                 <th className="px-6 py-4">{t.table.provider}</th>
                 <th className="px-6 py-4">{t.table.type}</th>
@@ -140,7 +240,15 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
             </thead>
             <tbody className="divide-y divide-slate-200">
               {filteredProducts.map((product, index) => (
-                <tr key={`${product.name}-${index}`} className="hover:bg-slate-50 transition-colors group">
+                <tr key={`${product.name}-${index}`} className={`hover:bg-slate-50 transition-colors group ${selectedProductNames.includes(product.name) ? 'bg-brand-50/30' : ''}`}>
+                  <td className="px-6 py-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedProductNames.includes(product.name)}
+                      onChange={() => handleSelectProduct(product.name)}
+                      className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                    />
+                  </td>
                   <td className="px-6 py-4">
                     <span className="font-semibold text-slate-800">{product.name}</span>
                   </td>
@@ -177,7 +285,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
 
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
                     <Box className="w-12 h-12 mx-auto text-slate-300 mb-3" />
                     <p>{t.table.noProducts}</p>
                   </td>
@@ -187,6 +295,59 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
           </table>
         </div>
       </div>
+
+      {/* Merge Confirmation Modal */}
+      {isMergeModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+              <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                <Layers className="w-5 h-5 text-brand-600" />
+                Merge Products
+              </h3>
+              <button onClick={() => setIsMergeModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-slate-600">
+                You are merging <strong>{selectedProductNames.length}</strong> products into one. Please select the primary product to keep:
+              </p>
+              <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
+                {selectedProductNames.map(name => {
+                  const p = products.find(prod => prod.name === name);
+                  return (
+                    <label key={name} className={`flex items-center p-3 border rounded-lg cursor-pointer transition-colors ${masterProductName === name ? 'border-brand-500 bg-brand-50' : 'border-slate-200 hover:bg-slate-50'}`}>
+                      <input
+                        type="radio"
+                        name="master-product"
+                        value={name}
+                        checked={masterProductName === name}
+                        onChange={() => setMasterProductName(name)}
+                        className="text-brand-600 focus:ring-brand-500 mr-3"
+                      />
+                      <div className="flex-1">
+                        <div className="font-semibold text-slate-800">{name}</div>
+                        <div className="text-xs text-slate-500">{p?.provider} • {p?.type}</div>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+              <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 flex gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+                <p className="text-xs text-amber-700">
+                  This action will delete all other selected products and update all existing client policies to match the primary product details.
+                </p>
+              </div>
+            </div>
+            <div className="p-5 bg-slate-50 border-t flex justify-end gap-3">
+              <button onClick={() => setIsMergeModalOpen(false)} className="px-4 py-2 text-slate-600 font-medium">Cancel</button>
+              <button onClick={handleExecuteMerge} className="px-4 py-2 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 shadow-sm">Confirm Merge</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit/Add Modal */}
       {isModalOpen && editingProduct && (
@@ -218,11 +379,16 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.provider}</label>
                 <input
+                  list="provider-list"
                   type="text"
                   value={editingProduct.provider}
                   onChange={(e) => setEditingProduct({ ...editingProduct, provider: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="Select or type insurer..."
                 />
+                <datalist id="provider-list">
+                  {HK_PROVIDERS.map(p => <option key={p} value={p} />)}
+                </datalist>
               </div>
 
               <div>
