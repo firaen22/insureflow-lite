@@ -62,8 +62,8 @@ export const MeetingHubView: React.FC<MeetingHubViewProps> = ({ clients, onViewC
                             key={btn.value}
                             onClick={() => setFilterDays(btn.value as any)}
                             className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${filterDays === btn.value
-                                    ? 'bg-slate-900 text-white shadow-md'
-                                    : 'text-slate-500 hover:bg-slate-50'
+                                ? 'bg-slate-900 text-white shadow-md'
+                                : 'text-slate-500 hover:bg-slate-50'
                                 }`}
                         >
                             {btn.label}
@@ -95,11 +95,11 @@ export const MeetingHubView: React.FC<MeetingHubViewProps> = ({ clients, onViewC
                             <div className="space-y-2 flex-1">
                                 <div className="flex items-center gap-2">
                                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${log.type === 'Policy Review' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' :
-                                            log.type === 'Intro' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-                                                log.type === 'Claim' ? 'bg-red-50 text-red-700 border-red-100' :
-                                                    'bg-slate-50 text-slate-700 border-slate-200'
+                                        log.type === 'Intro' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                                            log.type === 'Claim' ? 'bg-red-50 text-red-700 border-red-100' :
+                                                'bg-slate-50 text-slate-700 border-slate-200'
                                         }`}>
-                                        {log.type}
+                                        {t.types?.[log.type.replace(/\s+/g, '')] || log.type}
                                     </span>
                                     <span className="text-xs text-slate-400 font-medium flex items-center gap-1">
                                         <Calendar className="w-3 h-3" />

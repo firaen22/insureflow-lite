@@ -185,7 +185,14 @@ export const TRANSLATIONS = {
       notes: 'Rough Notes',
       summarize: 'AI Summarize',
       noLogs: 'No meetings logged yet.',
-      deleteConfirm: 'Delete this meeting log?'
+      deleteConfirm: 'Delete this meeting log?',
+      types: {
+        Intro: 'Intro',
+        PolicyReview: 'Policy Review',
+        Claim: 'Claim',
+        Upsell: 'Upsell',
+        General: 'General'
+      }
     },
     products: {
       title: 'Product Library',
@@ -376,15 +383,22 @@ export const TRANSLATIONS = {
       }
     },
     meetings: {
-      title: 'Meeting Logs',
-      addLog: 'Add Meeting Log',
-      date: 'Date',
-      type: 'Type',
-      summary: 'Summary',
-      notes: 'Rough Notes',
-      summarize: 'AI Summarize',
-      noLogs: 'No meetings logged yet.',
-      deleteConfirm: 'Delete this meeting log?'
+      title: '會議記錄',
+      addLog: '新增會議記錄',
+      date: '日期',
+      type: '類型',
+      summary: '摘要',
+      notes: '原始筆記',
+      summarize: 'AI 摘要',
+      noLogs: '尚無會議記錄。',
+      deleteConfirm: '確定要刪除此會議記錄？',
+      types: {
+        Intro: '介紹',
+        PolicyReview: '保單檢視',
+        Claim: '理賠',
+        Upsell: '加保',
+        General: '一般'
+      }
     },
     products: {
       title: 'Product Library',

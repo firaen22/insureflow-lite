@@ -422,6 +422,7 @@ const App: React.FC = () => {
           {currentView === AppView.CLIENT_DETAILS && selectedClient && (
             <ClientDetailsView
               t={t.clientDetails}
+              meetingsT={t.meetings}
               client={selectedClient}
               policies={selectedClientPolicies}
               products={products}

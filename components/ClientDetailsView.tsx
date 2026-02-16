@@ -16,6 +16,7 @@ interface ClientDetailsViewProps {
   onUpdatePolicy: (updatedPolicy: PolicyData) => void;
   products: Product[];
   t: any; // Using any due to dynamic translation updates causing lint
+  meetingsT: any;
   onGenerateReport?: () => void;
   onUpdateClient: (client: Client) => void;
   availableTags?: string[];
@@ -29,10 +30,16 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   onUpdatePolicy,
   products,
   t,
+  meetingsT,
   onGenerateReport,
   onUpdateClient,
   availableTags = []
 }) => {
+  // ... existing state ...
+
+  // ... inside render ...
+
+
   const [editingPolicy, setEditingPolicy] = useState<PolicyData | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [isAddMeetingOpen, setIsAddMeetingOpen] = useState(false);
@@ -396,13 +403,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
               <h3 className="font-bold text-slate-800 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-slate-500" />
-                Meeting Logs ({(client.meetingLogs || []).length})
+                {meetingsT.title} ({(client.meetingLogs || []).length})
               </h3>
               <button
                 onClick={() => setIsAddMeetingOpen(true)}
                 className="text-xs bg-brand-600 text-white px-3 py-1.5 rounded-lg hover:bg-brand-700 transition-colors font-medium flex items-center gap-1 shadow-sm"
               >
-                <Plus className="w-3.5 h-3.5" /> Add Log
+                <Plus className="w-3.5 h-3.5" /> {meetingsT.addLog}
               </button>
             </div>
 
@@ -413,10 +420,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <div className="flex justify-between items-start mb-1">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">{log.date}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold border border-slate-200">{log.type}</span>
+
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold border border-slate-200">{meetingsT.types?.[log.type.replace(/\s+/g, '')] || log.type}</span>
                       <button
                         onClick={() => {
-                          if (window.confirm('Delete this log?')) {
+                          if (window.confirm(meetingsT.deleteConfirm)) {
                             const updatedLogs = (client.meetingLogs || []).filter(l => l.id !== log.id);
                             onUpdateClient({ ...client, meetingLogs: updatedLogs });
                           }
@@ -425,6 +433,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
+
                     </div>
                   </div>
                   <p className="text-sm text-slate-700 font-medium leading-relaxed">{log.summary}</p>
@@ -432,7 +441,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <details className="mt-2 group">
                       <summary className="text-[10px] text-slate-400 cursor-pointer hover:text-brand-600 font-bold uppercase transition-colors list-none flex items-center gap-1">
                         <ChevronDown className="w-3 h-3 group-open:rotate-180 transition-transform" />
-                        Original Notes
+                        {meetingsT.notes}
                       </summary>
                       <div className="mt-2 p-3 bg-slate-50 rounded-lg text-xs text-slate-500 whitespace-pre-wrap italic border border-slate-100">
                         {log.rawNotes}
@@ -443,7 +452,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               )) : (
                 <div className="text-center py-10">
                   <MessageSquare className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-                  <p className="text-slate-400 text-sm italic">No interactions recorded yet.</p>
+                  <p className="text-slate-400 text-sm italic">{meetingsT.noLogs}</p>
                 </div>
               )}
             </div>
@@ -457,7 +466,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in duration-200">
             <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                <Clock className="w-4 h-4 text-brand-500" /> Add Meeting Log
+                <Clock className="w-4 h-4 text-brand-500" /> {meetingsT.addLog}
               </h3>
               <button onClick={() => setIsAddMeetingOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
@@ -467,7 +476,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Date</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{meetingsT.date}</label>
                   <input
                     type="date"
                     value={newMeeting.date}
@@ -476,31 +485,31 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Type</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{meetingsT.type}</label>
                   <select
                     value={newMeeting.type}
                     onChange={e => setNewMeeting({ ...newMeeting, type: e.target.value as any })}
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                   >
-                    <option value="Intro">Intro</option>
-                    <option value="Policy Review">Policy Review</option>
-                    <option value="Claim">Claim</option>
-                    <option value="Upsell">Upsell</option>
-                    <option value="General">General</option>
+                    <option value="Intro">{meetingsT.types?.Intro || 'Intro'}</option>
+                    <option value="Policy Review">{meetingsT.types?.PolicyReview || 'Policy Review'}</option>
+                    <option value="Claim">{meetingsT.types?.Claim || 'Claim'}</option>
+                    <option value="Upsell">{meetingsT.types?.Upsell || 'Upsell'}</option>
+                    <option value="General">{meetingsT.types?.General || 'General'}</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase mb-1 flex justify-between items-center">
-                  Notes
+                  {meetingsT.notes}
                   <button
                     onClick={handleAISummarize}
                     disabled={isSummarizing || !newMeeting.rawNotes}
                     className={`flex items-center gap-1 text-[10px] px-2 py-0.5 rounded transition-all ${isSummarizing ? 'bg-slate-100 text-slate-400' : 'bg-brand-50 text-brand-600 hover:bg-brand-100 hover:shadow-sm'
                       }`}
                   >
-                    {isSummarizing ? 'Thinking...' : '✨ Summarize with AI'}
+                    {isSummarizing ? 'Thinking...' : `✨ ${meetingsT.summarize}`}
                   </button>
                 </label>
                 <textarea
@@ -513,7 +522,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Final Summary (Logged)</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{meetingsT.summary}</label>
                 <textarea
                   rows={2}
                   value={newMeeting.summary}
@@ -525,16 +534,17 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
             <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
               <button onClick={() => setIsAddMeetingOpen(false)} className="px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
-                Cancel
+                {t.cancel}
               </button>
               <button
                 onClick={handleAddMeeting}
                 disabled={!newMeeting.summary}
                 className="px-6 py-2 bg-brand-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-brand-200 hover:bg-brand-700 transition-all disabled:opacity-50 disabled:shadow-none"
               >
-                Save Interaction
+                {t.saveChanges}
               </button>
             </div>
+
           </div>
         </div>
       )}
