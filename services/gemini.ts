@@ -27,6 +27,7 @@ Fields to extract:
 - type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident", "Hospital Income". Infer from content.
 - extractedTags (array of strings): Keywords like "High Value", "Term", "VHIS", etc.
 - clientBirthday (string): Format YYYY-MM-DD (e.g., "1990-01-01").
+- clientPhone (string): Phone number if available (remove spaces/dashes).
 - paymentMode (string): "Yearly" or "Monthly".
 - riders (array of objects): Extract any rider/supplementary benefits. Each object should have:
     - name (string): Name of the rider.

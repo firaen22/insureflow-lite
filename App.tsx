@@ -192,10 +192,25 @@ const App: React.FC = () => {
 
     // 2. Add/Update Client Locally
     setClients(prev => {
-      const existingClientIndex = prev.findIndex(c =>
-        c.name === policy.holderName &&
-        (!policy.clientBirthday || !c.birthday || c.birthday === policy.clientBirthday)
-      );
+      let existingClientIndex = -1;
+
+      // 1. Try matching by Explicit ID (from dropdown selection)
+      if (policy.clientId) {
+        existingClientIndex = prev.findIndex(c => c.id === policy.clientId);
+      }
+
+      // 2. Fallback: Match by Name and (optional) Birthday
+      if (existingClientIndex === -1) {
+        existingClientIndex = prev.findIndex(c =>
+          c.name === policy.holderName &&
+          (!policy.clientBirthday || !c.birthday || c.birthday === policy.clientBirthday)
+        );
+      }
+
+      // 3. Fallback: Match by exact Phone Number (if provided and valid)
+      if (existingClientIndex === -1 && policy.clientPhone && policy.clientPhone.length > 6) {
+        existingClientIndex = prev.findIndex(c => c.phone.replace(/\D/g, '') === policy.clientPhone?.replace(/\D/g, ''));
+      }
 
       if (existingClientIndex >= 0) {
         const updatedClients = [...prev];
@@ -207,6 +222,7 @@ const App: React.FC = () => {
           totalPolicies: client.totalPolicies + 1,
           lastContact: new Date().toISOString().split('T')[0],
           birthday: policy.clientBirthday || client.birthday,
+          phone: (client.phone === 'Pending' && policy.clientPhone) ? policy.clientPhone : client.phone, // Update phone if pending
           tags: [...new Set([...client.tags, ...(policy.extractedTags || [])])]
         };
         return updatedClients;
@@ -215,7 +231,7 @@ const App: React.FC = () => {
           id: `c-${Date.now()}`,
           name: policy.holderName,
           email: 'pending@email.com',
-          phone: 'Pending',
+          phone: policy.clientPhone || 'Pending',
           birthday: policy.clientBirthday || '1990-01-01',
           totalPolicies: 1,
           lastContact: new Date().toISOString().split('T')[0],
@@ -352,7 +368,6 @@ const App: React.FC = () => {
               products={products}
               onUpdatePolicy={handleUpdatePolicy}
               onDeletePolicy={handleDeletePolicy}
-              onUpdateClient={handleUpdateClient}
               onBack={handleBackToClients}
             />
           )}

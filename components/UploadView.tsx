@@ -553,6 +553,9 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                             const matchedClient = clients.find(c => c.name === val);
                             if (matchedClient) {
                               handleUpdateCurrentField('clientBirthday', matchedClient.birthday);
+                              handleUpdateCurrentField('clientId', matchedClient.id); // Store ID for exact match
+                            } else {
+                              handleUpdateCurrentField('clientId', undefined); // Clear if no match
                             }
                           }}
                           className="w-full p-2 border border-slate-300 rounded-lg text-sm"
@@ -569,288 +572,311 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         )}
                       </div>
                     </div>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Anniversary</label>
+                        <input
+                          type="text"
+                          placeholder="DD/MM"
+                          value={activeItem.data.policyAnniversaryDate}
+                          onChange={e => handleUpdateCurrentField('policyAnniversaryDate', e.target.value)}
+                          className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Phone (Optional Match)</label>
+                        <input
+                          type="tel"
+                          placeholder="+852 1234 5678"
+                          value={activeItem.data.clientPhone || ''}
+                          onChange={e => {
+                            const val = e.target.value;
+                            handleUpdateCurrentField('clientPhone', val);
+                            // Try matching by phone if no name match or just to confirm
+                            if (!activeItem.data.clientId) {
+                              const matched = clients.find(c => c.phone.includes(val) && val.length > 5);
+                              if (matched) {
+                                handleUpdateCurrentField('holderName', matched.name);
+                                handleUpdateCurrentField('clientBirthday', matched.birthday);
+                                handleUpdateCurrentField('clientId', matched.id);
+                              }
+                            }
+                          }}
+                          className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Effective Date */}
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Anniversary</label>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.effectiveDate || 'Effective Date'}</label>
                       <input
-                        type="text"
-                        placeholder="DD/MM"
-                        value={activeItem.data.policyAnniversaryDate}
-                        onChange={e => handleUpdateCurrentField('policyAnniversaryDate', e.target.value)}
+                        type="date"
+                        value={activeItem.data.effectiveDate || ''}
+                        onChange={e => handleUpdateCurrentField('effectiveDate', e.target.value)}
                         className="w-full p-2 border border-slate-300 rounded-lg text-sm"
                       />
                     </div>
-                  </div>
 
-                  {/* Effective Date */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.effectiveDate || 'Effective Date'}</label>
-                    <input
-                      type="date"
-                      value={activeItem.data.effectiveDate || ''}
-                      onChange={e => handleUpdateCurrentField('effectiveDate', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium & Currency</label>
-                      <div className="flex gap-2">
-                        <select
-                          value={activeItem.data.currency || 'HKD'}
-                          onChange={e => handleUpdateCurrentField('currency', e.target.value)}
-                          className="w-20 p-2 border border-slate-300 rounded-lg text-sm bg-white font-medium"
-                        >
-                          <option value="HKD">HKD</option>
-                          <option value="USD">USD</option>
-                        </select>
-                        <div className="relative flex-1">
-                          <span className="absolute left-3 top-2 text-slate-400">$</span>
-                          <input
-                            type="number"
-                            value={activeItem.data.premiumAmount}
-                            onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
-                            className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Frequency</label>
-                      <select
-                        value={activeItem.data.paymentMode}
-                        onChange={e => handleUpdateCurrentField('paymentMode', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
-                      >
-                        <option value="Yearly">Yearly</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Quarterly">Quarterly</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sum Insured / Face Amount</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-2 text-slate-400">$</span>
-                      <input
-                        type="number"
-                        value={activeItem.data.sumInsured || ''}
-                        onChange={e => handleUpdateCurrentField('sumInsured', parseFloat(e.target.value))}
-                        placeholder="0"
-                        className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Multipay Option for Critical Illness */}
-                {activeItem.data.type === 'Critical Illness' && (
-                  <div className="mb-3">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={activeItem.data.isMultipay || false}
-                        onChange={e => handleUpdateCurrentField('isMultipay', e.target.checked)}
-                        className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-                      />
-                      <span className="text-sm text-slate-700 font-medium">Multipay Feature (多重保障)</span>
-                    </label>
-                  </div>
-                )}
-
-                {/* Policy Values Section */}
-                <div className="border-t border-slate-100 pt-4">
-                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-3">Policy Values (Statement)</label>
-                  <div className="grid grid-cols-2 gap-3 mb-3">
-                    <div>
-                      <label className="block text-[10px] text-slate-400 mb-1">Guaranteed Cash Value</label>
-                      <div className="relative">
-                        <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
-                        <input
-                          type="number"
-                          value={activeItem.data.cashValue || ''}
-                          onChange={e => handleUpdateCurrentField('cashValue', parseFloat(e.target.value))}
-                          placeholder="0.00"
-                          className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-slate-400 mb-1">Accumulated Div/Int</label>
-                      <div className="relative">
-                        <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
-                        <input
-                          type="number"
-                          value={activeItem.data.accumulatedDividend || ''}
-                          onChange={e => handleUpdateCurrentField('accumulatedDividend', parseFloat(e.target.value))}
-                          placeholder="0.00"
-                          className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-slate-400 mb-1 font-semibold text-brand-600">Total Surrender Value</label>
-                    <div className="relative">
-                      <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
-                      <input
-                        type="number"
-                        value={activeItem.data.totalCashValue || ''}
-                        onChange={e => handleUpdateCurrentField('totalCashValue', parseFloat(e.target.value))}
-                        placeholder="0.00"
-                        className="w-full pl-5 p-1.5 border border-brand-200 bg-brand-50 rounded text-sm font-semibold text-brand-700"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Riders Section */}
-                <div className="border-t border-slate-100 pt-4">
-                  <div className="flex justify-between items-center mb-3">
-                    <label className="block text-xs font-semibold text-slate-500 uppercase">Riders / Benefits</label>
-                    <button
-                      onClick={handleAddRider}
-                      className="text-xs text-brand-600 font-medium hover:text-brand-700 flex items-center gap-1"
-                    >
-                      <Plus className="w-3 h-3" /> Add Rider
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {activeItem.data.riders?.map((rider, idx) => (
-                      <div key={idx} className="bg-slate-50 p-3 rounded-lg border border-slate-200 relative group">
-                        <button
-                          onClick={() => handleRemoveRider(idx)}
-                          className="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                        <div className="space-y-2">
-                          <input
-                            type="text"
-                            value={rider.name}
-                            onChange={e => handleUpdateRider(idx, 'name', e.target.value)}
-                            placeholder="Rider Name"
-                            className="w-full p-1.5 border border-slate-300 rounded text-sm bg-white"
-                          />
-                          <div className="flex gap-2">
-                            <select
-                              value={rider.type}
-                              onChange={e => handleUpdateRider(idx, 'type', e.target.value)}
-                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
-                            >
-                              <option value="Medical">Medical</option>
-                              <option value="Accident">Accident</option>
-                              <option value="Critical Illness">Critical Illness</option>
-                              <option value="Other">Other</option>
-                            </select>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium & Currency</label>
+                        <div className="flex gap-2">
+                          <select
+                            value={activeItem.data.currency || 'HKD'}
+                            onChange={e => handleUpdateCurrentField('currency', e.target.value)}
+                            className="w-20 p-2 border border-slate-300 rounded-lg text-sm bg-white font-medium"
+                          >
+                            <option value="HKD">HKD</option>
+                            <option value="USD">USD</option>
+                          </select>
+                          <div className="relative flex-1">
+                            <span className="absolute left-3 top-2 text-slate-400">$</span>
                             <input
                               type="number"
-                              value={rider.sumInsured || ''}
-                              onChange={e => handleUpdateRider(idx, 'sumInsured', parseFloat(e.target.value))}
-                              placeholder="Sum Insured"
-                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
-                            />
-                            <input
-                              type="number"
-                              value={rider.premiumAmount}
-                              onChange={e => handleUpdateRider(idx, 'premiumAmount', parseFloat(e.target.value))}
-                              placeholder="Premium"
-                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              value={activeItem.data.premiumAmount}
+                              onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
+                              className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
                             />
                           </div>
                         </div>
                       </div>
-                    ))}
-                    {(!activeItem.data.riders || activeItem.data.riders.length === 0) && (
-                      <p className="text-xs text-slate-400 italic text-center py-2">No riders detected.</p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-2">Tags</label>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {activeItem.data.extractedTags?.map((tag, idx) => (
-                      <span key={idx} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-slate-200">
-                        <Tag className="w-3 h-3" />
-                        {tag}
-                        <button
-                          onClick={() => {
-                            const newTags = activeItem.data?.extractedTags?.filter((_, i) => i !== idx);
-                            handleUpdateCurrentField('extractedTags', newTags);
-                          }}
-                          className="ml-1 text-slate-400 hover:text-red-500"
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Frequency</label>
+                        <select
+                          value={activeItem.data.paymentMode}
+                          onChange={e => handleUpdateCurrentField('paymentMode', e.target.value)}
+                          className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
                         >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={newTagInput}
-                      onChange={e => setNewTagInput(e.target.value)}
-                      placeholder="Add tag..."
-                      className="flex-1 p-1.5 border border-slate-300 rounded text-xs"
-                      onKeyDown={e => {
-                        if (e.key === 'Enter' && newTagInput.trim()) {
-                          handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
-                          setNewTagInput('');
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={() => {
-                        if (newTagInput.trim()) {
-                          handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
-                          setNewTagInput('');
-                        }
-                      }}
-                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded text-xs font-medium"
-                    >
-                      Add
-                    </button>
-                  </div>
-                </div>
+                          <option value="Yearly">Yearly</option>
+                          <option value="Monthly">Monthly</option>
+                          <option value="Quarterly">Quarterly</option>
+                        </select>
+                      </div>
+                    </div>
 
-              </div>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-400">
-                {activeItem.status === UploadStatus.ANALYZING ? (
-                  <>
-                    <Loader2 className="w-10 h-10 mb-4 animate-spin text-brand-300" />
-                    <p>Analyzing document...</p>
-                  </>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sum Insured / Face Amount</label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2 text-slate-400">$</span>
+                        <input
+                          type="number"
+                          value={activeItem.data.sumInsured || ''}
+                          onChange={e => handleUpdateCurrentField('sumInsured', parseFloat(e.target.value))}
+                          placeholder="0"
+                          className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Multipay Option for Critical Illness */}
+                  {activeItem.data.type === 'Critical Illness' && (
+                    <div className="mb-3">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={activeItem.data.isMultipay || false}
+                          onChange={e => handleUpdateCurrentField('isMultipay', e.target.checked)}
+                          className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                        />
+                        <span className="text-sm text-slate-700 font-medium">Multipay Feature (多重保障)</span>
+                      </label>
+                    </div>
+                  )}
+
+                  {/* Policy Values Section */}
+                  <div className="border-t border-slate-100 pt-4">
+                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-3">Policy Values (Statement)</label>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div>
+                        <label className="block text-[10px] text-slate-400 mb-1">Guaranteed Cash Value</label>
+                        <div className="relative">
+                          <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
+                          <input
+                            type="number"
+                            value={activeItem.data.cashValue || ''}
+                            onChange={e => handleUpdateCurrentField('cashValue', parseFloat(e.target.value))}
+                            placeholder="0.00"
+                            className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-slate-400 mb-1">Accumulated Div/Int</label>
+                        <div className="relative">
+                          <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
+                          <input
+                            type="number"
+                            value={activeItem.data.accumulatedDividend || ''}
+                            onChange={e => handleUpdateCurrentField('accumulatedDividend', parseFloat(e.target.value))}
+                            placeholder="0.00"
+                            className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-slate-400 mb-1 font-semibold text-brand-600">Total Surrender Value</label>
+                      <div className="relative">
+                        <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
+                        <input
+                          type="number"
+                          value={activeItem.data.totalCashValue || ''}
+                          onChange={e => handleUpdateCurrentField('totalCashValue', parseFloat(e.target.value))}
+                          placeholder="0.00"
+                          className="w-full pl-5 p-1.5 border border-brand-200 bg-brand-50 rounded text-sm font-semibold text-brand-700"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Riders Section */}
+                  <div className="border-t border-slate-100 pt-4">
+                    <div className="flex justify-between items-center mb-3">
+                      <label className="block text-xs font-semibold text-slate-500 uppercase">Riders / Benefits</label>
+                      <button
+                        onClick={handleAddRider}
+                        className="text-xs text-brand-600 font-medium hover:text-brand-700 flex items-center gap-1"
+                      >
+                        <Plus className="w-3 h-3" /> Add Rider
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {activeItem.data.riders?.map((rider, idx) => (
+                        <div key={idx} className="bg-slate-50 p-3 rounded-lg border border-slate-200 relative group">
+                          <button
+                            onClick={() => handleRemoveRider(idx)}
+                            className="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              value={rider.name}
+                              onChange={e => handleUpdateRider(idx, 'name', e.target.value)}
+                              placeholder="Rider Name"
+                              className="w-full p-1.5 border border-slate-300 rounded text-sm bg-white"
+                            />
+                            <div className="flex gap-2">
+                              <select
+                                value={rider.type}
+                                onChange={e => handleUpdateRider(idx, 'type', e.target.value)}
+                                className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              >
+                                <option value="Medical">Medical</option>
+                                <option value="Accident">Accident</option>
+                                <option value="Critical Illness">Critical Illness</option>
+                                <option value="Other">Other</option>
+                              </select>
+                              <input
+                                type="number"
+                                value={rider.sumInsured || ''}
+                                onChange={e => handleUpdateRider(idx, 'sumInsured', parseFloat(e.target.value))}
+                                placeholder="Sum Insured"
+                                className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              />
+                              <input
+                                type="number"
+                                value={rider.premiumAmount}
+                                onChange={e => handleUpdateRider(idx, 'premiumAmount', parseFloat(e.target.value))}
+                                placeholder="Premium"
+                                className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {(!activeItem.data.riders || activeItem.data.riders.length === 0) && (
+                        <p className="text-xs text-slate-400 italic text-center py-2">No riders detected.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-2">Tags</label>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {activeItem.data.extractedTags?.map((tag, idx) => (
+                        <span key={idx} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-slate-200">
+                          <Tag className="w-3 h-3" />
+                          {tag}
+                          <button
+                            onClick={() => {
+                              const newTags = activeItem.data?.extractedTags?.filter((_, i) => i !== idx);
+                              handleUpdateCurrentField('extractedTags', newTags);
+                            }}
+                            className="ml-1 text-slate-400 hover:text-red-500"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newTagInput}
+                        onChange={e => setNewTagInput(e.target.value)}
+                        placeholder="Add tag..."
+                        className="flex-1 p-1.5 border border-slate-300 rounded text-xs"
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && newTagInput.trim()) {
+                            handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
+                            setNewTagInput('');
+                          }
+                        }}
+                      />
+                      <button
+                        onClick={() => {
+                          if (newTagInput.trim()) {
+                            handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
+                            setNewTagInput('');
+                          }
+                        }}
+                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded text-xs font-medium"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
                 ) : (
-                  <>
-                    <AlertCircle className="w-10 h-10 mb-4 text-red-300" />
-                    <p className="text-red-500 font-medium">Processing Error</p>
-                    <p className="text-sm">{activeItem.error}</p>
-                  </>
-                )}
-              </div>
-            )
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center text-slate-400">
-              <FileText className="w-12 h-12 mb-4 opacity-20" />
-              <p>Select a file from the list to review details</p>
-            </div>
+                <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                  {activeItem.status === UploadStatus.ANALYZING ? (
+                    <>
+                      <Loader2 className="w-10 h-10 mb-4 animate-spin text-brand-300" />
+                      <p>Analyzing document...</p>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="w-10 h-10 mb-4 text-red-300" />
+                      <p className="text-red-500 font-medium">Processing Error</p>
+                      <p className="text-sm">{activeItem.error}</p>
+                    </>
+                  )}
+                </div>
+                )
+                ) : (
+                <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                  <FileText className="w-12 h-12 mb-4 opacity-20" />
+                  <p>Select a file from the list to review details</p>
+                </div>
           )}
-        </div>
+              </div>
       </div>
 
-      {/* Hidden Input for Add More */}
-      <input
-        type="file"
-        multiple
-        ref={fileInputRef}
-        className="hidden"
-        onChange={onFileChange}
-        accept=".pdf,.jpg,.png,.csv"
-      />
-    </div >
-  );
+        {/* Hidden Input for Add More */}
+        <input
+          type="file"
+          multiple
+          ref={fileInputRef}
+          className="hidden"
+          onChange={onFileChange}
+          accept=".pdf,.jpg,.png,.csv"
+        />
+      </div >
+      );
 };

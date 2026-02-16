@@ -22,7 +22,9 @@ export interface PolicyData {
   policyNumber: string;
   planName: string;
   holderName: string;
+  clientId?: string; // Optional: Link to existing client
   clientBirthday?: string; // New field for capturing birthday
+  clientPhone?: string; // New field for capturing phone number
   type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Rider';
   effectiveDate?: string; // New field for effective date
   policyAnniversaryDate: string; // Format: DD/MM
