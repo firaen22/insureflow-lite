@@ -262,7 +262,42 @@ const App: React.FC = () => {
   };
 
   const handleUpdatePolicy = (updatedPolicy: PolicyData) => {
+    // 1. Update Policy State
     setPolicies(prev => prev.map(p => p.id === updatedPolicy.id ? updatedPolicy : p));
+
+    // 2. Sync Tags to Client (Feature: Link client tag to policy tag)
+    if (updatedPolicy.holderName) {
+      setClients(prev => {
+        const clientIndex = prev.findIndex(c => c.name === updatedPolicy.holderName);
+        if (clientIndex === -1) return prev;
+
+        const client = prev[clientIndex];
+        const newTags = new Set(client.tags);
+
+        // Add Policy Type (e.g., Medical, Life)
+        if (updatedPolicy.type) newTags.add(updatedPolicy.type);
+
+        // Add Insurance Company (e.g., Prudential, AIA)
+        if (updatedPolicy.company) newTags.add(updatedPolicy.company);
+
+        // Add Explicitly Extracted Tags from Policy
+        if (updatedPolicy.extractedTags) {
+          updatedPolicy.extractedTags.forEach(t => newTags.add(t));
+        }
+
+        // Only update if tags have changed
+        if (newTags.size === client.tags.length && [...newTags].every(t => client.tags.includes(t))) {
+          return prev;
+        }
+
+        const updatedClients = [...prev];
+        updatedClients[clientIndex] = {
+          ...client,
+          tags: Array.from(newTags)
+        };
+        return updatedClients;
+      });
+    }
   };
 
   const handleDeletePolicy = (policyId: string) => {

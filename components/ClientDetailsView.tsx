@@ -408,6 +408,79 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </div>
                 </div>
 
+                {/* Company Field (New) */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Insurance Company</label>
+                  <input
+                    list="company-options"
+                    type="text"
+                    value={editingPolicy.company || ''}
+                    onChange={e => handleUpdateField('company', e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                    placeholder="e.g. AIA, Prudential"
+                  />
+                  <datalist id="company-options">
+                    <option value="AIA" />
+                    <option value="Prudential" />
+                    <option value="Manulife" />
+                    <option value="Sun Life" />
+                    <option value="FWD" />
+                    <option value="AXA" />
+                    <option value="China Life" />
+                    <option value="HSBC Life" />
+                    <option value="BOC Life" />
+                  </datalist>
+                </div>
+
+                {/* Policy Tags Field (New) */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Policy Tags (Synced to Client)</label>
+                  <div className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      id="policy-tag-input"
+                      className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg"
+                      placeholder="Add tag..."
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = (e.target as HTMLInputElement).value.trim();
+                          if (val && !editingPolicy.extractedTags?.includes(val)) {
+                            handleUpdateField('extractedTags', [...(editingPolicy.extractedTags || []), val]);
+                            (e.target as HTMLInputElement).value = '';
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        const input = document.getElementById('policy-tag-input') as HTMLInputElement;
+                        const val = input.value.trim();
+                        if (val && !editingPolicy.extractedTags?.includes(val)) {
+                          handleUpdateField('extractedTags', [...(editingPolicy.extractedTags || []), val]);
+                          input.value = '';
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 text-xs font-medium"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {editingPolicy.extractedTags?.map((tag, idx) => (
+                      <span key={idx} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                        {tag}
+                        <button
+                          onClick={() => handleUpdateField('extractedTags', editingPolicy.extractedTags?.filter((_, i) => i !== idx))}
+                          className="ml-1.5 opacity-60 hover:opacity-100"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.type}</label>
