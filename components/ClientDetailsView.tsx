@@ -4,7 +4,7 @@ import { Client, PolicyData, Product } from '../types';
 import {
   ArrowLeft, Mail, Phone, Calendar, Clock, Tag,
   Trash2, Edit, Save, X, Plus, ChevronDown,
-  FileText, Layers, Activity, Shield, Printer
+  FileText, Layers, Activity, Shield
 } from 'lucide-react';
 
 interface ClientDetailsViewProps {
@@ -17,6 +17,7 @@ interface ClientDetailsViewProps {
   t: typeof TRANSLATIONS['en']['clientDetails'];
   onGenerateReport?: () => void;
   onUpdateClient: (client: Client) => void;
+  availableTags?: string[];
 }
 
 export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
@@ -28,7 +29,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   products,
   t,
   onGenerateReport,
-  onUpdateClient
+  onUpdateClient,
+  availableTags = []
 }) => {
   const [editingPolicy, setEditingPolicy] = useState<PolicyData | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -147,13 +149,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         </div>
 
         <div className="flex gap-2 print:hidden">
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors shadow-sm text-sm font-medium"
-          >
-            <Printer className="w-4 h-4" />
-            {t.generateReport}
-          </button>
+
 
           {onGenerateReport && (
             <button
@@ -587,14 +583,81 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Tags (Comma separated)</label>
-                <input
-                  type="text"
-                  value={editingClient.tags.join(', ')}
-                  onChange={e => setEditingClient({ ...editingClient, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  placeholder="VIP, Family, etc."
-                />
+                <label className="block text-sm font-medium text-slate-700 mb-1">Tags</label>
+
+                {/* Tag Selection Dropdown */}
+                <div className="relative mb-2">
+                  <select
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white text-slate-700"
+                    value=""
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (val && !editingClient.tags.includes(val)) {
+                        setEditingClient({ ...editingClient, tags: [...editingClient.tags, val] });
+                      }
+                    }}
+                  >
+                    <option value="" disabled>Select a tag...</option>
+                    {availableTags.filter(t => !editingClient.tags.includes(t)).map(tag => (
+                      <option key={tag} value={tag}>{tag}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" />
+                </div>
+
+                {/* Custom Tag Input */}
+                <div className="flex gap-2 mb-3">
+                  <input
+                    type="text"
+                    id="custom-tag-input"
+                    className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-400"
+                    placeholder="Or type custom tag..."
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = (e.target as HTMLInputElement).value.trim();
+                        if (val && !editingClient.tags.includes(val)) {
+                          setEditingClient({ ...editingClient, tags: [...editingClient.tags, val] });
+                          (e.target as HTMLInputElement).value = '';
+                        }
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      const input = document.getElementById('custom-tag-input') as HTMLInputElement;
+                      const val = input.value.trim();
+                      if (val && !editingClient.tags.includes(val)) {
+                        setEditingClient({ ...editingClient, tags: [...editingClient.tags, val] });
+                        input.value = '';
+                      }
+                    }}
+                    className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 text-xs font-medium"
+                  >
+                    Add
+                  </button>
+                </div>
+
+                {/* Selected Tags Display */}
+                <div className="flex flex-wrap gap-2 min-h-[24px]">
+                  {editingClient.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium shadow-sm border bg-slate-100 text-slate-700 border-slate-200"
+                    >
+                      {tag}
+                      <button
+                        onClick={() => setEditingClient({ ...editingClient, tags: editingClient.tags.filter((_, i) => i !== idx) })}
+                        className="ml-1.5 opacity-60 hover:opacity-100 p-0.5 hover:bg-slate-200 rounded-full transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {editingClient.tags.length === 0 && (
+                    <span className="text-slate-400 text-xs italic py-1">No tags selected</span>
+                  )}
+                </div>
               </div>
 
             </div>

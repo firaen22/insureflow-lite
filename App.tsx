@@ -372,6 +372,10 @@ const App: React.FC = () => {
               onDeletePolicy={handleDeletePolicy}
               onBack={handleBackToClients}
               onGenerateReport={() => setCurrentView(AppView.REPORT)}
+              availableTags={Array.from(new Set([
+                ...clients.flatMap(c => c.tags),
+                'Medical', 'Accident', 'Critical Illness', 'Life', 'Home', 'Maid', 'Hospital Income', 'Sunlife', 'Prudential', 'AIA'
+              ]))}
             />
           )}
           {currentView === AppView.REPORT && selectedClient && (

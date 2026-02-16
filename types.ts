@@ -23,6 +23,7 @@ export interface PolicyData {
   planName: string;
   company?: string; // Insurance Company Name
   holderName: string;
+  insuredName?: string; // New field for Insured Name
   clientId?: string; // Optional: Link to existing client
   clientBirthday?: string; // New field for capturing birthday
   clientPhone?: string; // New field for capturing phone number

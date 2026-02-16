@@ -572,6 +572,16 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         )}
                       </div>
                     </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Insured Name</label>
+                      <input
+                        type="text"
+                        value={activeItem.data.insuredName || ''}
+                        onChange={e => handleUpdateCurrentField('insuredName', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        placeholder="If different from holder"
+                      />
+                    </div>
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       <div>
                         <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Anniversary</label>

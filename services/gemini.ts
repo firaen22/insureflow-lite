@@ -21,6 +21,7 @@ Fields to extract:
 - company (string): The name of the insurance company (e.g., AIA, Prudential, Manulife).
 - policyNumber (string): The policy ID/Number.
 - holderName (string): The name of the policyholder.
+- insuredName (string): The name of the insured person (if different from holder).
 - premiumAmount (number): Annual premium amount for the BASIC PLAN only (remove currency symbols). If unsure, use Total Premium.
 - sumInsured (number): The Sum Insured / Face Amount / Principal Amount of the basic plan.
 - policyAnniversaryDate (string): Format DD/MM (e.g., "01/01").
