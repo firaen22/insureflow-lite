@@ -21,6 +21,7 @@ export interface PolicyData {
   id: string;
   policyNumber: string;
   planName: string;
+  company?: string; // Insurance Company Name
   holderName: string;
   clientId?: string; // Optional: Link to existing client
   clientBirthday?: string; // New field for capturing birthday
@@ -84,7 +85,8 @@ export enum AppView {
   CLIENT_DETAILS = 'CLIENT_DETAILS',
   PRODUCTS = 'PRODUCTS',
   REMINDERS = 'REMINDERS',
-  SETTINGS = 'SETTINGS'
+  SETTINGS = 'SETTINGS',
+  REPORT = 'REPORT'
 }
 
 export enum UploadStatus {

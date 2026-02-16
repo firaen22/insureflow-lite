@@ -12,6 +12,8 @@
     "@clerk/clerk-react": "^5.60.0",
     "@types/gapi": "^0.0.47",
     "gapi-script": "^1.2.0",
+    "html-to-image": "^1.11.13",
+    "jspdf": "^4.1.0",
     "lucide-react": "^0.563.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

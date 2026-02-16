@@ -18,6 +18,7 @@ Do NOT wrap the JSON in markdown code blocks (like \`\`\`json). Return ONLY the 
 
 Fields to extract:
 - planName (string): The name of the insurance plan.
+- company (string): The name of the insurance company (e.g., AIA, Prudential, Manulife).
 - policyNumber (string): The policy ID/Number.
 - holderName (string): The name of the policyholder.
 - premiumAmount (number): Annual premium amount for the BASIC PLAN only (remove currency symbols). If unsure, use Total Premium.

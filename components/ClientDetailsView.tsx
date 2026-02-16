@@ -15,6 +15,8 @@ interface ClientDetailsViewProps {
   onUpdatePolicy: (updatedPolicy: PolicyData) => void;
   products: Product[];
   t: typeof TRANSLATIONS['en']['clientDetails'];
+  onGenerateReport?: () => void;
+  onUpdateClient: (client: Client) => void;
 }
 
 export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
@@ -24,9 +26,12 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   onDeletePolicy,
   onUpdatePolicy,
   products,
-  t
+  t,
+  onGenerateReport,
+  onUpdateClient
 }) => {
   const [editingPolicy, setEditingPolicy] = useState<PolicyData | null>(null);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
 
   const handleDeleteClick = (policyId: string) => {
     if (window.confirm(t.deleteConfirm)) {
@@ -128,19 +133,38 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">{client.name}</h1>
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-              <span className="bg-slate-100 px-2 py-0.5 rounded text-xs">ID: {client.id.slice(0, 8)}</span>
-            </div>
+            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+              {client.name}
+              <button
+                onClick={() => setEditingClient(client)}
+                className="p-1 hover:bg-slate-100 rounded-full text-slate-400 hover:text-brand-600 transition-colors"
+                title="Edit Client Details"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+            </h1>
           </div>
         </div>
-        <button
-          onClick={() => window.print()}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors shadow-sm text-sm font-medium print:hidden"
-        >
-          <Printer className="w-4 h-4" />
-          {t.generateReport}
-        </button>
+
+        <div className="flex gap-2 print:hidden">
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors shadow-sm text-sm font-medium"
+          >
+            <Printer className="w-4 h-4" />
+            {t.generateReport}
+          </button>
+
+          {onGenerateReport && (
+            <button
+              onClick={onGenerateReport}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors shadow-sm text-sm font-medium"
+            >
+              <FileText className="w-4 h-4" />
+              <span>PDF Report</span>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -323,182 +347,274 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       </div>
 
       {/* Edit Policy Modal */}
-      {editingPolicy && (
+      {
+        editingPolicy && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
+            <div className="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
+              <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 className="font-bold text-slate-800">{t.editPolicy}</h3>
+                <button
+                  onClick={() => setEditingPolicy(null)}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                {/* Basic Fields */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.basePlan}</label>
+                  <input
+                    list="edit-plan-options"
+                    type="text"
+                    value={editingPolicy.planName}
+                    onChange={e => setEditingPolicy({ ...editingPolicy, planName: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  />
+                  <datalist id="edit-plan-options">
+                    {products.map(p => (
+                      <option key={p.name} value={p.name}>{p.provider} - {p.type}</option>
+                    ))}
+                  </datalist>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.policyNo}</label>
+                    <input
+                      type="text"
+                      value={editingPolicy.policyNumber}
+                      onChange={e => handleUpdateField('policyNumber', e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.type}</label>
+                    <div className="relative">
+                      <select
+                        value={editingPolicy.type}
+                        onChange={e => handleUpdateField('type', e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg appearance-none bg-white"
+                      >
+                        <option value="Life">Life</option>
+                        <option value="Medical">Medical</option>
+                        <option value="Critical Illness">Critical Illness</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Accident">Accident</option>
+                        <option value="Hospital Income">Hospital Income</option>
+                        <option value="Auto">Auto</option>
+                        <option value="Property">Property</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.effectiveDate} (YYYY-MM-DD)</label>
+                    <input
+                      type="date"
+                      value={editingPolicy.effectiveDate || ''}
+                      onChange={e => handleUpdateField('effectiveDate', e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.anniversary} (DD/MM)</label>
+                    <input
+                      type="text"
+                      value={editingPolicy.policyAnniversaryDate}
+                      onChange={e => handleUpdateField('policyAnniversaryDate', e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      placeholder="DD/MM"
+                    />
+                  </div>
+                </div>
+
+                {/* Type Specific Fields */}
+                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-1">
+                    <Activity className="w-3 h-3" /> Plan Details
+                  </h4>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Sum Insured - Generic */}
+                    {['Life', 'Critical Illness', 'Accident'].includes(editingPolicy.type) && (
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.sumInsured}</label>
+                        <input type="number" value={editingPolicy.sumInsured || ''} onChange={e => handleUpdateField('sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                      </div>
+                    )}
+
+                    {/* Medical */}
+                    {editingPolicy.type === 'Medical' && (
+                      <>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.roomType}</label>
+                          <select value={editingPolicy.medicalPlanType || 'Ward'} onChange={e => handleUpdateField('medicalPlanType', e.target.value)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded">
+                            <option value="Ward">Ward</option>
+                            <option value="Semi-Private">Semi-Private</option>
+                            <option value="Private">Private</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.excess}</label>
+                          <input type="number" value={editingPolicy.medicalExcess || ''} onChange={e => handleUpdateField('medicalExcess', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Savings */}
+                    {editingPolicy.type === 'Savings' && (
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.capital}</label>
+                        <input type="number" value={editingPolicy.capitalInvested || ''} onChange={e => handleUpdateField('capitalInvested', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <h5 className="text-[10px] text-slate-400 font-bold uppercase mb-2">Cash Values</h5>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Total Cash Value</label>
+                        <input type="number" value={editingPolicy.totalCashValue || ''} onChange={e => handleUpdateField('totalCashValue', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded bg-white" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Riders */}
+                <div className="pt-2 border-t border-slate-200">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                      <Layers className="w-4 h-4 text-slate-500" /> {t.policyCard.riders}
+                    </label>
+                    <button onClick={handleAddRider} className="text-xs text-brand-600 font-medium flex items-center hover:underline">
+                      <Plus className="w-3 h-3 mr-1" /> Add
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {editingPolicy.riders?.map((rider, idx) => (
+                      <div key={idx} className="flex gap-2 items-start bg-slate-50 p-2 rounded">
+                        <input type="text" value={rider.name} placeholder="Name" onChange={e => handleUpdateRider(idx, 'name', e.target.value)} className="flex-1 px-2 py-1 text-xs border rounded" />
+                        <input type="number" value={rider.premiumAmount} placeholder="Prem" onChange={e => handleUpdateRider(idx, 'premiumAmount', Number(e.target.value))} className="w-16 px-2 py-1 text-xs border rounded" />
+                        <input type="number" value={rider.sumInsured || ''} placeholder="SI" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-20 px-2 py-1 text-xs border rounded" />
+                        <button onClick={() => handleRemoveRider(idx)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    ))}
+                    {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-400 italic">No riders added.</p>}
+                  </div>
+                </div>
+
+              </div>
+
+              <div className="p-5 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button
+                  onClick={() => setEditingPolicy(null)}
+                  className="px-4 py-2 text-slate-600 font-medium hover:text-slate-800"
+                >
+                  {t.cancel}
+                </button>
+                <button
+                  onClick={handleSavePolicy}
+                  className="px-4 py-2 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 shadow-sm flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {t.saveChanges}
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+      {/* Edit Client Modal */}
+      {editingClient && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h3 className="font-bold text-slate-800">{t.editPolicy}</h3>
+              <h3 className="font-bold text-slate-800">Edit Client Details</h3>
               <button
-                onClick={() => setEditingPolicy(null)}
+                onClick={() => setEditingClient(null)}
                 className="text-slate-400 hover:text-slate-600 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-              {/* Basic Fields */}
+            <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.basePlan}</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
                 <input
-                  list="edit-plan-options"
                   type="text"
-                  value={editingPolicy.planName}
-                  onChange={e => setEditingPolicy({ ...editingPolicy, planName: e.target.value })}
+                  value={editingClient.name}
+                  onChange={e => setEditingClient({ ...editingClient, name: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
-                <datalist id="edit-plan-options">
-                  {products.map(p => (
-                    <option key={p.name} value={p.name}>{p.provider} - {p.type}</option>
-                  ))}
-                </datalist>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.policyNo}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
                   <input
                     type="text"
-                    value={editingPolicy.policyNumber}
-                    onChange={e => handleUpdateField('policyNumber', e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                    value={editingClient.phone}
+                    onChange={e => setEditingClient({ ...editingClient, phone: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.type}</label>
-                  <div className="relative">
-                    <select
-                      value={editingPolicy.type}
-                      onChange={e => handleUpdateField('type', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg appearance-none bg-white"
-                    >
-                      <option value="Life">Life</option>
-                      <option value="Medical">Medical</option>
-                      <option value="Critical Illness">Critical Illness</option>
-                      <option value="Savings">Savings</option>
-                      <option value="Accident">Accident</option>
-                      <option value="Hospital Income">Hospital Income</option>
-                      <option value="Auto">Auto</option>
-                      <option value="Property">Property</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.effectiveDate} (YYYY-MM-DD)</label>
-                  <input
-                    type="date"
-                    value={editingPolicy.effectiveDate || ''}
-                    onChange={e => handleUpdateField('effectiveDate', e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.anniversary} (DD/MM)</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Birthday (YYYY-MM-DD)</label>
                   <input
                     type="text"
-                    value={editingPolicy.policyAnniversaryDate}
-                    onChange={e => handleUpdateField('policyAnniversaryDate', e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                    placeholder="DD/MM"
+                    value={editingClient.birthday}
+                    onChange={e => setEditingClient({ ...editingClient, birthday: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
               </div>
 
-              {/* Type Specific Fields */}
-              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                <h4 className="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-1">
-                  <Activity className="w-3 h-3" /> Plan Details
-                </h4>
-
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Sum Insured - Generic */}
-                  {['Life', 'Critical Illness', 'Accident'].includes(editingPolicy.type) && (
-                    <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.sumInsured}</label>
-                      <input type="number" value={editingPolicy.sumInsured || ''} onChange={e => handleUpdateField('sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
-                    </div>
-                  )}
-
-                  {/* Medical */}
-                  {editingPolicy.type === 'Medical' && (
-                    <>
-                      <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.roomType}</label>
-                        <select value={editingPolicy.medicalPlanType || 'Ward'} onChange={e => handleUpdateField('medicalPlanType', e.target.value)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded">
-                          <option value="Ward">Ward</option>
-                          <option value="Semi-Private">Semi-Private</option>
-                          <option value="Private">Private</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.excess}</label>
-                        <input type="number" value={editingPolicy.medicalExcess || ''} onChange={e => handleUpdateField('medicalExcess', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
-                      </div>
-                    </>
-                  )}
-
-                  {/* Savings */}
-                  {editingPolicy.type === 'Savings' && (
-                    <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.capital}</label>
-                      <input type="number" value={editingPolicy.capitalInvested || ''} onChange={e => handleUpdateField('capitalInvested', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-slate-200">
-                  <h5 className="text-[10px] text-slate-400 font-bold uppercase mb-2">Cash Values</h5>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1">Total Cash Value</label>
-                      <input type="number" value={editingPolicy.totalCashValue || ''} onChange={e => handleUpdateField('totalCashValue', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded bg-white" />
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={editingClient.email}
+                  onChange={e => setEditingClient({ ...editingClient, email: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                />
               </div>
 
-              {/* Riders */}
-              <div className="pt-2 border-t border-slate-200">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
-                    <Layers className="w-4 h-4 text-slate-500" /> {t.policyCard.riders}
-                  </label>
-                  <button onClick={handleAddRider} className="text-xs text-brand-600 font-medium flex items-center hover:underline">
-                    <Plus className="w-3 h-3 mr-1" /> Add
-                  </button>
-                </div>
-                <div className="space-y-2">
-                  {editingPolicy.riders?.map((rider, idx) => (
-                    <div key={idx} className="flex gap-2 items-start bg-slate-50 p-2 rounded">
-                      <input type="text" value={rider.name} placeholder="Name" onChange={e => handleUpdateRider(idx, 'name', e.target.value)} className="flex-1 px-2 py-1 text-xs border rounded" />
-                      <input type="number" value={rider.premiumAmount} placeholder="Prem" onChange={e => handleUpdateRider(idx, 'premiumAmount', Number(e.target.value))} className="w-16 px-2 py-1 text-xs border rounded" />
-                      <input type="number" value={rider.sumInsured || ''} placeholder="SI" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-20 px-2 py-1 text-xs border rounded" />
-                      <button onClick={() => handleRemoveRider(idx)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  ))}
-                  {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-400 italic">No riders added.</p>}
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Tags (Comma separated)</label>
+                <input
+                  type="text"
+                  value={editingClient.tags.join(', ')}
+                  onChange={e => setEditingClient({ ...editingClient, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="VIP, Family, etc."
+                />
               </div>
 
             </div>
 
             <div className="p-5 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
               <button
-                onClick={() => setEditingPolicy(null)}
+                onClick={() => setEditingClient(null)}
                 className="px-4 py-2 text-slate-600 font-medium hover:text-slate-800"
               >
-                {t.cancel}
+                Cancel
               </button>
               <button
-                onClick={handleSavePolicy}
+                onClick={() => {
+                  onUpdateClient(editingClient);
+                  setEditingClient(null);
+                }}
                 className="px-4 py-2 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 shadow-sm flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
-                {t.saveChanges}
+                Save Changes
               </button>
             </div>
           </div>

@@ -9,6 +9,7 @@ import { LoginPage } from './components/LoginPage';
 import { RemindersView } from './components/RemindersView';
 import { GoogleSheetsSync } from './components/GoogleSheetsSync';
 import { SettingsView } from './components/SettingsView';
+import { ClientReportView } from './components/ClientReportView';
 import { AppView, Language, Client, PolicyData, Product, AppSettings } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
@@ -367,8 +368,17 @@ const App: React.FC = () => {
               policies={selectedClientPolicies}
               products={products}
               onUpdatePolicy={handleUpdatePolicy}
+              onUpdateClient={handleUpdateClient}
               onDeletePolicy={handleDeletePolicy}
               onBack={handleBackToClients}
+              onGenerateReport={() => setCurrentView(AppView.REPORT)}
+            />
+          )}
+          {currentView === AppView.REPORT && selectedClient && (
+            <ClientReportView
+              client={selectedClient}
+              policies={selectedClientPolicies}
+              onBack={() => setCurrentView(AppView.CLIENT_DETAILS)}
             />
           )}
           {currentView === AppView.REMINDERS && (
