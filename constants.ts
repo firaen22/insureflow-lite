@@ -174,6 +174,17 @@ export const TRANSLATIONS = {
         accidentLimit: 'Accident Medical Limit',
         sectionLimit: 'Section Limit',
         physio: 'Physio Visits/Year'
+      },
+      meetings: {
+        title: 'Meeting Logs',
+        addLog: 'Add Meeting Log',
+        date: 'Date',
+        type: 'Type',
+        summary: 'Summary',
+        notes: 'Rough Notes',
+        summarize: 'AI Summarize',
+        noLogs: 'No meetings logged yet.',
+        deleteConfirm: 'Delete this meeting log?'
       }
     },
     products: {
@@ -362,6 +373,17 @@ export const TRANSLATIONS = {
         accidentLimit: '意外醫療限額',
         sectionLimit: '分項限額',
         physio: '物理治療次數/年'
+      },
+      meetings: {
+        title: '會議記錄',
+        addLog: '新增會議記錄',
+        date: '日期',
+        type: '類型',
+        summary: '總結',
+        notes: '草擬筆記',
+        summarize: 'AI 總結',
+        noLogs: '尚無會議記錄。',
+        deleteConfirm: '確定要刪除此會議記錄嗎？'
       }
     },
     products: {

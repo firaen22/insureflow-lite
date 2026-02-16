@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppView, Language } from '../types';
-import { LayoutDashboard, UploadCloud, Users, Settings, Bell, Menu, Languages, BookOpen } from 'lucide-react';
+import { LayoutDashboard, UploadCloud, Users, Settings, Bell, Menu, Languages, BookOpen, Clock } from 'lucide-react';
 import { TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
@@ -85,6 +85,15 @@ export const Layout: React.FC<LayoutProps> = ({
           >
             <Bell className="w-5 h-5" />
             <span>{t.nav.reminders}</span>
+          </button>
+
+          <button
+            onClick={() => onChangeView(AppView.MEETINGS)}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.MEETINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+          >
+            <Clock className="w-5 h-5" />
+            <span>{t.meetings.title}</span>
           </button>
         </nav>
 

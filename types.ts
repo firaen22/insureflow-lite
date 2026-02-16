@@ -67,6 +67,14 @@ export interface PolicyData {
   accidentPhysioVisits?: number; // Number of times each year
 }
 
+export interface MeetingLog {
+  id: string;
+  date: string; // YYYY-MM-DD
+  type: 'Intro' | 'Policy Review' | 'Claim' | 'Upsell' | 'Other' | 'General';
+  summary: string;
+  rawNotes?: string;
+}
+
 export interface Client {
   id: string;
   name: string;
@@ -74,9 +82,10 @@ export interface Client {
   phone: string;
   birthday: string; // YYYY-MM-DD
   totalPolicies: number;
-  lastContact: string;
+  lastContact: string; // YYYY-MM-DD
   status: 'Active' | 'Lead';
   tags: string[];
+  meetingLogs?: MeetingLog[]; // New field
 }
 
 export enum AppView {
@@ -87,7 +96,8 @@ export enum AppView {
   PRODUCTS = 'PRODUCTS',
   REMINDERS = 'REMINDERS',
   SETTINGS = 'SETTINGS',
-  REPORT = 'REPORT'
+  REPORT = 'REPORT',
+  MEETINGS = 'MEETINGS' // New global view
 }
 
 export enum UploadStatus {

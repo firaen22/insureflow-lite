@@ -10,6 +10,7 @@ import { RemindersView } from './components/RemindersView';
 import { GoogleSheetsSync } from './components/GoogleSheetsSync';
 import { SettingsView } from './components/SettingsView';
 import { ClientReportView } from './components/ClientReportView';
+import { MeetingHubView } from './components/MeetingHubView';
 import { AppView, Language, Client, PolicyData, Product, AppSettings } from './types';
 import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
 
@@ -363,7 +364,7 @@ const App: React.FC = () => {
           ...p,
           planName: masterProduct.name,
           type: masterProduct.type,
-          company: p.company || masterProduct.provider // Use master provider if company is missing
+          company: masterProduct.provider // Always force sync to the master provider for merged products
         };
       }
       return p;
@@ -372,7 +373,9 @@ const App: React.FC = () => {
     // 2. Remove old products from Library
     setProducts(prev => prev.filter(p => !productsToDelete.includes(p.name)));
 
-    alert(`Successfully merged ${productsToDelete.length} duplicates into "${masterProduct.name}". ${policies.filter(p => productsToDelete.includes(p.planName)).length} policies updated.`);
+    // Calculate affected policies for the alert
+    const affectedCount = policies.filter(p => productsToDelete.includes(p.planName)).length;
+    alert(`Merged into "${masterProduct.name}". ${affectedCount} policies updated to match.`);
   };
 
   const selectedClient = clients.find(c => c.id === selectedClientId);
@@ -467,6 +470,13 @@ const App: React.FC = () => {
               clients={clients}
               policies={policies}
               products={products}
+            />
+          )}
+          {currentView === AppView.MEETINGS && (
+            <MeetingHubView
+              t={t.meetings}
+              clients={clients}
+              onViewClient={handleViewClientDetails}
             />
           )}
           <GoogleSheetsSync

@@ -63,27 +63,26 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
   };
 
   const handleScanDuplicates = () => {
-    // Basic scanner: find products with identical names (case insensitive) or very similar
+    // Refined scanner: find products with identical names after normalization (ignoring case, spaces, and special chars)
     const duplicates: string[] = [];
-    const seen = new Set<string>();
+    const seenMap = new Map<string, string[]>();
 
     products.forEach(p => {
-      const normalized = p.name.toLowerCase().replace(/\s+/g, '');
-      products.forEach(other => {
-        if (p.name !== other.name) {
-          const otherNormalized = other.name.toLowerCase().replace(/\s+/g, '');
-          if (normalized === otherNormalized || normalized.includes(otherNormalized) || otherNormalized.includes(normalized)) {
-            duplicates.push(p.name);
-            duplicates.push(other.name);
-          }
-        }
-      });
+      const normalized = p.name.toLowerCase().replace(/[^a-z0-j0-9]/g, '');
+      const existing = seenMap.get(normalized) || [];
+      seenMap.set(normalized, [...existing, p.name]);
+    });
+
+    seenMap.forEach((names) => {
+      if (names.length > 1) {
+        duplicates.push(...names);
+      }
     });
 
     if (duplicates.length > 0) {
       const uniqueDupes = Array.from(new Set(duplicates));
       setSelectedProductNames(uniqueDupes);
-      alert(`Found ${uniqueDupes.length} potential duplicates. They have been selected for you.`);
+      alert(`Found ${uniqueDupes.length} potential duplicates with overlapping names. They have been selected for your review.`);
     } else {
       alert("No obvious duplicates found.");
     }
@@ -298,52 +297,78 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
 
       {/* Merge Confirmation Modal */}
       {isMergeModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 print:hidden">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h3 className="font-bold text-slate-800 flex items-center gap-2">
                 <Layers className="w-5 h-5 text-brand-600" />
-                Merge Products
+                Merge Selection
               </h3>
-              <button onClick={() => setIsMergeModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setIsMergeModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
+
             <div className="p-6 space-y-4">
-              <p className="text-sm text-slate-600">
-                You are merging <strong>{selectedProductNames.length}</strong> products into one. Please select the primary product to keep:
-              </p>
-              <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
+              <div className="text-sm text-slate-600 leading-relaxed">
+                You are merging <strong>{selectedProductNames.length}</strong> products. <br />
+                Which one is the <u>Correct</u> product name/category to keep?
+              </div>
+
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {selectedProductNames.map(name => {
                   const p = products.find(prod => prod.name === name);
+                  const isSelected = masterProductName === name;
                   return (
-                    <label key={name} className={`flex items-center p-3 border rounded-lg cursor-pointer transition-colors ${masterProductName === name ? 'border-brand-500 bg-brand-50' : 'border-slate-200 hover:bg-slate-50'}`}>
-                      <input
-                        type="radio"
-                        name="master-product"
-                        value={name}
-                        checked={masterProductName === name}
-                        onChange={() => setMasterProductName(name)}
-                        className="text-brand-600 focus:ring-brand-500 mr-3"
-                      />
-                      <div className="flex-1">
-                        <div className="font-semibold text-slate-800">{name}</div>
-                        <div className="text-xs text-slate-500">{p?.provider} • {p?.type}</div>
+                    <div
+                      key={name}
+                      onClick={() => setMasterProductName(name)}
+                      className={`group flex items-center p-3 border rounded-xl cursor-pointer transition-all duration-200 ${isSelected
+                        ? 'border-brand-500 bg-brand-50/50 shadow-sm ring-1 ring-brand-500'
+                        : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                        }`}
+                    >
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 transition-colors ${isSelected ? 'border-brand-600 bg-brand-600' : 'border-slate-300 group-hover:border-slate-400'
+                        }`}>
+                        {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
                       </div>
-                    </label>
+                      <div className="flex-1 min-w-0">
+                        <div className={`font-bold truncate ${isSelected ? 'text-brand-950' : 'text-slate-800'}`}>
+                          {name}
+                        </div>
+                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 flex items-center gap-2 mt-0.5">
+                          {p?.provider} <span className="w-1 h-1 bg-slate-200 rounded-full" /> {p?.type}
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
-              <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 flex gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
-                <p className="text-xs text-amber-700">
-                  This action will delete all other selected products and update all existing client policies to match the primary product details.
-                </p>
+
+              <div className="flex items-start gap-3 p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+                <Shield className="w-4 h-4 text-indigo-600 mt-0.5" />
+                <div className="text-xs text-indigo-800 leading-normal">
+                  <strong>Sync Logic:</strong> All data in existing policies (Plan Name, Provider, Category) will be updated to match your selection. This cannot be undone.
+                </div>
               </div>
             </div>
+
             <div className="p-5 bg-slate-50 border-t flex justify-end gap-3">
-              <button onClick={() => setIsMergeModalOpen(false)} className="px-4 py-2 text-slate-600 font-medium">Cancel</button>
-              <button onClick={handleExecuteMerge} className="px-4 py-2 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 shadow-sm">Confirm Merge</button>
+              <button
+                onClick={() => setIsMergeModalOpen(false)}
+                className="px-4 py-2 text-slate-600 font-semibold hover:text-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleExecuteMerge}
+                className="px-6 py-2 bg-slate-900 text-white rounded-lg font-bold hover:bg-black shadow-lg transition-all active:scale-95 flex items-center gap-2"
+              >
+                Merge into "{masterProductName}"
+              </button>
             </div>
           </div>
         </div>

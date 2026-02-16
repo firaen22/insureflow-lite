@@ -1,7 +1,7 @@
 import React from 'react';
 import { TRANSLATIONS } from '../constants';
 import { Client, PolicyData, PaymentMode } from '../types';
-import { Users, FileText, DollarSign, ArrowUpRight, Cake, Bell, AlertCircle, Gift } from 'lucide-react';
+import { Users, FileText, DollarSign, ArrowUpRight, Cake, Bell, AlertCircle, Gift, Clock } from 'lucide-react';
 
 interface DashboardViewProps {
   t: typeof TRANSLATIONS['en']['dashboard'];
@@ -182,6 +182,40 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
         {/* Left Column: Attention & Policies */}
         <div className="lg:col-span-2 space-y-6">
 
+          {/* Stale Contact Reminder Logic */}
+          {(() => {
+            const staleClients = clients.filter(c => {
+              if (!c.lastContact) return true;
+              const lastDate = new Date(c.lastContact);
+              const diff = (new Date().getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+              return diff > 90;
+            }).sort((a, b) => new Date(a.lastContact || 0).getTime() - new Date(b.lastContact || 0).getTime());
+
+            if (staleClients.length === 0) return null;
+
+            return (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="p-2 bg-amber-100 rounded-lg text-amber-600">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-amber-900 font-bold text-sm">Action Needed: Stale Contacts</h3>
+                  <p className="text-amber-700 text-xs mt-1">
+                    {staleClients.length} clients haven't been contacted in over 90 days. Consider reaching out for a review.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {staleClients.slice(0, 5).map(c => (
+                      <span key={c.id} className="bg-white/80 border border-amber-200 px-2 py-1 rounded text-[10px] font-bold text-amber-800">
+                        {c.name} ({Math.ceil((new Date().getTime() - new Date(c.lastContact).getTime()) / (1000 * 60 * 60 * 24))}d)
+                      </span>
+                    ))}
+                    {staleClients.length > 5 && <span className="text-[10px] text-amber-500 font-bold self-center">+{staleClients.length - 5} more</span>}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Attention Section */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
@@ -249,8 +283,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
                       <td className="px-6 py-4 font-medium text-slate-800">{policy.holderName}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-full text-xs ${policy.type === 'Life' ? 'bg-blue-100 text-blue-700' :
-                            policy.type === 'Medical' ? 'bg-green-100 text-green-700' :
-                              'bg-slate-100 text-slate-600'
+                          policy.type === 'Medical' ? 'bg-green-100 text-green-700' :
+                            'bg-slate-100 text-slate-600'
                           }`}>
                           {policy.type}
                         </span>
@@ -259,7 +293,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
                       <td className="px-6 py-4 text-slate-600">{policy.paymentMode}</td>
                       <td className="px-6 py-4 text-right">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${policy.status === 'Active' ? 'bg-green-100 text-green-800' :
-                            policy.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+                          policy.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
                           }`}>
                           {policy.status}
                         </span>

@@ -325,7 +325,7 @@ export const createSpreadsheet = async (title: string): Promise<string> => {
                 data: [
                     {
                         range: 'Clients!A1:Z1',
-                        values: [['ID', 'Name', 'Email', 'Phone', 'Birthday', 'Total Policies', 'Last Contact', 'Status', 'Tags']]
+                        values: [['ID', 'Name', 'Email', 'Phone', 'Birthday', 'Total Policies', 'Last Contact', 'Status', 'Tags', 'Meeting Logs JSON']]
                     },
                     {
                         range: 'Policies!A1:Z1',
@@ -350,7 +350,9 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
     try {
         // Prepare Clients Data
         const clientRows = clients.map(c => [
-            c.id, c.name, c.email, c.phone, c.birthday, c.totalPolicies, c.lastContact, c.status, JSON.stringify(Array.isArray(c.tags) ? c.tags : [])
+            c.id, c.name, c.email, c.phone, c.birthday, c.totalPolicies, c.lastContact, c.status,
+            JSON.stringify(Array.isArray(c.tags) ? c.tags : []),
+            JSON.stringify(c.meetingLogs || [])
         ]);
 
         // Prepare Policies Data
@@ -471,7 +473,8 @@ const parseClient = (row: any): Client => ({
     totalPolicies: Number(row[5]),
     lastContact: row[6],
     status: row[7],
-    tags: safeParseTags(row[8])
+    tags: safeParseTags(row[8]),
+    meetingLogs: JSON.parse(row[9] || '[]')
 });
 
 const parsePolicy = (row: any): PolicyData => {

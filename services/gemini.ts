@@ -248,6 +248,46 @@ const analyzeWithOpenAICompatible = async (file: File, apiKey: string, model: st
     }
 }
 
+export const summarizeMeetingNotes = async (notes: string, apiKey: string): Promise<string> => {
+    const config = getProviderConfig();
+    const model = config.model;
+
+    const prompt = `
+    You are a professional insurance administrative assistant. 
+    Summarize the following rough meeting notes into a concise, professional paragraph for a client log.
+    Focus on key decisions made, follow-up actions, and current sentiment.
+    Keep the output under 300 characters.
+    
+    Rough Notes:
+    ${notes}
+    
+    Professional Summary:
+    `;
+
+    const payload = {
+        contents: [{
+            parts: [{ text: prompt }]
+        }]
+    };
+
+    try {
+        const response = await fetch(`${getGeminiUrl(model)}?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`AI Error: ${response.statusText}`);
+
+        const result = await response.json();
+        const textResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        return textResponse?.trim() || "Failed to summarize.";
+    } catch (e) {
+        console.error("Meeting summarization failed", e);
+        return "Failed to summarize notes due to AI error.";
+    }
+};
+
 const fileToGenerativePart = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
