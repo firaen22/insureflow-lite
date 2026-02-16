@@ -23,7 +23,8 @@ Fields to extract:
 - premiumAmount (number): Annual premium amount for the BASIC PLAN only (remove currency symbols). If unsure, use Total Premium.
 - sumInsured (number): The Sum Insured / Face Amount / Principal Amount of the basic plan.
 - policyAnniversaryDate (string): Format DD/MM (e.g., "01/01").
-- type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident". Infer from content.
+- effectiveDate (string): The policy effective date, Format YYYY-MM-DD.
+- type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident", "Hospital Income". Infer from content.
 - extractedTags (array of strings): Keywords like "High Value", "Term", "VHIS", etc.
 - clientBirthday (string): Format YYYY-MM-DD (e.g., "1990-01-01").
 - paymentMode (string): "Yearly" or "Monthly".

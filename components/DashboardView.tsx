@@ -1,7 +1,7 @@
 import React from 'react';
 import { TRANSLATIONS } from '../constants';
 import { Client, PolicyData, PaymentMode } from '../types';
-import { Users, FileText, DollarSign, ArrowUpRight, Cake, Bell, AlertCircle } from 'lucide-react';
+import { Users, FileText, DollarSign, ArrowUpRight, Cake, Bell, AlertCircle, Gift } from 'lucide-react';
 
 interface DashboardViewProps {
   t: typeof TRANSLATIONS['en']['dashboard'];
@@ -89,11 +89,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
   }).sort((a, b) => a.nextDueDate.getTime() - b.nextDueDate.getTime());
 
   // Calculate stats
+  // FIX: Convert to HKD for unified display
+  const totalPremiumHKD = policies.filter(p => p.status === 'Active').reduce((sum, p) => {
+    let amount = p.premiumAmount || 0;
+    if (p.currency === 'USD') {
+      amount = amount * 7.8;
+    }
+    return sum + amount;
+  }, 0);
+
+  // Group by currency (keeping raw for detail view if needed, but main stat is HKD)
   const totalByCurrency = policies.reduce((acc, p) => {
     const c = p.currency || 'HKD';
     acc[c] = (acc[c] || 0) + p.premiumAmount;
     return acc;
   }, {} as Record<string, number>);
+
   const activePoliciesCount = policies.filter(p => p.status === 'Active').length;
 
   return (
@@ -142,13 +153,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
           </div>
           <p className="text-slate-500 text-sm font-medium">{t.premiumRevenue}</p>
           <div className="flex flex-col gap-1">
-            {Object.entries(totalByCurrency).length > 0 ? (
-              Object.entries(totalByCurrency).map(([c, v]) => (
-                <h3 key={c} className="text-xl font-bold text-slate-800">{c} ${(v / 1000).toFixed(1)}k</h3>
-              ))
-            ) : (
-              <h3 className="text-2xl font-bold text-slate-800">$0.0k</h3>
-            )}
+            <h3 className="text-2xl font-bold text-slate-800">
+              HKD ${(totalPremiumHKD / 1000).toFixed(1)}k
+            </h3>
+            <div className="text-xs text-slate-400">
+              {Object.entries(totalByCurrency).map(([c, v]) => `${c} $${(v / 1000).toFixed(1)}k`).join(' + ')}
+            </div>
           </div>
         </div>
 
@@ -166,122 +176,147 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
         </div>
       </div>
 
-      {/* Reminders Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Premium Reminders */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-96">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-red-500" />
-              {t.premiumsDue}
-            </h3>
-            <span className="text-xs font-semibold bg-red-50 text-red-600 px-2 py-1 rounded-full">
-              {duePolicies.length}
-            </span>
-          </div>
-          <div className="p-4 overflow-y-auto flex-1 space-y-3">
-            {duePolicies.length > 0 ? duePolicies.map(policy => (
-              <div key={policy.id} className="flex items-start p-3 bg-slate-50 rounded-lg border border-slate-100 transition-colors hover:bg-slate-100">
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-slate-800">{policy.holderName}</p>
-                  <p className="text-xs text-slate-500">{policy.planName}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-600">{policy.paymentMode}</span>
-                    <span className="text-xs font-medium text-red-600">Due {policy.nextDueDate.toLocaleDateString()}</span>
-                  </div>
+        {/* Left Column: Attention & Policies */}
+        <div className="lg:col-span-2 space-y-6">
+
+          {/* Attention Section */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-red-500" />
+                {t.premiumsDue}
+              </h3>
+              {duePolicies.length > 0 && (
+                <span className="text-xs font-semibold bg-red-50 text-red-600 px-2 py-1 rounded-full">
+                  {duePolicies.length}
+                </span>
+              )}
+            </div>
+            <div className="p-4">
+              {duePolicies.length > 0 ? (
+                <div className="space-y-3">
+                  {duePolicies.map(policy => (
+                    <div key={policy.id} className="flex items-start p-3 bg-slate-50 rounded-lg border border-slate-100 transition-colors hover:bg-slate-100">
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-slate-800">{policy.holderName}</p>
+                        <p className="text-xs text-slate-500">{policy.planName}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-600">{policy.paymentMode}</span>
+                          <span className="text-xs font-medium text-red-600">Due {policy.nextDueDate.toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-slate-900">
+                          <span className="text-xs font-normal text-gray-500 mr-1">{policy.currency || 'HKD'}</span>
+                          ${policy.premiumAmount.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-slate-900">
-                    <span className="text-xs font-normal text-gray-500 mr-1">{policy.currency || 'HKD'}</span>
-                    ${policy.premiumAmount}
-                  </p>
+              ) : (
+                <div className="text-center py-8 text-slate-400">
+                  <p>{t.noPremiums}</p>
                 </div>
-              </div>
-            )) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-400">
-                <p>{t.noPremiums}</p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
+
+          {/* Recent Policies Table */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-slate-200">
+              <h3 className="text-lg font-bold text-slate-800">{t.recentUpdates}</h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-slate-50 text-slate-500 font-medium">
+                  <tr>
+                    <th className="px-6 py-3">{t.table.policyNo}</th>
+                    <th className="px-6 py-3">{t.table.holder}</th>
+                    <th className="px-6 py-3">{t.table.type}</th>
+                    <th className="px-6 py-3">{t.table.anniversary}</th>
+                    <th className="px-6 py-3">{t.table.mode}</th>
+                    <th className="px-6 py-3 text-right">{t.table.status}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {policies.slice(0, 10).map((policy) => (
+                    <tr key={policy.id} className="hover:bg-slate-50">
+                      <td className="px-6 py-4 font-mono text-slate-600">{policy.policyNumber}</td>
+                      <td className="px-6 py-4 font-medium text-slate-800">{policy.holderName}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 rounded-full text-xs ${policy.type === 'Life' ? 'bg-blue-100 text-blue-700' :
+                            policy.type === 'Medical' ? 'bg-green-100 text-green-700' :
+                              'bg-slate-100 text-slate-600'
+                          }`}>
+                          {policy.type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-slate-600">{policy.policyAnniversaryDate}</td>
+                      <td className="px-6 py-4 text-slate-600">{policy.paymentMode}</td>
+                      <td className="px-6 py-4 text-right">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${policy.status === 'Active' ? 'bg-green-100 text-green-800' :
+                            policy.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                          {policy.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
 
-        {/* Birthday Reminders */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-96">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <Cake className="w-5 h-5 text-brand-500" />
-              {t.birthdays}
-            </h3>
-            <span className="text-xs font-semibold bg-brand-50 text-brand-600 px-2 py-1 rounded-full">
-              {upcomingBirthdays.length}
-            </span>
-          </div>
-          <div className="p-4 overflow-y-auto flex-1 space-y-3">
-            {upcomingBirthdays.length > 0 ? upcomingBirthdays.map(client => {
-              const age = new Date().getFullYear() - new Date(client.birthday).getFullYear();
+        {/* Right Column: Birthdays */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-96">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <Gift className="w-5 h-5 text-pink-500" />
+                {t.birthdays}
+              </h3>
+              <span className="text-xs font-semibold bg-pink-50 text-pink-600 px-2 py-1 rounded-full">
+                {upcomingBirthdays.length}
+              </span>
+            </div>
+            <div className="p-4 overflow-y-auto flex-1 space-y-3">
+              {upcomingBirthdays.length > 0 ? upcomingBirthdays.map(client => {
+                const age = new Date().getFullYear() - new Date(client.birthday).getFullYear();
 
-              return (
-                <div key={client.id} className="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100 transition-colors hover:bg-slate-100">
-                  <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold mr-3">
-                    {client.name.charAt(0)}
+                return (
+                  <div key={client.id} className="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100 transition-colors hover:bg-slate-100">
+                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold mr-3">
+                      {client.name.charAt(0)}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-slate-800">{client.name}</p>
+                      <p className="text-xs text-slate-500">Turning {age} on {new Date(client.birthday).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+                    </div>
+                    <button className="text-xs bg-white border border-pink-200 text-pink-600 px-3 py-1.5 rounded-md hover:bg-pink-50 font-medium transition-colors">
+                      {t.sendWish}
+                    </button>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-800">{client.name}</p>
-                    <p className="text-xs text-slate-500">Turning {age} on {new Date(client.birthday).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
-                  </div>
-                  <button className="text-xs bg-white border border-brand-200 text-brand-600 px-3 py-1.5 rounded-md hover:bg-brand-50 font-medium transition-colors">
-                    {t.sendWish}
-                  </button>
+                );
+              }) : (
+                <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                  <p>{t.noBirthdays}</p>
                 </div>
-              );
-            }) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-400">
-                <p>{t.noBirthdays}</p>
-              </div>
-            )}
+              )}
+            </div>
+            <div className="p-4 border-t border-slate-100 bg-slate-50">
+              <button className="w-full py-2 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                {t.viewCalendar}
+              </button>
+            </div>
           </div>
         </div>
 
-      </div>
-
-      {/* Recent Policies Table (Simple) */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-200">
-          <h3 className="text-lg font-bold text-slate-800">{t.recentUpdates}</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-slate-50 text-slate-500 font-medium">
-              <tr>
-                <th className="px-6 py-3">{t.table.policyNo}</th>
-                <th className="px-6 py-3">{t.table.holder}</th>
-                <th className="px-6 py-3">{t.table.type}</th>
-                <th className="px-6 py-3">{t.table.anniversary}</th>
-                <th className="px-6 py-3">{t.table.mode}</th>
-                <th className="px-6 py-3">{t.table.status}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200">
-              {policies.map((policy) => (
-                <tr key={policy.id} className="hover:bg-slate-50">
-                  <td className="px-6 py-4 font-medium text-slate-900">{policy.policyNumber}</td>
-                  <td className="px-6 py-4 text-slate-600">{policy.holderName}</td>
-                  <td className="px-6 py-4 text-slate-600">{policy.type}</td>
-                  <td className="px-6 py-4 text-slate-600">{policy.policyAnniversaryDate}</td>
-                  <td className="px-6 py-4 text-slate-600">{policy.paymentMode}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${policy.status === 'Active' ? 'bg-green-100 text-green-800' :
-                      policy.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                      {policy.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   );

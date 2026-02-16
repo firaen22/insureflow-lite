@@ -6,7 +6,7 @@ export type PaymentMode = 'Yearly' | 'Half-Yearly' | 'Quarterly' | 'Monthly';
 export interface Product {
   name: string;
   provider: string;
-  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Rider';
+  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Rider';
   defaultTags: string[];
 }
 
@@ -23,7 +23,8 @@ export interface PolicyData {
   planName: string;
   holderName: string;
   clientBirthday?: string; // New field for capturing birthday
-  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Rider';
+  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Rider';
+  effectiveDate?: string; // New field for effective date
   policyAnniversaryDate: string; // Format: DD/MM
   maturityDate?: string; // YYYY-MM-DD (New field)
   paymentMode: PaymentMode;

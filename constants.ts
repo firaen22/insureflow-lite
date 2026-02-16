@@ -113,7 +113,8 @@ export const TRANSLATIONS = {
         newProduct: 'New Product',
         newProductDesc: 'This plan is not in the library. Saving this policy will record it for future auto-tagging.',
         noTags: 'No library tags found.',
-        emptyState: 'Upload a document to see extracted details here.'
+        emptyState: 'Upload a document to see extracted details here.',
+        effectiveDate: 'Effective Date (YYYY-MM-DD)'
       }
     },
     clients: {
@@ -161,6 +162,7 @@ export const TRANSLATIONS = {
         premium: 'Premium',
         riders: 'Riders & Supplementary',
         type: 'Type',
+        effectiveDate: 'Effective Date',
         // Specifics
         roomType: 'Room Type',
         excess: 'Medical Excess',
@@ -298,7 +300,8 @@ export const TRANSLATIONS = {
         newProduct: '新產品',
         newProductDesc: '此計劃不在產品庫中。儲存此保單將記錄以供未來自動標記。',
         noTags: '未找到產品庫標籤。',
-        emptyState: '上傳文件以在此處查看提取詳情。'
+        emptyState: '上傳文件以在此處查看提取詳情。',
+        effectiveDate: '生效日期 (YYYY-MM-DD)'
       }
     },
     clients: {
@@ -346,6 +349,7 @@ export const TRANSLATIONS = {
         premium: '保費',
         riders: '附約及附加利益',
         type: '類型',
+        effectiveDate: '生效日期',
         // Specifics
         roomType: '病房級別',
         excess: '醫療自負額',
@@ -513,5 +517,18 @@ export const RECENT_POLICIES: PolicyData[] = [
     status: 'Active',
     sumInsured: 500000,
     isMultipay: true
+  },
+  {
+    id: 'p5',
+    policyNumber: 'POL-HI-999',
+    planName: 'Daily Cash Income',
+    holderName: 'Alice Johnson',
+    type: 'Hospital Income',
+    policyAnniversaryDate: '01/06',
+    paymentMode: 'Yearly',
+    currency: 'HKD',
+    premiumAmount: 800,
+    status: 'Active',
+    effectiveDate: '2024-06-01'
   }
 ];

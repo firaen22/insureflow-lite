@@ -329,7 +329,7 @@ const App: React.FC = () => {
             <DashboardView t={t.dashboard} clients={clients} policies={policies} />
           )}
           {currentView === AppView.UPLOAD && (
-            <UploadView t={t.upload} products={products} onSave={handleSavePolicy} />
+            <UploadView t={t.upload} products={products} onSave={handleSavePolicy} clients={clients} />
           )}
           {currentView === AppView.CLIENTS && (
             <ClientsView

@@ -4,9 +4,12 @@ import { Upload, FileText, CheckCircle, Loader2, AlertCircle, X, ShieldCheck, Pe
 import { UploadStatus, PolicyData, Product, Rider } from '../types';
 import { TRANSLATIONS } from '../constants';
 
+import { Client } from '../types';
+
 interface UploadViewProps {
   t: typeof TRANSLATIONS['en']['upload'];
   products: Product[];
+  clients: Client[];
   onSave: (data: PolicyData, isNewProduct: boolean) => void;
 }
 
@@ -19,7 +22,7 @@ interface ProcessedFile {
   isNewProduct?: boolean;
 }
 
-export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) => {
+export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, onSave }) => {
   // Mode: 'upload' (dropzone) or 'review' (validation table)
   const [viewMode, setViewMode] = useState<'upload' | 'review'>('upload');
 
@@ -142,7 +145,9 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
             sumInsured: aiResult.sumInsured || 0,
             cashValue: aiResult.cashValue || 0,
             accumulatedDividend: aiResult.accumulatedDividend || 0,
-            totalCashValue: aiResult.totalCashValue || 0
+            totalCashValue: aiResult.totalCashValue || 0,
+            effectiveDate: aiResult.effectiveDate || '',
+            medicalPlanType: (aiResult.medicalPlanType as any) || undefined
           };
 
           resolve({
@@ -513,19 +518,56 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                         <option value="Savings">Savings</option>
                         <option value="Critical Illness">Critical Illness</option>
                         <option value="Accident">Accident</option>
+                        <option value="Hospital Income">Hospital Income</option>
                       </select>
                     </div>
                   </div>
 
+                  {/* Medical Plan Type Specifics */}
+                  {activeItem.data.type === 'Medical' && (
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                      <label className="block text-xs font-semibold text-blue-700 uppercase mb-1">Medical Plan Type</label>
+                      <select
+                        value={activeItem.data.medicalPlanType || 'Ward'}
+                        onChange={e => handleUpdateCurrentField('medicalPlanType', e.target.value)}
+                        className="w-full p-2 border border-blue-200 rounded-lg text-sm bg-white focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="Ward">Ward</option>
+                        <option value="Semi-Private">Semi-Private</option>
+                        <option value="Private">Private</option>
+                      </select>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Holder Name</label>
-                      <input
-                        type="text"
-                        value={activeItem.data.holderName}
-                        onChange={e => handleUpdateCurrentField('holderName', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
-                      />
+                      <div className="relative">
+                        <input
+                          list="client-list"
+                          type="text"
+                          value={activeItem.data.holderName}
+                          onChange={e => {
+                            const val = e.target.value;
+                            handleUpdateCurrentField('holderName', val);
+                            const matchedClient = clients.find(c => c.name === val);
+                            if (matchedClient) {
+                              handleUpdateCurrentField('clientBirthday', matchedClient.birthday);
+                            }
+                          }}
+                          className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                        <datalist id="client-list">
+                          {clients.map(c => (
+                            <option key={c.id} value={c.name}>{c.name} ({c.phone})</option>
+                          ))}
+                        </datalist>
+                        {clients.find(c => c.name === activeItem.data.holderName) && (
+                          <div className="absolute right-2 top-2 text-xs text-green-600 font-medium flex items-center bg-green-50 px-1 rounded">
+                            {clients.find(c => c.name === activeItem.data.holderName)?.phone}
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Anniversary</label>
@@ -537,6 +579,17 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
                         className="w-full p-2 border border-slate-300 rounded-lg text-sm"
                       />
                     </div>
+                  </div>
+
+                  {/* Effective Date */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.effectiveDate || 'Effective Date'}</label>
+                    <input
+                      type="date"
+                      value={activeItem.data.effectiveDate || ''}
+                      onChange={e => handleUpdateCurrentField('effectiveDate', e.target.value)}
+                      className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -703,13 +756,48 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, onSave }) =
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 uppercase mb-2">Tags</label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mb-2">
                     {activeItem.data.extractedTags?.map((tag, idx) => (
                       <span key={idx} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-slate-200">
                         <Tag className="w-3 h-3" />
                         {tag}
+                        <button
+                          onClick={() => {
+                            const newTags = activeItem.data?.extractedTags?.filter((_, i) => i !== idx);
+                            handleUpdateCurrentField('extractedTags', newTags);
+                          }}
+                          className="ml-1 text-slate-400 hover:text-red-500"
+                        >
+                          ×
+                        </button>
                       </span>
                     ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newTagInput}
+                      onChange={e => setNewTagInput(e.target.value)}
+                      placeholder="Add tag..."
+                      className="flex-1 p-1.5 border border-slate-300 rounded text-xs"
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && newTagInput.trim()) {
+                          handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
+                          setNewTagInput('');
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        if (newTagInput.trim()) {
+                          handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
+                          setNewTagInput('');
+                        }
+                      }}
+                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded text-xs font-medium"
+                    >
+                      Add
+                    </button>
                   </div>
                 </div>
 

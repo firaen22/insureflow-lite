@@ -350,7 +350,7 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
     try {
         // Prepare Clients Data
         const clientRows = clients.map(c => [
-            c.id, c.name, c.email, c.phone, c.birthday, c.totalPolicies, c.lastContact, c.status, JSON.stringify(c.tags)
+            c.id, c.name, c.email, c.phone, c.birthday, c.totalPolicies, c.lastContact, c.status, JSON.stringify(Array.isArray(c.tags) ? c.tags : [])
         ]);
 
         // Prepare Policies Data
@@ -446,6 +446,22 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
     }
 };
 
+const safeParseTags = (val: any): string[] => {
+    if (!val) return [];
+    try {
+        const parsed = JSON.parse(val);
+        if (Array.isArray(parsed)) return parsed;
+        return [];
+    } catch (e) {
+        // Fallback for manual CSV entry if needed, or just warn
+        if (typeof val === 'string' && val.includes(',')) {
+            return val.split(',').map(s => s.trim());
+        }
+        console.warn("Failed to parse tags:", val);
+        return [];
+    }
+};
+
 const parseClient = (row: any): Client => ({
     id: row[0],
     name: row[1],
@@ -455,7 +471,7 @@ const parseClient = (row: any): Client => ({
     totalPolicies: Number(row[5]),
     lastContact: row[6],
     status: row[7],
-    tags: JSON.parse(row[8] || '[]')
+    tags: safeParseTags(row[8])
 });
 
 const parsePolicy = (row: any): PolicyData => {
