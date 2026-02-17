@@ -302,6 +302,12 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                   <tr>
                     <th className="px-4 py-3 min-w-[100px]">{t.policyCard.type}</th>
+                    <th className="px-4 py-3 min-w-[120px]">
+                      <div className="flex flex-col">
+                        <span>{t.policyCard.effectiveDate}</span>
+                        <span className="text-[10px] font-normal text-slate-400 uppercase">{t.policyCard.anniversary}</span>
+                      </div>
+                    </th>
                     <th className="px-4 py-3 min-w-[150px]">{t.policyCard.basePlan}</th>
                     <th className="px-4 py-3">{t.policyCard.sumInsured}</th>
                     <th className="px-4 py-3 text-right">{t.policyCard.premium}</th>
@@ -323,13 +329,20 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             }`}>
                             {policy.type}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-mono">{policy.effectiveDate || policy.policyAnniversaryDate}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 align-top whitespace-nowrap">
+                        <div className="flex flex-col text-xs text-slate-600">
+                          {policy.effectiveDate && (
+                            <span className="font-medium text-slate-700">Eff: {policy.effectiveDate}</span>
+                          )}
+                          <span className="text-slate-400">Ann: {policy.policyAnniversaryDate}</span>
                         </div>
                       </td>
                       <td className="px-4 py-4 align-top">
                         <div className="font-bold text-slate-800">{policy.planName}</div>
                         <div className="text-xs font-mono text-slate-500 mt-0.5">{policy.policyNumber}</div>
-                        {policy.insuredName && policy.insuredName !== client.name && (
+                        {policy.insuredName && (
                           <div className="text-[10px] bg-slate-100 text-slate-600 px-1.5 rounded mt-1 inline-flex items-center gap-1 border border-slate-200" title="Insured Person">
                             <Shield className="w-3 h-3" /> Insured: {policy.insuredName}
                           </div>
@@ -388,7 +401,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     </tr>
                   )) : (
                     <tr>
-                      <td colSpan={7} className="px-4 py-12 text-center text-slate-400">
+                      <td colSpan={8} className="px-4 py-12 text-center text-slate-400">
                         {t.noPolicies}
                       </td>
                     </tr>
