@@ -126,7 +126,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   };
 
   // --- Calculations for Summary ---
-  const isClientInsured = (p: PolicyData) => !p.insuredName || p.insuredName.trim() === '' || p.insuredName === client.name;
+  const isClientInsured = (p: PolicyData) => {
+    const pName = p.insuredName?.trim().toLowerCase();
+    const cName = client.name.trim().toLowerCase();
+    return !pName || pName === '' || pName === cName;
+  };
 
   const totalAnnualPremiumHKD = policies.reduce((sum, p) => {
     let amount = p.premiumAmount || 0;
@@ -342,7 +346,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <td className="px-4 py-4 align-top">
                         <div className="font-bold text-slate-800">{policy.planName}</div>
                         <div className="text-xs font-mono text-slate-500 mt-0.5">{policy.policyNumber}</div>
-                        {policy.insuredName && (
+                        {!isClientInsured(policy) && (
                           <div className="text-[10px] bg-slate-100 text-slate-600 px-1.5 rounded mt-1 inline-flex items-center gap-1 border border-slate-200" title="Insured Person">
                             <Shield className="w-3 h-3" /> Insured: {policy.insuredName}
                           </div>

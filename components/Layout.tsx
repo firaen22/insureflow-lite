@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppView, Language } from '../types';
-import { LayoutDashboard, UploadCloud, Users, Settings, Bell, Menu, Languages, BookOpen, Clock } from 'lucide-react';
+import { LayoutDashboard, UploadCloud, Users, Settings, Bell, Menu, Languages, BookOpen, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
@@ -23,6 +23,7 @@ export const Layout: React.FC<LayoutProps> = ({
   syncStatus
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden relative">
@@ -36,75 +37,93 @@ export const Layout: React.FC<LayoutProps> = ({
 
       {/* Sidebar */}
       <aside className={`
-        fixed md:static inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex-col transition-transform duration-300 md:translate-x-0
-        ${isMobileMenuOpen ? 'translate-x-0 flex' : '-translate-x-full md:flex hidden'}
+        fixed md:static inset-y-0 left-0 z-50 bg-slate-900 text-white flex flex-col transition-all duration-300
+        ${isMobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'}
+        ${isCollapsed ? 'md:w-20' : 'md:w-64'}
       `}>
 
+        {/* Brand Area / Toggle */}
+        <div className={`h-16 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-6'} border-b border-slate-800 transition-all`}>
+          {!isCollapsed && <span className="text-lg font-bold truncate transition-opacity">{t.nav.brand}</span>}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          >
+            {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+          </button>
+        </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
           <button
             onClick={() => onChangeView(AppView.DASHBOARD)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.DASHBOARD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.DASHBOARD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
+            title={isCollapsed ? t.nav.dashboard : ''}
           >
-            <LayoutDashboard className="w-5 h-5" />
-            <span>{t.nav.dashboard}</span>
+            <LayoutDashboard className="w-5 h-5 min-w-[20px]" />
+            {!isCollapsed && <span className="ml-3 truncate">{t.nav.dashboard}</span>}
           </button>
 
           <button
             onClick={() => onChangeView(AppView.UPLOAD)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.UPLOAD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.UPLOAD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
+            title={isCollapsed ? t.nav.upload : ''}
           >
-            <UploadCloud className="w-5 h-5" />
-            <span>{t.nav.upload}</span>
+            <UploadCloud className="w-5 h-5 min-w-[20px]" />
+            {!isCollapsed && <span className="ml-3 truncate">{t.nav.upload}</span>}
           </button>
 
           <button
             onClick={() => onChangeView(AppView.CLIENTS)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.CLIENTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.CLIENTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
+            title={isCollapsed ? t.nav.clients : ''}
           >
-            <Users className="w-5 h-5" />
-            <span>{t.nav.clients}</span>
+            <Users className="w-5 h-5 min-w-[20px]" />
+            {!isCollapsed && <span className="ml-3 truncate">{t.nav.clients}</span>}
           </button>
 
           <button
             onClick={() => onChangeView(AppView.PRODUCTS)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.PRODUCTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.PRODUCTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
+            title={isCollapsed ? t.nav.products : ''}
           >
-            <BookOpen className="w-5 h-5" />
-            <span>{t.nav.products}</span>
+            <BookOpen className="w-5 h-5 min-w-[20px]" />
+            {!isCollapsed && <span className="ml-3 truncate">{t.nav.products}</span>}
           </button>
 
           <button
             onClick={() => onChangeView(AppView.REMINDERS)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.REMINDERS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.REMINDERS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
+            title={isCollapsed ? t.nav.reminders : ''}
           >
-            <Bell className="w-5 h-5" />
-            <span>{t.nav.reminders}</span>
+            <Bell className="w-5 h-5 min-w-[20px]" />
+            {!isCollapsed && <span className="ml-3 truncate">{t.nav.reminders}</span>}
           </button>
 
           <button
             onClick={() => onChangeView(AppView.MEETINGS)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.MEETINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.MEETINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
+            title={isCollapsed ? t.meetings.title : ''}
           >
-            <Clock className="w-5 h-5" />
-            <span>{t.meetings.title}</span>
+            <Clock className="w-5 h-5 min-w-[20px]" />
+            {!isCollapsed && <span className="ml-3 truncate">{t.meetings.title}</span>}
           </button>
         </nav>
 
         <div className="p-4 border-t border-slate-800">
           <button
             onClick={() => onChangeView(AppView.SETTINGS)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${currentView === AppView.SETTINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.SETTINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
+            title={isCollapsed ? t.nav.settings : ''}
           >
-            <Settings className="w-5 h-5" />
-            <span>{t.nav.settings}</span>
+            <Settings className="w-5 h-5 min-w-[20px]" />
+            {!isCollapsed && <span className="ml-3 truncate">{t.nav.settings}</span>}
           </button>
         </div>
       </aside>
