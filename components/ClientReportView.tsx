@@ -151,7 +151,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         <div className="col-span-1">Effective</div>
                                         <div className="col-span-1">Term</div>
                                         <div className="col-span-1">Status</div>
-                                        <div className="col-span-1">Role</div>
+                                        <div className="col-span-1">Insured</div>
                                     </div>
                                 </div>
 
@@ -193,7 +193,9 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                             <div className="col-span-1 text-center">
                                                 <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px]">Active</span>
                                             </div>
-                                            <div className="col-span-1 text-center text-[10px]">Self</div>
+                                            <div className="col-span-1 text-center text-[10px] truncate" title={policy.insuredName || policy.holderName || 'Self'}>
+                                                {policy.insuredName || policy.holderName || 'Self'}
+                                            </div>
                                         </div>
 
                                         {/* Coverage Cells */}
