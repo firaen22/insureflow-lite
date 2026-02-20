@@ -7,6 +7,12 @@ import {
   FileText, Layers, Activity, Shield, MessageSquare
 } from 'lucide-react';
 import { summarizeMeetingNotes } from '../services/gemini';
+import {
+  isClientInsured,
+  calculateTotalAnnualPremiumHKD,
+  calculateTotalCISumInsuredHKD,
+  calculateTotalLifeSumInsuredHKD
+} from '../utils/policyCalculations';
 
 interface ClientDetailsViewProps {
   client: Client;
@@ -126,52 +132,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   };
 
   // --- Calculations for Summary ---
-  const isClientInsured = (p: PolicyData) => {
-    const pName = p.insuredName?.trim().toLowerCase();
-    const cName = client.name.trim().toLowerCase();
-    return !pName || pName === '' || pName === cName;
-  };
-
-  const totalAnnualPremiumHKD = policies.reduce((sum, p) => {
-    let amount = p.premiumAmount || 0;
-    if (p.currency === 'USD') amount = amount * 7.8;
-    return sum + amount;
-  }, 0);
-
-  const totalCISumInsuredHKD = policies.reduce((sum, p) => {
-    if (!isClientInsured(p)) return sum; // Only sum if client is insured
-
-    let val = 0;
-    // Base Plan
-    if (p.type === 'Critical Illness') {
-      val += p.sumInsured || 0;
-    }
-    // Riders
-    if (p.riders) {
-      val += p.riders
-        .filter(r => r.type === 'Critical Illness')
-        .reduce((rSum, r) => rSum + (r.sumInsured || 0), 0);
-    }
-    // Currency (Assuming SI matches Policy Currency)
-    if (p.currency === 'USD') val = val * 7.8;
-    return sum + val;
-  }, 0);
-
-  const totalLifeSumInsuredHKD = policies.reduce((sum, p) => {
-    if (!isClientInsured(p)) return sum; // Only sum if client is insured
-
-    let val = 0;
-    if (p.type === 'Life') {
-      val += p.sumInsured || 0;
-    }
-    if (p.riders) {
-      val += p.riders
-        .filter(r => r.type === 'Life')
-        .reduce((rSum, r) => rSum + (r.sumInsured || 0), 0);
-    }
-    if (p.currency === 'USD') val = val * 7.8;
-    return sum + val;
-  }, 0);
+  const totalAnnualPremiumHKD = calculateTotalAnnualPremiumHKD(policies);
+  const totalCISumInsuredHKD = calculateTotalCISumInsuredHKD(policies, client.name);
+  const totalLifeSumInsuredHKD = calculateTotalLifeSumInsuredHKD(policies, client.name);
 
   return (
     <div className="space-y-6 print:space-y-4">
@@ -346,7 +309,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <td className="px-4 py-4 align-top">
                         <div className="font-bold text-slate-800">{policy.planName}</div>
                         <div className="text-xs font-mono text-slate-500 mt-0.5">{policy.policyNumber}</div>
-                        {!isClientInsured(policy) && (
+                        {!isClientInsured(policy, client.name) && (
                           <div className="text-[10px] bg-slate-100 text-slate-600 px-1.5 rounded mt-1 inline-flex items-center gap-1 border border-slate-200" title="Insured Person">
                             <Shield className="w-3 h-3" /> Insured: {policy.insuredName}
                           </div>

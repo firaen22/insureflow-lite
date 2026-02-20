@@ -3,6 +3,11 @@ import { ArrowLeft, Download, Loader2 } from 'lucide-react';
 import { Client, PolicyData } from '../types';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
+import {
+    calculateTotalAnnualPremiumHKD,
+    calculateTotalCISumInsuredHKD,
+    calculateTotalLifeSumInsuredHKD
+} from '../utils/policyCalculations';
 
 interface ClientReportViewProps {
     client: Client;
@@ -14,19 +19,10 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
     const reportRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    // Group policies by type for the summary
-    const lifePolicies = policies.filter(p => p.type === 'Life' || p.type === 'Savings');
-    const ciPolicies = policies.filter(p => p.type === 'Critical Illness');
-    const medicalPolicies = policies.filter(p => p.type === 'Medical' || p.type === 'Hospital Income');
-    const accidentPolicies = policies.filter(p => p.type === 'Accident');
-
-    // Calculate totals
-    const totalLifeSA = lifePolicies.reduce((sum, p) => sum + (p.sumInsured || 0), 0);
-    const totalCISA = ciPolicies.reduce((sum, p) => sum + (p.sumInsured || 0), 0);
-    const totalPremiumHKD = policies.reduce((sum, p) => {
-        const amount = p.premiumAmount || 0;
-        return sum + (p.currency === 'USD' ? amount * 7.8 : amount);
-    }, 0);
+    // Calculate totals using shared utility
+    const totalLifeSA = calculateTotalLifeSumInsuredHKD(policies, client.name);
+    const totalCISA = calculateTotalCISumInsuredHKD(policies, client.name);
+    const totalPremiumHKD = calculateTotalAnnualPremiumHKD(policies);
 
     const handleDownloadPDF = async () => {
         if (!reportRef.current) return;
@@ -112,35 +108,33 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                         </div>
                     </div>
 
-                    {/* Main Content Grid */}
-                    <div className="flex border-t border-brand-200">
-
-                        {/* Left Column: Client Info Summary (Simplified) */}
-                        <div className="w-64 border-r border-slate-200 p-4 bg-slate-50">
-                            <div className="mb-6">
-                                <h2 className="text-xl font-bold text-slate-800 mb-1">{client.name}</h2>
+                    {/* Top Summary Bar (Horizontal) */}
+                    <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+                        <div className="flex items-center gap-6">
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-800">{client.name}</h2>
                                 <p className="text-sm text-slate-500">Age: {client.birthday ? new Date().getFullYear() - new Date(client.birthday).getFullYear() : '-'}</p>
                             </div>
-
-                            <div className="space-y-4">
-                                <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-100">
-                                    <div className="text-xs text-slate-500 uppercase mb-1">Total Life Protection</div>
-                                    <div className="text-lg font-bold text-blue-600">{formatCurrency(totalLifeSA)}</div>
-                                </div>
-                                <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-100">
-                                    <div className="text-xs text-slate-500 uppercase mb-1">Total CI Protection</div>
-                                    <div className="text-lg font-bold text-red-500">{formatCurrency(totalCISA)}</div>
-                                </div>
-                                <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-100">
-                                    <div className="text-xs text-slate-500 uppercase mb-1">Total Annual Premium</div>
-                                    <div className="text-lg font-bold text-slate-900">{formatCurrency(totalPremiumHKD)}</div>
-                                </div>
+                            <div className="h-8 w-px bg-slate-200"></div>
+                            <div>
+                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">Total Life Protection</div>
+                                <div className="text-lg font-bold text-blue-600">{formatCurrency(totalLifeSA)}</div>
+                            </div>
+                            <div className="h-8 w-px bg-slate-200"></div>
+                            <div>
+                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">Total CI Protection</div>
+                                <div className="text-lg font-bold text-red-500">{formatCurrency(totalCISA)}</div>
                             </div>
                         </div>
+                        <div className="text-right">
+                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">Total Annual Premium</div>
+                            <div className="text-xl font-bold text-slate-900">{formatCurrency(totalPremiumHKD)}</div>
+                        </div>
+                    </div>
 
-
-                        {/* Right Column: Detailed Policy Table */}
-                        <div className="flex-1">
+                    {/* Main Content (Policy Table Full Width) */}
+                    <div className="w-full">
+                        <div className="flex-1 border border-slate-200 rounded-lg overflow-hidden">
                             {/* Headers */}
                             <div className="grid grid-cols-12 bg-white border-b border-slate-200 text-center text-xs font-bold text-slate-600">
                                 {/* Basic Info Header */}
@@ -236,12 +230,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             </div>
 
                         </div>
-                    </div>
 
-                    {/* Footer / Disclaimer */}
-                    <div className="mt-8 pt-4 border-t border-slate-200 text-[10px] text-slate-400 flex justify-between">
-                        <div>Generated by InsureFlow Lite</div>
-                        <div>{new Date().toLocaleDateString()}</div>
                     </div>
 
                 </div>
