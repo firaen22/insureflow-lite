@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ArrowLeft, Download, Loader2 } from 'lucide-react';
+import { ArrowLeft, Download, Loader2, Eye } from 'lucide-react';
 import { Client, PolicyData, PDFColumnConfig } from '../types';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
@@ -234,6 +234,32 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                         </div>
                     </div>
 
+                    {/* Inline Column Visibility Toggles */}
+                    {onUpdateLayout && (
+                        <div className="mb-4 p-3 bg-white border border-slate-200 rounded-lg flex flex-wrap gap-2 items-center shadow-sm">
+                            <span className="text-xs font-semibold text-slate-500 mr-2 flex items-center gap-1">
+                                <Eye className="w-3 h-3" /> Visible Columns:
+                            </span>
+                            {pdfLayout.sort((a, b) => a.order - b.order).map(col => (
+                                <button
+                                    key={col.id}
+                                    onClick={() => {
+                                        const newLayout = pdfLayout.map(c =>
+                                            c.id === col.id ? { ...c, visible: !c.visible } : c
+                                        );
+                                        onUpdateLayout(newLayout);
+                                    }}
+                                    className={`text-[10px] px-2.5 py-1 rounded-full border transition-colors ${col.visible
+                                            ? 'bg-brand-50 border-brand-200 text-brand-700 hover:bg-brand-100 font-medium'
+                                            : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'
+                                        }`}
+                                >
+                                    {col.labelKey}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
                     {/* Main Content (Policy Table Full Width) */}
                     <div className="w-full">
                         <div className="flex-1 border border-slate-200 rounded-lg overflow-hidden">
@@ -244,7 +270,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                 style={{ display: 'grid', gridTemplateColumns }}
                             >
                                 {activeColumns.map((col, index) => (
-                                    <div key={col.id} className="px-2 truncate relative group select-none">
+                                    <div key={col.id} className="px-2 truncate relative group select-none border-r border-slate-200 last:border-r-0">
                                         {col.labelKey}
                                         {onUpdateLayout && index < activeColumns.length - 1 && (
                                             <div
@@ -265,7 +291,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         style={{ display: 'grid', gridTemplateColumns }}
                                     >
                                         {activeColumns.map(col => (
-                                            <div key={col.id} className="px-2 text-center flex items-center justify-center">
+                                            <div key={col.id} className="px-2 py-1 text-center flex items-center justify-center border-r border-slate-100 last:border-r-0 h-full">
                                                 {renderCellContent(policy, col.id)}
                                             </div>
                                         ))}
