@@ -170,6 +170,12 @@ export const TRANSLATIONS = {
       deleteConfirm: 'Are you sure you want to delete this policy?',
       saveChanges: 'Save Changes',
       cancel: 'Cancel',
+      summary: {
+        title: 'Protection Summary (HKD)',
+        totalPremium: 'Total Annual Premium',
+        life: 'Life Coverage',
+        ci: 'Critical Illness'
+      },
       policyCard: {
         basePlan: 'Base Plan',
         policyNo: 'Policy No.',
@@ -249,6 +255,37 @@ export const TRANSLATIONS = {
       upcoming: 'Upcoming',
       filterAll: 'All Upcoming',
       filterUrgent: 'Urgent (<30 Days)'
+    },
+    report: {
+      backToDetails: 'Back to Details',
+      title: 'Client Report Preview',
+      generating: 'Generating...',
+      downloadBtn: 'Download PDF',
+      protection: '保障 Protection',
+      age: 'Age',
+      totalLife: 'Total Life Protection',
+      totalCI: 'Total CI Protection',
+      totalAnnualPremium: 'Total Annual Premium',
+      visibleColumns: 'Visible Columns:',
+      totalsApprox: 'TOTALS (Approx. HKD):',
+      life: 'Life:',
+      ci: 'CI:',
+      prem: 'Prem:',
+      yr: '/ Yr',
+      // Column Labels
+      columns: {
+        'company_plan': 'Company / Plan',
+        'effective': 'Effective',
+        'term': 'Term',
+        'status': 'Status',
+        'insured': 'Insured',
+        'life': 'Life',
+        'ci': 'CI',
+        'med_acc': 'Med/Acc',
+        'currency': 'Curr.',
+        'premium_amt': 'Amt',
+        'payment_mode': 'Mode'
+      }
     }
   },
   zh: {
@@ -376,6 +413,12 @@ export const TRANSLATIONS = {
       deleteConfirm: '您確定要刪除此保單嗎？',
       saveChanges: '儲存變更',
       cancel: '取消',
+      summary: {
+        title: '保障摘要 (HKD)',
+        totalPremium: '年度總保費',
+        life: '人壽保額',
+        ci: '危疾保額'
+      },
       policyCard: {
         basePlan: 'Basic Plan',
         policyNo: 'Policy No.',
@@ -455,6 +498,37 @@ export const TRANSLATIONS = {
       upcoming: '即將到來',
       filterAll: '全部',
       filterUrgent: '緊急 (<30 天)'
+    },
+    report: {
+      backToDetails: '返回詳情',
+      title: '客戶報告預覽',
+      generating: '產生中...',
+      downloadBtn: '下載 PDF',
+      protection: '保障 Protection',
+      age: '年齡',
+      totalLife: '人壽總保額',
+      totalCI: '危疾總保額',
+      totalAnnualPremium: '年度總保費',
+      visibleColumns: '顯示欄位:',
+      totalsApprox: '總計 (約 HKD):',
+      life: '人壽:',
+      ci: '危疾:',
+      prem: '保費:',
+      yr: '/ 年',
+      // Column Labels
+      columns: {
+        'company_plan': '公司 / 計劃',
+        'effective': '生效日期',
+        'term': '年期',
+        'status': '狀態',
+        'insured': '受保人',
+        'life': '人壽',
+        'ci': '危疾',
+        'med_acc': '醫療/意外',
+        'currency': '貨幣',
+        'premium_amt': '金額',
+        'payment_mode': '繳費模式'
+      }
     }
   }
 };

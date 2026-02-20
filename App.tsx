@@ -444,6 +444,7 @@ const App: React.FC = () => {
           )}
           {currentView === AppView.REPORT && selectedClient && (
             <ClientReportView
+              t={t.report}
               client={selectedClient}
               policies={selectedClientPolicies}
               pdfLayout={settings.pdfLayout || DEFAULT_PDF_LAYOUT}

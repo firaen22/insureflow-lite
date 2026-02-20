@@ -191,21 +191,21 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           {/* Summary Totals Card */}
           <div className="bg-slate-900 rounded-xl shadow-md p-6 text-white print:bg-slate-900 print:text-white">
             <h3 className="text-brand-100 text-sm font-medium mb-4 flex items-center gap-2">
-              <Shield className="w-4 h-4" /> Protection Summary (HKD)
+              <Shield className="w-4 h-4" /> {t.summary?.title || 'Protection Summary (HKD)'}
             </h3>
 
             <div className="space-y-4">
               <div>
-                <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">Total Annual Premium</p>
+                <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">{t.summary?.totalPremium || 'Total Annual Premium'}</p>
                 <p className="text-2xl font-bold">${totalAnnualPremiumHKD.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
               </div>
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-brand-500/30">
                 <div>
-                  <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">Life Coverage</p>
+                  <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">{t.summary?.life || 'Life Coverage'}</p>
                   <p className="text-lg font-semibold">${totalLifeSumInsuredHKD.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">Critical Illness</p>
+                  <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">{t.summary?.ci || 'Critical Illness'}</p>
                   <p className="text-lg font-semibold">${totalCISumInsuredHKD.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                 </div>
               </div>

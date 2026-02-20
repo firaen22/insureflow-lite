@@ -15,9 +15,10 @@ interface ClientReportViewProps {
     pdfLayout: PDFColumnConfig[];
     onUpdateLayout?: (newLayout: PDFColumnConfig[]) => void;
     onBack: () => void;
+    t: any; // Translation strings
 }
 
-export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, policies, pdfLayout, onUpdateLayout, onBack }) => {
+export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, policies, pdfLayout, onUpdateLayout, onBack, t }) => {
     const reportRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -181,16 +182,16 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                     className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Back to Details
+                    {t.backToDetails}
                 </button>
-                <h1 className="text-lg font-bold text-slate-800">Client Report Preview</h1>
+                <h1 className="text-lg font-bold text-slate-800">{t.title}</h1>
                 <button
                     onClick={handleDownloadPDF}
                     disabled={isGenerating}
                     className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-sm"
                 >
                     {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                    {isGenerating ? 'Generating...' : 'Download PDF'}
+                    {isGenerating ? t.generating : t.downloadBtn}
                 </button>
             </div>
 
@@ -206,7 +207,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                     <div className="flex items-center gap-2 mb-6 border-b-2 border-blue-500 pb-2">
                         <div className="w-0 h-0 border-l-[20px] border-l-transparent border-b-[30px] border-b-blue-600 border-r-[20px] border-r-transparent relative top-4 -left-2 rotate-45 transform origin-center"></div> {/* Abstract Logo Placeholder */}
                         <div className="bg-blue-600 text-white px-6 py-2 rounded-tr-xl skew-x-[-20deg] ml-[-10px]">
-                            <span className="skew-x-[20deg] font-bold text-lg tracking-wide">保障 Protection</span>
+                            <span className="skew-x-[20deg] font-bold text-lg tracking-wide">{t.protection}</span>
                         </div>
                     </div>
 
@@ -215,21 +216,21 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                         <div className="flex items-center gap-6">
                             <div>
                                 <h2 className="text-xl font-bold text-slate-800">{client.name}</h2>
-                                <p className="text-sm text-slate-500">Age: {client.birthday ? new Date().getFullYear() - new Date(client.birthday).getFullYear() : '-'}</p>
+                                <p className="text-sm text-slate-500">{t.age}: {client.birthday ? new Date().getFullYear() - new Date(client.birthday).getFullYear() : '-'}</p>
                             </div>
                             <div className="h-8 w-px bg-slate-200"></div>
                             <div>
-                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">Total Life Protection</div>
+                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">{t.totalLife}</div>
                                 <div className="text-lg font-bold text-blue-600">{formatCurrency(totalLifeSA)}</div>
                             </div>
                             <div className="h-8 w-px bg-slate-200"></div>
                             <div>
-                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">Total CI Protection</div>
+                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">{t.totalCI}</div>
                                 <div className="text-lg font-bold text-red-500">{formatCurrency(totalCISA)}</div>
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">Total Annual Premium</div>
+                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">{t.totalAnnualPremium}</div>
                             <div className="text-xl font-bold text-slate-900">{formatCurrency(totalPremiumHKD)}</div>
                         </div>
                     </div>
@@ -238,7 +239,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                     {onUpdateLayout && (
                         <div className="mb-4 p-3 bg-white border border-slate-200 rounded-lg flex flex-wrap gap-2 items-center shadow-sm">
                             <span className="text-xs font-semibold text-slate-500 mr-2 flex items-center gap-1">
-                                <Eye className="w-3 h-3" /> Visible Columns:
+                                <Eye className="w-3 h-3" /> {t.visibleColumns}
                             </span>
                             {pdfLayout.sort((a, b) => a.order - b.order).map(col => (
                                 <button
@@ -250,11 +251,11 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         onUpdateLayout(newLayout);
                                     }}
                                     className={`text-[10px] px-2.5 py-1 rounded-full border transition-colors ${col.visible
-                                            ? 'bg-brand-50 border-brand-200 text-brand-700 hover:bg-brand-100 font-medium'
-                                            : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'
+                                        ? 'bg-brand-50 border-brand-200 text-brand-700 hover:bg-brand-100 font-medium'
+                                        : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'
                                         }`}
                                 >
-                                    {col.labelKey}
+                                    {t.columns[col.id] || col.labelKey}
                                 </button>
                             ))}
                         </div>
@@ -271,7 +272,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             >
                                 {activeColumns.map((col, index) => (
                                     <div key={col.id} className="px-2 truncate relative group select-none border-r border-slate-200 last:border-r-0">
-                                        {col.labelKey}
+                                        {t.columns[col.id] || col.labelKey}
                                         {onUpdateLayout && index < activeColumns.length - 1 && (
                                             <div
                                                 className="absolute right-0 top-0 bottom-0 w-2 -mr-1 cursor-col-resize hover:bg-brand-400 opacity-0 group-hover:opacity-100 transition-opacity z-10"
@@ -301,11 +302,11 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
 
                             {/* Footer Totals Row */}
                             <div className="bg-slate-100 border-t border-slate-300 p-3 flex justify-between items-center text-xs font-bold">
-                                <div>TOTALS (Approx. HKD):</div>
+                                <div>{t.totalsApprox}</div>
                                 <div className="flex gap-8 text-right pr-4">
-                                    <div>Life: {formatCurrency(totalLifeSA)}</div>
-                                    <div className="text-red-600">CI: {formatCurrency(totalCISA)}</div>
-                                    <div>Prem: {formatCurrency(totalPremiumHKD)} / Yr</div>
+                                    <div>{t.life} {formatCurrency(totalLifeSA)}</div>
+                                    <div className="text-red-600">{t.ci} {formatCurrency(totalCISA)}</div>
+                                    <div>{t.prem} {formatCurrency(totalPremiumHKD)} {t.yr}</div>
                                 </div>
                             </div>
 
