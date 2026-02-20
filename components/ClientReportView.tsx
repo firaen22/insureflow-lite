@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ArrowLeft, Download, Loader2 } from 'lucide-react';
-import { Client, PolicyData } from '../types';
+import { Client, PolicyData, PDFColumnConfig } from '../types';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 import {
@@ -12,10 +12,12 @@ import {
 interface ClientReportViewProps {
     client: Client;
     policies: PolicyData[];
+    pdfLayout: PDFColumnConfig[];
+    onUpdateLayout?: (newLayout: PDFColumnConfig[]) => void;
     onBack: () => void;
 }
 
-export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, policies, onBack }) => {
+export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, policies, pdfLayout, onUpdateLayout, onBack }) => {
     const reportRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -23,6 +25,106 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
     const totalLifeSA = calculateTotalLifeSumInsuredHKD(policies, client.name);
     const totalCISA = calculateTotalCISumInsuredHKD(policies, client.name);
     const totalPremiumHKD = calculateTotalAnnualPremiumHKD(policies);
+
+    const activeColumns = [...pdfLayout].sort((a, b) => a.order - b.order).filter(c => c.visible);
+    const gridTemplateColumns = activeColumns.map(c => `${c.width}%`).join(' ');
+
+    const renderCellContent = (policy: PolicyData, columnId: string) => {
+        switch (columnId) {
+            case 'company_plan':
+                return (
+                    <div className="text-left leading-tight">
+                        <div className="font-bold text-slate-900 truncate">{policy.company || 'Unknown'}</div>
+                        <div className="text-[10px] text-slate-500 truncate">{policy.planName}</div>
+                        <div className="text-[9px] text-slate-400 truncate">{policy.policyNumber}</div>
+                    </div>
+                );
+            case 'effective':
+                return formatDate(policy.effectiveDate);
+            case 'term':
+                return 'To 100';
+            case 'status':
+                return <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px]">Active</span>;
+            case 'insured':
+                return <div className="truncate" title={policy.insuredName || policy.holderName || 'Self'}>{policy.insuredName || policy.holderName || 'Self'}</div>;
+            case 'life':
+                return (policy.type === 'Life' || policy.type === 'Savings') && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-';
+            case 'ci':
+                return <span className="text-red-600 font-medium">{policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
+            case 'med_acc':
+                return <span className="text-blue-600 font-medium">{(policy.type === 'Medical' || policy.type === 'Accident') && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
+            case 'currency':
+                return policy.currency;
+            case 'premium_amt':
+                return <span className="font-bold">{policy.premiumAmount ? policy.premiumAmount.toLocaleString() : '-'}</span>;
+            case 'payment_mode':
+                return policy.paymentMode;
+            default:
+                return '-';
+        }
+    };
+
+    // Resizing Logic
+    const [resizingIndex, setResizingIndex] = useState<number | null>(null);
+    const [startX, setStartX] = useState(0);
+    const [startWidths, setStartWidths] = useState<{ left: number, right: number } | null>(null);
+
+    const handleResizeStart = (e: React.MouseEvent, index: number) => {
+        if (!onUpdateLayout) return;
+        e.preventDefault();
+        const leftCol = activeColumns[index];
+        const rightCol = activeColumns[index + 1];
+        setResizingIndex(index);
+        setStartX(e.clientX);
+        setStartWidths({ left: leftCol.width, right: rightCol.width });
+    };
+
+    useEffect(() => {
+        if (resizingIndex === null || !startWidths || !onUpdateLayout) return;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!reportRef.current) return;
+            const deltaX = e.clientX - startX;
+            // The container is scaled down to 0.9, so we adjust deltaX by scaling factor
+            const reportWidth = reportRef.current.getBoundingClientRect().width / 0.9;
+            const deltaPercent = (deltaX / reportWidth) * 100;
+
+            let newLeftWidth = startWidths.left + deltaPercent;
+            let newRightWidth = startWidths.right - deltaPercent;
+
+            // Enforce minimum width of 2%
+            if (newLeftWidth < 2) {
+                newRightWidth -= (2 - newLeftWidth);
+                newLeftWidth = 2;
+            } else if (newRightWidth < 2) {
+                newLeftWidth -= (2 - newRightWidth);
+                newRightWidth = 2;
+            }
+
+            const leftCol = activeColumns[resizingIndex];
+            const rightCol = activeColumns[resizingIndex + 1];
+
+            const newLayout = [...pdfLayout];
+            const leftTarget = newLayout.find(c => c.id === leftCol.id);
+            const rightTarget = newLayout.find(c => c.id === rightCol.id);
+            if (leftTarget && rightTarget) {
+                leftTarget.width = newLeftWidth;
+                rightTarget.width = newRightWidth;
+                onUpdateLayout(newLayout);
+            }
+        };
+
+        const handleMouseUp = () => {
+            setResizingIndex(null);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [resizingIndex, startX, startWidths, pdfLayout, onUpdateLayout, activeColumns]);
 
     const handleDownloadPDF = async () => {
         if (!reportRef.current) return;
@@ -136,96 +238,48 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                     <div className="w-full">
                         <div className="flex-1 border border-slate-200 rounded-lg overflow-hidden">
                             {/* Headers */}
-                            <div className="grid grid-cols-12 bg-white border-b border-slate-200 text-center text-xs font-bold text-slate-600">
-                                {/* Basic Info Header */}
-                                <div className="col-span-6 border-r border-slate-200">
-                                    <div className="py-2 bg-orange-100/50 border-b border-orange-200 text-orange-800">基本資料 Basic Info</div>
-                                    <div className="grid grid-cols-6 py-2">
-                                        <div className="col-span-2">Company / Plan</div>
-                                        <div className="col-span-1">Effective</div>
-                                        <div className="col-span-1">Term</div>
-                                        <div className="col-span-1">Status</div>
-                                        <div className="col-span-1">Insured</div>
+                            {/* Headers */}
+                            <div
+                                className="bg-white border-b border-slate-200 text-center text-xs font-bold text-slate-800 py-3"
+                                style={{ display: 'grid', gridTemplateColumns }}
+                            >
+                                {activeColumns.map((col, index) => (
+                                    <div key={col.id} className="px-2 truncate relative group select-none">
+                                        {col.labelKey}
+                                        {onUpdateLayout && index < activeColumns.length - 1 && (
+                                            <div
+                                                className="absolute right-0 top-0 bottom-0 w-2 -mr-1 cursor-col-resize hover:bg-brand-400 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                                onMouseDown={(e) => handleResizeStart(e, index)}
+                                            />
+                                        )}
                                     </div>
-                                </div>
-
-                                {/* Coverage Header */}
-                                <div className="col-span-3 border-r border-slate-200">
-                                    <div className="py-2 bg-red-50 border-b border-red-100 text-red-800">保障範圍 Coverage (HKD)</div>
-                                    <div className="grid grid-cols-3 py-2">
-                                        <div>Life</div>
-                                        <div>CI</div>
-                                        <div>Med/Acc</div>
-                                    </div>
-                                </div>
-
-                                {/* Premium Header */}
-                                <div className="col-span-3">
-                                    <div className="py-2 bg-blue-50 border-b border-blue-100 text-blue-800">保費 Premium</div>
-                                    <div className="grid grid-cols-3 py-2">
-                                        <div>Curr.</div>
-                                        <div>Amt</div>
-                                        <div>Mode</div>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
 
                             {/* Rows */}
                             <div className="text-xs text-slate-700">
                                 {policies.map((policy, idx) => (
-                                    <div key={policy.id} className={`grid grid-cols-12 border-b border-slate-100 hover:bg-slate-50 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
-
-                                        {/* Basic Info Cells */}
-                                        <div className="col-span-6 grid grid-cols-6 p-3 border-r border-slate-200 items-center">
-                                            <div className="col-span-2">
-                                                <div className="font-bold text-slate-900">{policy.company || 'Unknown'}</div>
-                                                <div className="text-xs text-slate-500 truncate">{policy.planName}</div>
-                                                <div className="text-[10px] text-slate-400">{policy.policyNumber}</div>
+                                    <div
+                                        key={policy.id}
+                                        className={`border-b border-slate-100 hover:bg-slate-50 items-center py-2 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                                        style={{ display: 'grid', gridTemplateColumns }}
+                                    >
+                                        {activeColumns.map(col => (
+                                            <div key={col.id} className="px-2 text-center flex items-center justify-center">
+                                                {renderCellContent(policy, col.id)}
                                             </div>
-                                            <div className="col-span-1 text-center">{formatDate(policy.effectiveDate)}</div>
-                                            <div className="col-span-1 text-center">To 100</div> {/* Placeholder for Term */}
-                                            <div className="col-span-1 text-center">
-                                                <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px]">Active</span>
-                                            </div>
-                                            <div className="col-span-1 text-center text-[10px] truncate" title={policy.insuredName || policy.holderName || 'Self'}>
-                                                {policy.insuredName || policy.holderName || 'Self'}
-                                            </div>
-                                        </div>
-
-                                        {/* Coverage Cells */}
-                                        <div className="col-span-3 grid grid-cols-3 p-3 border-r border-slate-200 items-center text-right">
-                                            <div className="font-medium">
-                                                {(policy.type === 'Life' || policy.type === 'Savings') && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}
-                                            </div>
-                                            <div className="font-medium text-red-600">
-                                                {policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}
-                                            </div>
-                                            <div className="font-medium text-blue-600">
-                                                {(policy.type === 'Medical' || policy.type === 'Accident') && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}
-                                            </div>
-                                        </div>
-
-                                        {/* Premium Cells */}
-                                        <div className="col-span-3 grid grid-cols-3 p-3 items-center text-right">
-                                            <div className="text-slate-500">{policy.currency}</div>
-                                            <div className="font-bold">{policy.premiumAmount ? policy.premiumAmount.toLocaleString() : '-'}</div>
-                                            <div className="text-slate-500">{policy.paymentMode}</div>
-                                        </div>
-
+                                        ))}
                                     </div>
                                 ))}
                             </div>
 
                             {/* Footer Totals Row */}
-                            <div className="grid grid-cols-12 bg-slate-100 border-t border-slate-300 p-3 text-xs font-bold">
-                                <div className="col-span-6 text-right pr-4">TOTALS (Approx. HKD):</div>
-                                <div className="col-span-3 grid grid-cols-3 text-right">
-                                    <div>{formatCurrency(totalLifeSA)}</div>
-                                    <div className="text-red-600">{formatCurrency(totalCISA)}</div>
-                                    <div>-</div>
-                                </div>
-                                <div className="col-span-3 text-right pr-4">
-                                    {formatCurrency(totalPremiumHKD)} / Year
+                            <div className="bg-slate-100 border-t border-slate-300 p-3 flex justify-between items-center text-xs font-bold">
+                                <div>TOTALS (Approx. HKD):</div>
+                                <div className="flex gap-8 text-right pr-4">
+                                    <div>Life: {formatCurrency(totalLifeSA)}</div>
+                                    <div className="text-red-600">CI: {formatCurrency(totalCISA)}</div>
+                                    <div>Prem: {formatCurrency(totalPremiumHKD)} / Yr</div>
                                 </div>
                             </div>
 

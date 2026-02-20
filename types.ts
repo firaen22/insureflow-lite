@@ -108,6 +108,14 @@ export enum UploadStatus {
   ERROR = 'ERROR'
 }
 
+export interface PDFColumnConfig {
+  id: string; // Internal identifier
+  labelKey: string; // Header text or translation key
+  visible: boolean;
+  order: number;
+  width: number; // Width as a percentage (1-100)
+}
+
 export interface AppSettings {
   language: Language;
   reminderDays: number;
@@ -115,6 +123,7 @@ export interface AppSettings {
   aiProvider?: 'gemini' | 'openai' | 'kimi' | 'nvidia'; // Default 'gemini'
   aiBaseUrl?: string; // For custom OpenAI/Kimi endpoints
   aiModel?: string; // Selected model ID
+  pdfLayout?: PDFColumnConfig[]; // Global PDF Layout preferences
 }
 
 export interface UserProfile {

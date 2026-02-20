@@ -12,7 +12,7 @@ import { SettingsView } from './components/SettingsView';
 import { ClientReportView } from './components/ClientReportView';
 import { MeetingHubView } from './components/MeetingHubView';
 import { AppView, Language, Client, PolicyData, Product, AppSettings } from './types';
-import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY } from './constants';
+import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY, DEFAULT_PDF_LAYOUT } from './constants';
 
 import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
 import { setGoogleToken, initGoogleClient, syncOnLogin, saveData, getIsSignedIn, trySilentSignIn } from './services/googleSheets';
@@ -22,7 +22,8 @@ const App: React.FC = () => {
   // Settings State
   const [settings, setSettings] = useState<AppSettings>({
     language: 'en',
-    reminderDays: 60
+    reminderDays: 60,
+    pdfLayout: DEFAULT_PDF_LAYOUT
   });
   const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
 
@@ -184,6 +185,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('insureflow_products', JSON.stringify(products));
   }, [products]);
+
+  useEffect(() => {
+    localStorage.setItem('insureflow_settings', JSON.stringify(settings));
+  }, [settings]);
 
   // Settings are likely handled by a context now, but keeping for compatibility if local
 
@@ -441,6 +446,8 @@ const App: React.FC = () => {
             <ClientReportView
               client={selectedClient}
               policies={selectedClientPolicies}
+              pdfLayout={settings.pdfLayout || DEFAULT_PDF_LAYOUT}
+              onUpdateLayout={(newLayout) => setSettings(prev => ({ ...prev, pdfLayout: newLayout }))}
               onBack={() => setCurrentView(AppView.CLIENT_DETAILS)}
             />
           )}

@@ -1,6 +1,22 @@
-import { Client, PolicyData, Product, Language } from './types';
+import { Client, PolicyData, Product, Language, PDFColumnConfig } from './types';
 
-// Product Library System
+// Default Layout Config for PDF Studio
+export const DEFAULT_PDF_LAYOUT: PDFColumnConfig[] = [
+  // Basic Info Section
+  { id: 'company_plan', labelKey: 'Company / Plan', visible: true, order: 0, width: 20 },
+  { id: 'effective', labelKey: 'Effective', visible: true, order: 1, width: 10 },
+  { id: 'term', labelKey: 'Term', visible: true, order: 2, width: 5 },
+  { id: 'status', labelKey: 'Status', visible: true, order: 3, width: 5 },
+  { id: 'insured', labelKey: 'Insured', visible: true, order: 4, width: 10 },
+  // Coverage Section
+  { id: 'life', labelKey: 'Life', visible: true, order: 5, width: 10 },
+  { id: 'ci', labelKey: 'CI', visible: true, order: 6, width: 10 },
+  { id: 'med_acc', labelKey: 'Med/Acc', visible: true, order: 7, width: 10 },
+  // Premium Section
+  { id: 'currency', labelKey: 'Curr.', visible: true, order: 8, width: 5 },
+  { id: 'premium_amt', labelKey: 'Amt', visible: true, order: 9, width: 10 },
+  { id: 'payment_mode', labelKey: 'Mode', visible: true, order: 10, width: 5 },
+];
 export const PRODUCT_LIBRARY: Product[] = [
   {
     name: 'CEO Medical Plan',

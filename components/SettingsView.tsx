@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { AppSettings, UserProfile, Client, PolicyData, Product } from '../types';
-import { Languages, Database, Cloud, Bell, Trash2, Download, RefreshCw, User, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
+import { AppSettings, UserProfile, Client, PolicyData, Product, PDFColumnConfig } from '../types';
+import { Languages, Database, Cloud, Bell, Trash2, Download, RefreshCw, User, CheckCircle, AlertCircle, Sparkles, FileText, Eye, EyeOff, ArrowUp, ArrowDown } from 'lucide-react';
 import { getUserProfile, listSpreadsheets } from '../services/googleSheets';
 
 interface SettingsViewProps {
@@ -429,7 +429,79 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
             </section>
 
-            {/* 6. Data Management */}
+            {/* 6. PDF Report Studio */}
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-brand-500" />
+                    PDF Report Layout (Studio)
+                </h2>
+                <p className="text-sm text-slate-500 mb-4">Customize the columns shown in the client PDF report. Changes apply globally.</p>
+
+                <div className="space-y-2 border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                    {(settings.pdfLayout || []).sort((a, b) => a.order - b.order).map((col, index, array) => (
+                        <div key={col.id} className="flex items-center justify-between p-3 bg-white border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => {
+                                        const newLayout = [...(settings.pdfLayout || [])];
+                                        const targetIndex = newLayout.findIndex(c => c.id === col.id);
+                                        newLayout[targetIndex].visible = !newLayout[targetIndex].visible;
+                                        onUpdateSettings({ ...settings, pdfLayout: newLayout });
+                                    }}
+                                    className={`p-1.5 rounded-md ${col.visible ? 'text-brand-600 hover:bg-brand-50' : 'text-slate-400 hover:bg-slate-100'}`}
+                                >
+                                    {col.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                </button>
+                                <span className={`text-sm font-medium ${col.visible ? 'text-slate-700' : 'text-slate-400 line-through'}`}>
+                                    {col.labelKey}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    disabled={index === 0}
+                                    onClick={() => {
+                                        const newLayout = [...(settings.pdfLayout || [])];
+                                        const currentIndex = newLayout.findIndex(c => c.id === col.id);
+                                        const prevIndex = newLayout.findIndex(c => c.order === col.order - 1 || c.order < col.order); // Basic swap
+
+                                        // Simple swap logic assuming orders are mostly sequential
+                                        const tempOrder = newLayout[currentIndex].order;
+                                        const prevNode = newLayout.find(c => c.order === array[index - 1].order);
+                                        if (prevNode) {
+                                            newLayout[currentIndex].order = prevNode.order;
+                                            prevNode.order = tempOrder;
+                                            onUpdateSettings({ ...settings, pdfLayout: newLayout });
+                                        }
+                                    }}
+                                    className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded disabled:opacity-30"
+                                >
+                                    <ArrowUp className="w-4 h-4" />
+                                </button>
+                                <button
+                                    disabled={index === array.length - 1}
+                                    onClick={() => {
+                                        const newLayout = [...(settings.pdfLayout || [])];
+                                        const currentIndex = newLayout.findIndex(c => c.id === col.id);
+
+                                        const tempOrder = newLayout[currentIndex].order;
+                                        const nextNode = newLayout.find(c => c.order === array[index + 1].order);
+                                        if (nextNode) {
+                                            newLayout[currentIndex].order = nextNode.order;
+                                            nextNode.order = tempOrder;
+                                            onUpdateSettings({ ...settings, pdfLayout: newLayout });
+                                        }
+                                    }}
+                                    className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded disabled:opacity-30"
+                                >
+                                    <ArrowDown className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* 7. Data Management */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <Database className="w-5 h-5 text-brand-500" />
