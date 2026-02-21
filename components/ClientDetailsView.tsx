@@ -321,8 +321,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           </div>
                         )}
                         {policy.medicalPlanType && (
-                          <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded mt-1 inline-block">
-                            {policy.medicalPlanType === 'High-End' ? 'High-End Medical' : policy.medicalPlanType}
+                          <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded mt-1 inline-block border border-blue-200">
+                            {['High-End Semi-Private', 'High-End Private'].includes(policy.medicalPlanType as string) ? 'High-End Medical' : policy.medicalPlanType}
                           </span>
                         )}
                       </td>
@@ -715,7 +715,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <select
                         value={editingPolicy.type}
                         onChange={e => handleUpdateField('type', e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg appearance-none bg-white"
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       >
                         <option value="Life">Life</option>
                         <option value="Medical">Medical</option>

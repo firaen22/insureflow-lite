@@ -524,7 +524,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       <select
                         value={activeItem.data.type}
                         onChange={e => handleUpdateCurrentField('type', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
+                        className="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       >
                         <option value="Life">Life</option>
                         <option value="Medical">Medical</option>
@@ -806,7 +807,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                             <select
                               value={rider.type}
                               onChange={e => handleUpdateRider(idx, 'type', e.target.value)}
-                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-slate-50 hover:bg-white focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                              style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '1.5rem' }}
                             >
                               <option value="Medical">Medical</option>
                               <option value="Accident">Accident</option>
