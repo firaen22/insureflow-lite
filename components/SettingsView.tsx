@@ -74,7 +74,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 setUserProfile(profile);
             }
         } catch (error) {
-            console.log("User not signed in or failed to fetch profile");
+            // User not signed in
         }
     };
 

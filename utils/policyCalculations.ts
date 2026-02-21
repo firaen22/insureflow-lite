@@ -15,19 +15,19 @@ export const calculateTotalAnnualPremiumHKD = (policies: PolicyData[]) => {
     }, 0);
 };
 
-export const calculateTotalCISumInsuredHKD = (policies: PolicyData[], clientName: string) => {
+const calculateSumInsuredByTypeHKD = (policies: PolicyData[], clientName: string, baseTypes: string[], riderType: string) => {
     return policies.reduce((sum, p) => {
         if (!isClientInsured(p, clientName)) return sum; // Exclude if client is not the insured person
 
         let val = 0;
         // Base Plan
-        if (p.type === 'Critical Illness') {
+        if (p.type && baseTypes.includes(p.type)) {
             val += p.sumInsured || 0;
         }
         // Riders
         if (p.riders) {
             val += p.riders
-                .filter(r => r.type === 'Critical Illness')
+                .filter(r => r.type === riderType)
                 .reduce((rSum, r) => rSum + (r.sumInsured || 0), 0);
         }
         // Currency conversion
@@ -36,23 +36,10 @@ export const calculateTotalCISumInsuredHKD = (policies: PolicyData[], clientName
     }, 0);
 };
 
-export const calculateTotalLifeSumInsuredHKD = (policies: PolicyData[], clientName: string) => {
-    return policies.reduce((sum, p) => {
-        if (!isClientInsured(p, clientName)) return sum; // Exclude if client is not the insured person
+export const calculateTotalCISumInsuredHKD = (policies: PolicyData[], clientName: string) => {
+    return calculateSumInsuredByTypeHKD(policies, clientName, ['Critical Illness'], 'Critical Illness');
+};
 
-        let val = 0;
-        // Base Plan
-        if (p.type === 'Life' || p.type === 'Savings') {
-            val += p.sumInsured || 0;
-        }
-        // Riders
-        if (p.riders) {
-            val += p.riders
-                .filter(r => r.type === 'Life')
-                .reduce((rSum, r) => rSum + (r.sumInsured || 0), 0);
-        }
-        // Currency conversion
-        if (p.currency === 'USD') val = val * 7.8;
-        return sum + val;
-    }, 0);
+export const calculateTotalLifeSumInsuredHKD = (policies: PolicyData[], clientName: string) => {
+    return calculateSumInsuredByTypeHKD(policies, clientName, ['Life', 'Savings'], 'Life');
 };

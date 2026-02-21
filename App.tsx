@@ -68,7 +68,7 @@ const App: React.FC = () => {
             return;
           }
 
-          console.log("Successfully retrieved potential Google Access Token from Clerk");
+          // Token retrieved securely
           setGoogleToken(token);
 
           // Re-init Google Client to pick up the token
@@ -79,7 +79,6 @@ const App: React.FC = () => {
             setSyncStatus('Syncing...');
             const syncResult = await syncOnLogin();
             if (syncResult.data) {
-              console.log("Clerk-based Auto-sync successful", syncResult.data);
               setSyncStatus('Synced');
               if (syncResult.spreadsheetId) setSpreadsheetId(syncResult.spreadsheetId);
               if (syncResult.data.clients) setClients(syncResult.data.clients);
@@ -119,11 +118,9 @@ const App: React.FC = () => {
         }
 
         if (signedIn) {
-          console.log("Auto-sync: User is signed in via LocalStorage or Silent Auth, attempting to load data...");
           setSyncStatus('Loading...');
           const syncResult = await syncOnLogin();
           if (syncResult.data && syncResult.spreadsheetId) {
-            console.log("Auto-sync: Data loaded successfully");
             setSyncStatus('Synced');
             setSpreadsheetId(syncResult.spreadsheetId);
             if (syncResult.data.clients) setClients(syncResult.data.clients);
@@ -149,11 +146,9 @@ const App: React.FC = () => {
     if (!spreadsheetId) return;
 
     const timeoutId = setTimeout(async () => {
-      console.log("Auto-sync: Saving changes to Google Sheets...");
       setSyncStatus('Saving...');
       try {
         await saveData(spreadsheetId, clients, policies, products);
-        console.log("Auto-sync: Save successful at " + new Date().toLocaleTimeString());
         setSyncStatus('Saved');
         setTimeout(() => setSyncStatus('Synced'), 2000); // Revert to Synced
       } catch (error: any) {

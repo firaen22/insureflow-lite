@@ -21,8 +21,8 @@ export const GOOGLE_CONFIG = {
 let tokenClient: any;
 
 export const initGoogleClient = async (
-  clientId: string, 
-  apiKey: string, 
+  clientId: string,
+  apiKey: string,
   spreadsheetId: string
 ): Promise<boolean> => {
   return new Promise((resolve, reject) => {
@@ -71,10 +71,10 @@ export const signInToGoogle = async (): Promise<void> => {
     if (window.gapi.client.getToken() === null) {
       // Prompt the user to select a Google Account and ask for consent to share their data
       // when establishing a new session.
-      tokenClient.requestAccessToken({prompt: 'consent'});
+      tokenClient.requestAccessToken({ prompt: 'consent' });
     } else {
       // Skip display of account chooser and consent dialog for an existing session.
-      tokenClient.requestAccessToken({prompt: ''});
+      tokenClient.requestAccessToken({ prompt: '' });
     }
   });
 };
@@ -159,7 +159,7 @@ export const ensureSheetStructure = async (): Promise<void> => {
           ]
         }
       });
-      
+
       // 3. Add Headers
       const headers = ['ID', 'Policy No', 'Holder', 'Plan', 'Type', 'Status', 'Premium', 'Mode', 'Anniversary', 'Birthday', 'Tags', 'Specifics'];
       await window.gapi.client.sheets.spreadsheets.values.update({
@@ -168,8 +168,6 @@ export const ensureSheetStructure = async (): Promise<void> => {
         valueInputOption: 'USER_ENTERED',
         resource: { values: [headers] }
       });
-      
-      console.log("Created 'Policies' sheet structure.");
     }
   } catch (error) {
     console.error("Error ensuring sheet structure:", error);
@@ -193,7 +191,7 @@ export const fetchPoliciesFromSheet = async (): Promise<PolicyData[]> => {
   } catch (e: any) {
     // If the sheet doesn't exist yet, return empty so we can initialize it later or handle gracefully
     if (e.result?.error?.code === 400 && e.result?.error?.message?.includes('Unable to parse range')) {
-        return []; 
+      return [];
     }
     throw e;
   }
@@ -215,21 +213,21 @@ export const savePolicyToSheet = async (policy: PolicyData): Promise<void> => {
 };
 
 export const syncAllPoliciesToSheet = async (policies: PolicyData[]) => {
-   // This is a "Resync" - clears sheet and writes all. 
-   // CAUTION: In a real app, you'd want to be smarter (update changed rows only).
-   if (!GOOGLE_CONFIG.SPREADSHEET_ID) throw new Error("No Spreadsheet ID");
+  // This is a "Resync" - clears sheet and writes all. 
+  // CAUTION: In a real app, you'd want to be smarter (update changed rows only).
+  if (!GOOGLE_CONFIG.SPREADSHEET_ID) throw new Error("No Spreadsheet ID");
 
-   // 1. Clear Data
-   await window.gapi.client.sheets.spreadsheets.values.clear({
-      spreadsheetId: GOOGLE_CONFIG.SPREADSHEET_ID,
-      range: 'Policies!A2:L'
-   });
+  // 1. Clear Data
+  await window.gapi.client.sheets.spreadsheets.values.clear({
+    spreadsheetId: GOOGLE_CONFIG.SPREADSHEET_ID,
+    range: 'Policies!A2:L'
+  });
 
-   // 2. Write All
-   const rows = policies.map(mapPolicyToRow);
-   
-   if (rows.length > 0) {
-     await window.gapi.client.sheets.spreadsheets.values.update({
+  // 2. Write All
+  const rows = policies.map(mapPolicyToRow);
+
+  if (rows.length > 0) {
+    await window.gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: GOOGLE_CONFIG.SPREADSHEET_ID,
       range: 'Policies!A2',
       valueInputOption: 'USER_ENTERED',
@@ -237,5 +235,5 @@ export const syncAllPoliciesToSheet = async (policies: PolicyData[]) => {
         values: rows,
       },
     });
-   }
+  }
 }
