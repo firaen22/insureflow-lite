@@ -127,7 +127,9 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
       provider: '',
       type: 'Life',
       defaultTags: [],
-      isTaxDeductible: false
+      isTaxDeductible: false,
+      annualCoverageLimit: undefined,
+      wholeLifeCoverageLimit: undefined
     });
     setOriginalName('');
     setIsModalOpen(true);
@@ -454,6 +456,31 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                   <span>{t.form.taxDeductible}</span>
                 </label>
               </div>
+
+              {editingProduct.type === 'Medical' && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.annualLimit || 'Annual Limit'}</label>
+                    <input
+                      type="number"
+                      value={editingProduct.annualCoverageLimit || ''}
+                      onChange={e => setEditingProduct({ ...editingProduct, annualCoverageLimit: e.target.value ? Number(e.target.value) : undefined })}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      placeholder="e.g. 10000000"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.lifeLimit || 'Life Limit'}</label>
+                    <input
+                      type="number"
+                      value={editingProduct.wholeLifeCoverageLimit || ''}
+                      onChange={e => setEditingProduct({ ...editingProduct, wholeLifeCoverageLimit: e.target.value ? Number(e.target.value) : undefined })}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      placeholder="e.g. 30000000"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">{t.form.tags}</label>

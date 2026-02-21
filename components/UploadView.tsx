@@ -485,13 +485,28 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Plan Name</label>
-                    <input
-                      type="text"
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">{t.fields.planName}</label>
+                    <select
                       value={activeItem.data.planName}
-                      onChange={e => handleUpdateCurrentField('planName', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm font-bold shadow-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                    />
+                      onChange={e => {
+                        const val = e.target.value;
+                        handleUpdateCurrentField('planName', val);
+                        const matchedProduct = products.find(p => p.name === val);
+                        if (matchedProduct) {
+                          handleUpdateCurrentField('type', matchedProduct.type);
+                        }
+                      }}
+                      className="w-full p-2.5 border border-brand-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 font-medium bg-white"
+                    >
+                      <option value="" disabled>Select a plan...</option>
+                      {products.map(p => (
+                        <option key={p.name} value={p.name}>{p.provider} - {p.name}</option>
+                      ))}
+                      {/* Fallback option if AI extracted a plan not in library */}
+                      {!products.some(p => p.name === activeItem.data.planName) && activeItem.data.planName && (
+                        <option value={activeItem.data.planName}>{activeItem.data.planName} (New)</option>
+                      )}
+                    </select>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -523,18 +538,33 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   {/* Medical Plan Type Specifics */}
                   {activeItem.data.type === 'Medical' && (
-                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
-                      <label className="block text-xs font-semibold text-blue-700 uppercase mb-1">Medical Plan Type</label>
-                      <select
-                        value={activeItem.data.medicalPlanType || 'Ward'}
-                        onChange={e => handleUpdateCurrentField('medicalPlanType', e.target.value)}
-                        className="w-full p-2 border border-blue-200 rounded-lg text-sm bg-white focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="Ward">Ward</option>
-                        <option value="Semi-Private">Semi-Private</option>
-                        <option value="Private">Private</option>
-                        <option value="High-End">High-End Medical</option>
-                      </select>
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 grid grid-cols-2 gap-3">
+                      <div className="col-span-2">
+                        <label className="block text-xs font-semibold text-blue-700 uppercase mb-1">Medical Plan Type</label>
+                        <select
+                          value={activeItem.data.medicalPlanType || 'Ward'}
+                          onChange={e => handleUpdateCurrentField('medicalPlanType', e.target.value)}
+                          className="w-full p-2 border border-blue-200 rounded-lg text-sm bg-white focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="Ward">Ward</option>
+                          <option value="Semi-Private">Semi-Private</option>
+                          <option value="Private">Private</option>
+                          <option value="High-End Semi-Private">High-End Semi-Private</option>
+                          <option value="High-End Private">High-End Private</option>
+                        </select>
+                      </div>
+                      {['High-End Semi-Private', 'High-End Private'].includes(activeItem.data.medicalPlanType || '') && (
+                        <div className="col-span-2 mt-1">
+                          <label className="block text-xs font-semibold text-blue-700 uppercase mb-1">Annual Excess</label>
+                          <input
+                            type="number"
+                            placeholder="Excess Amount"
+                            value={activeItem.data.medicalExcess || ''}
+                            onChange={e => handleUpdateCurrentField('medicalExcess', Number(e.target.value))}
+                            className="w-full p-2 border border-blue-200 rounded-lg text-sm"
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
 

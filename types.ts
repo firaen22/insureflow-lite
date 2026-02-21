@@ -9,6 +9,8 @@ export interface Product {
   type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Rider';
   defaultTags: string[];
   isTaxDeductible?: boolean;
+  annualCoverageLimit?: number; // Medical specific
+  wholeLifeCoverageLimit?: number; // Medical specific
 }
 
 export interface Rider {
@@ -51,7 +53,7 @@ export interface PolicyData {
   // --- Plan Specific Features ---
 
   // Medical
-  medicalPlanType?: 'Ward' | 'Semi-Private' | 'Private' | 'High-End';
+  medicalPlanType?: 'Ward' | 'Semi-Private' | 'Private' | 'High-End Semi-Private' | 'High-End Private';
   medicalExcess?: number; // For High-end medical
 
   // Life / Critical Illness / Accident (Critical)

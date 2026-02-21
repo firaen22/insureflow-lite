@@ -25,7 +25,9 @@ export const PRODUCT_LIBRARY: Product[] = [
     provider: 'AIA',
     type: 'Medical',
     defaultTags: ['AIA', 'Medical', 'High-End', 'Global Cover'],
-    isTaxDeductible: true
+    isTaxDeductible: true,
+    annualCoverageLimit: 10000000,
+    wholeLifeCoverageLimit: 30000000
   },
   {
     name: 'Crisis Cover Prudential',
@@ -241,7 +243,9 @@ export const TRANSLATIONS = {
         type: 'Category',
         tags: 'Tags',
         addTag: 'Add Tag',
-        taxDeductible: 'Tax Deductible'
+        taxDeductible: 'Tax Deductible',
+        annualLimit: 'Annual Coverage Limit (Medical)',
+        lifeLimit: 'Whole Life Coverage Limit (Medical)'
       }
     },
     reminders: {
@@ -519,7 +523,9 @@ export const TRANSLATIONS = {
         type: '類別',
         tags: '標籤',
         addTag: '新增標籤',
-        taxDeductible: '可扣稅'
+        taxDeductible: '可扣稅',
+        annualLimit: '年度保障限額 (醫療)',
+        lifeLimit: '終身保障限額 (醫療)'
       }
     },
     reminders: {
@@ -665,7 +671,7 @@ export const RECENT_POLICIES: PolicyData[] = [
     currency: 'HKD',
     premiumAmount: 1200,
     status: 'Active',
-    medicalPlanType: 'Private', // High end
+    medicalPlanType: 'High-End Private', // High end
     medicalExcess: 5000,
     riders: [
       { name: 'Dental Care Plus', type: 'Medical', premiumAmount: 200 }

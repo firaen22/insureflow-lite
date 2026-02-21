@@ -584,18 +584,33 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 {/* Basic Fields */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">{t.policyCard.basePlan}</label>
-                  <input
-                    list="edit-plan-options"
-                    type="text"
+                  <select
                     value={editingPolicy.planName}
-                    onChange={e => setEditingPolicy({ ...editingPolicy, planName: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  />
-                  <datalist id="edit-plan-options">
+                    onChange={e => {
+                      const selectedPlanName = e.target.value;
+                      const selectedProduct = products.find(p => p.name === selectedPlanName);
+                      if (selectedProduct) {
+                        setEditingPolicy({
+                          ...editingPolicy,
+                          planName: selectedPlanName,
+                          company: selectedProduct.provider, // Auto-fill company
+                          type: selectedProduct.type // Auto-fill type
+                        });
+                      } else {
+                        setEditingPolicy({ ...editingPolicy, planName: selectedPlanName });
+                      }
+                    }}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                  >
+                    <option value="" disabled>Select a plan...</option>
                     {products.map(p => (
-                      <option key={p.name} value={p.name}>{p.provider} - {p.type}</option>
+                      <option key={p.name} value={p.name}>{p.provider} - {p.name}</option>
                     ))}
-                  </datalist>
+                    {/* Fallback option if a legacy plan isn't in the library */}
+                    {!products.some(p => p.name === editingPolicy.planName) && editingPolicy.planName && (
+                      <option value={editingPolicy.planName}>{editingPolicy.planName} (Not in Library)</option>
+                    )}
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -768,7 +783,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </h4>
 
                   <div className="grid grid-cols-2 gap-3">
-                    {/* Sum Insured - Generic */}
+                    {/* Sum Insured - Generic (Hide for Medical) */}
                     {['Life', 'Critical Illness', 'Accident'].includes(editingPolicy.type) && (
                       <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.sumInsured}</label>
@@ -779,19 +794,22 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     {/* Medical */}
                     {editingPolicy.type === 'Medical' && (
                       <>
-                        <div>
+                        <div className="col-span-2">
                           <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.roomType}</label>
-                          <select value={editingPolicy.medicalPlanType || 'Ward'} onChange={e => handleUpdateField('medicalPlanType', e.target.value)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded">
+                          <select value={editingPolicy.medicalPlanType || 'Ward'} onChange={e => handleUpdateField('medicalPlanType', e.target.value)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded bg-white">
                             <option value="Ward">Ward</option>
                             <option value="Semi-Private">Semi-Private</option>
                             <option value="Private">Private</option>
-                            <option value="High-End">High-End Medical</option>
+                            <option value="High-End Semi-Private">High-End Semi-Private</option>
+                            <option value="High-End Private">High-End Private</option>
                           </select>
                         </div>
-                        <div>
-                          <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.excess}</label>
-                          <input type="number" value={editingPolicy.medicalExcess || ''} onChange={e => handleUpdateField('medicalExcess', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
-                        </div>
+                        {['High-End Semi-Private', 'High-End Private'].includes(editingPolicy.medicalPlanType || '') && (
+                          <div className="col-span-2 mt-1">
+                            <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.excess}</label>
+                            <input type="number" placeholder="Annual Excess Amount" value={editingPolicy.medicalExcess || ''} onChange={e => handleUpdateField('medicalExcess', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                          </div>
+                        )}
                       </>
                     )}
 
