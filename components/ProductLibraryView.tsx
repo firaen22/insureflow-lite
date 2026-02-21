@@ -442,6 +442,9 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                   <option value="Critical Illness">Critical Illness</option>
                   <option value="Savings">Savings</option>
                   <option value="Accident">Accident</option>
+                  <option value="Hospital Income">Hospital Income</option>
+                  <option value="Surgical Cash">Surgical Cash</option>
+                  <option value="Pay Waiver">Pay Waiver</option>
                   <option value="Rider">Rider</option>
                 </select>
               </div>

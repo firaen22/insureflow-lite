@@ -28,11 +28,17 @@ Fields to extract:
 - medicalExcess (number): ONLY IF medicalPlanType is "High-End Semi-Private" or "High-End Private", extract the annual excess amount if found (e.g. 16000, 25000). Otherwise null.
 - policyAnniversaryDate (string): Format DD/MM (e.g., "01/01").
 - effectiveDate (string): The policy effective date, Format YYYY-MM-DD.
-- type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident", "Hospital Income". Infer from content.
+- type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident", "Hospital Income", "Surgical Cash", "Pay Waiver". Infer from content.
 - extractedTags (array of strings): Keywords like "High Value", "Term", "VHIS", etc.
 - clientBirthday (string): Format YYYY-MM-DD (e.g., "1990-01-01").
 - clientPhone (string): Phone number if available (remove spaces/dashes).
 - paymentMode (string): "Yearly" or "Monthly".
+- accidentPhysioLimitType1 (string): ONLY IF type is "Accident", extract physio limit type 1 ("Annual", "Per Treatment", "Per Accident").
+- accidentPhysioLimitAmount1 (number): ONLY IF type is "Accident", extract physio limit amount 1.
+- accidentPhysioLimitType2 (string): ONLY IF type is "Accident", extract physio limit type 2 if there's a second limit constraint.
+- accidentPhysioLimitAmount2 (number): ONLY IF type is "Accident", extract physio limit amount 2.
+- accidentBonesettingLimit (number): ONLY IF type is "Accident", extract bonesetting limit.
+- accidentAcupunctureLimit (number): ONLY IF type is "Accident", extract acupuncture limit.
 - riders (array of objects): Extract any rider/supplementary benefits. Each object should have:
     - name (string): Exact name of the rider to facilitate system matching.
     - type (string): "Medical", "Accident", "Critical Illness", "Waiver", "Other".

@@ -32,7 +32,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({ t, clients, policies, 
   // State for system tags
   // State for system tags
   const [systemTags, setSystemTags] = useState(() => {
-    const defaults = ['Medical', 'Accident', 'Critical Illness', 'Life', 'Home', 'Maid', 'Hospital Income', 'Sunlife', 'Prudential', 'AIA'];
+    const defaults = ['Medical', 'Accident', 'Critical Illness', 'Life', 'Home', 'Maid', 'Hospital Income', 'Surgical Cash', 'Pay Waiver', 'Sunlife', 'Prudential', 'AIA'];
     // Extract unique tags from existing clients
     const clientTags = new Set<string>();
     clients.forEach(c => c.tags.forEach(t => clientTags.add(t)));

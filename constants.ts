@@ -215,7 +215,11 @@ export const TRANSLATIONS = {
         capital: 'Capital Invested',
         accidentLimit: 'Accident Medical Limit',
         sectionLimit: 'Section Limit',
-        physio: 'Physio Visits/Year'
+        physio: 'Physio Visits/Year',
+        physioLimit1: 'Physio Limit 1',
+        physioLimit2: 'Physio Limit 2',
+        bonesetting: 'Bonesetting Limit',
+        acupuncture: 'Acupuncture Limit'
       }
     },
     meetings: {
@@ -495,7 +499,11 @@ export const TRANSLATIONS = {
         capital: 'Capital Invested',
         accidentLimit: 'Accident Medical Limit',
         sectionLimit: 'Section Limit',
-        physio: 'Physio Visits/Year'
+        physio: 'Physio Visits/Year',
+        physioLimit1: '物理治療限額 1',
+        physioLimit2: '物理治療限額 2',
+        bonesetting: '跌打限額',
+        acupuncture: '針灸限額'
       }
     },
     meetings: {

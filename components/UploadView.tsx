@@ -534,6 +534,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         <option value="Critical Illness">Critical Illness</option>
                         <option value="Accident">Accident</option>
                         <option value="Hospital Income">Hospital Income</option>
+                        <option value="Surgical Cash">Surgical Cash</option>
+                        <option value="Pay Waiver">Pay Waiver</option>
                       </select>
                     </div>
                   </div>
@@ -741,6 +743,101 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       />
                       <span className="text-sm text-slate-700 font-medium">Multipay Feature (多重保障)</span>
                     </label>
+                  </div>
+                )}
+
+                {/* Accident Option specifics */}
+                {activeItem.data.type === 'Accident' && (
+                  <div className="bg-orange-50 p-3 rounded-lg border border-orange-100 space-y-3 mt-3 mb-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-orange-700 uppercase mb-1">Medical Limit</label>
+                        <input
+                          type="number"
+                          value={activeItem.data.accidentMedicalLimit || ''}
+                          onChange={e => handleUpdateCurrentField('accidentMedicalLimit', parseFloat(e.target.value))}
+                          placeholder="$"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-orange-700 uppercase mb-1">Section Limit</label>
+                        <input
+                          type="number"
+                          value={activeItem.data.accidentSectionLimit || ''}
+                          onChange={e => handleUpdateCurrentField('accidentSectionLimit', parseFloat(e.target.value))}
+                          placeholder="$"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-orange-700 uppercase mb-1">Bonesetting Limit</label>
+                        <input
+                          type="number"
+                          value={activeItem.data.accidentBonesettingLimit || ''}
+                          onChange={e => handleUpdateCurrentField('accidentBonesettingLimit', parseFloat(e.target.value))}
+                          placeholder="$"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-orange-700 uppercase mb-1">Acupuncture Limit</label>
+                        <input
+                          type="number"
+                          value={activeItem.data.accidentAcupunctureLimit || ''}
+                          onChange={e => handleUpdateCurrentField('accidentAcupunctureLimit', parseFloat(e.target.value))}
+                          placeholder="$"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Physio Limits */}
+                    <div className="border-t border-orange-200 pt-3">
+                      <label className="block text-xs font-semibold text-orange-700 uppercase mb-2">Physio Limits</label>
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <select
+                          value={activeItem.data.accidentPhysioLimitType1 || ''}
+                          onChange={e => handleUpdateCurrentField('accidentPhysioLimitType1', e.target.value || undefined)}
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white font-medium"
+                        >
+                          <option value="">None</option>
+                          <option value="Annual">Annual Limit</option>
+                          <option value="Per Treatment">Per Treatment</option>
+                          <option value="Per Accident">Per Accident</option>
+                        </select>
+                        <input
+                          type="number"
+                          value={activeItem.data.accidentPhysioLimitAmount1 || ''}
+                          onChange={e => handleUpdateCurrentField('accidentPhysioLimitAmount1', parseFloat(e.target.value))}
+                          placeholder="$ Limit 1"
+                          disabled={!activeItem.data.accidentPhysioLimitType1}
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white disabled:bg-slate-100"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <select
+                          value={activeItem.data.accidentPhysioLimitType2 || ''}
+                          onChange={e => handleUpdateCurrentField('accidentPhysioLimitType2', e.target.value || undefined)}
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white font-medium"
+                        >
+                          <option value="">None</option>
+                          <option value="Annual">Annual Limit</option>
+                          <option value="Per Treatment">Per Treatment</option>
+                          <option value="Per Accident">Per Accident</option>
+                        </select>
+                        <input
+                          type="number"
+                          value={activeItem.data.accidentPhysioLimitAmount2 || ''}
+                          onChange={e => handleUpdateCurrentField('accidentPhysioLimitAmount2', parseFloat(e.target.value))}
+                          placeholder="$ Limit 2"
+                          disabled={!activeItem.data.accidentPhysioLimitType2}
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white disabled:bg-slate-100"
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
 

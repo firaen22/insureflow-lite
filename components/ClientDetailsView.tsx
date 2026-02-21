@@ -734,6 +734,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         <option value="Savings">Savings</option>
                         <option value="Accident">Accident</option>
                         <option value="Hospital Income">Hospital Income</option>
+                        <option value="Surgical Cash">Surgical Cash</option>
+                        <option value="Pay Waiver">Pay Waiver</option>
                         <option value="Auto">Auto</option>
                         <option value="Property">Property</option>
                       </select>
@@ -838,9 +840,57 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
                     {/* Savings */}
                     {editingPolicy.type === 'Savings' && (
-                      <div>
+                      <div className="col-span-2">
                         <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.capital}</label>
                         <input type="number" value={editingPolicy.capitalInvested || ''} onChange={e => handleUpdateField('capitalInvested', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                      </div>
+                    )}
+
+                    {/* Accident Option specifics */}
+                    {editingPolicy.type === 'Accident' && (
+                      <div className="col-span-2 bg-orange-50 p-3 rounded-lg border border-orange-100 space-y-3 mt-1">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-orange-700 mb-1">Medical Limit</label>
+                            <input type="number" value={editingPolicy.accidentMedicalLimit || ''} onChange={e => handleUpdateField('accidentMedicalLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-orange-700 mb-1">Section Limit</label>
+                            <input type="number" value={editingPolicy.accidentSectionLimit || ''} onChange={e => handleUpdateField('accidentSectionLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-orange-700 mb-1">Bonesetting Limit</label>
+                            <input type="number" value={editingPolicy.accidentBonesettingLimit || ''} onChange={e => handleUpdateField('accidentBonesettingLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-orange-700 mb-1">Acupuncture Limit</label>
+                            <input type="number" value={editingPolicy.accidentAcupunctureLimit || ''} onChange={e => handleUpdateField('accidentAcupunctureLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                          </div>
+                        </div>
+                        {/* Physio Limits */}
+                        <div className="border-t border-orange-200 pt-3">
+                          <label className="block text-xs font-medium text-orange-700 mb-2">Physio Limits</label>
+                          <div className="grid grid-cols-2 gap-3 mb-3">
+                            <select value={editingPolicy.accidentPhysioLimitType1 || ''} onChange={e => handleUpdateField('accidentPhysioLimitType1', e.target.value || undefined)} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded bg-white text-slate-700">
+                              <option value="">None</option>
+                              <option value="Annual">Annual Limit</option>
+                              <option value="Per Treatment">Per Treatment</option>
+                              <option value="Per Accident">Per Accident</option>
+                            </select>
+                            <input type="number" value={editingPolicy.accidentPhysioLimitAmount1 || ''} onChange={e => handleUpdateField('accidentPhysioLimitAmount1', Number(e.target.value))} placeholder="$ Limit 1" disabled={!editingPolicy.accidentPhysioLimitType1} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded bg-white disabled:bg-slate-100" />
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <select value={editingPolicy.accidentPhysioLimitType2 || ''} onChange={e => handleUpdateField('accidentPhysioLimitType2', e.target.value || undefined)} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded bg-white text-slate-700">
+                              <option value="">None</option>
+                              <option value="Annual">Annual Limit</option>
+                              <option value="Per Treatment">Per Treatment</option>
+                              <option value="Per Accident">Per Accident</option>
+                            </select>
+                            <input type="number" value={editingPolicy.accidentPhysioLimitAmount2 || ''} onChange={e => handleUpdateField('accidentPhysioLimitAmount2', Number(e.target.value))} placeholder="$ Limit 2" disabled={!editingPolicy.accidentPhysioLimitType2} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded bg-white disabled:bg-slate-100" />
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -901,6 +951,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                               <option value="Accident">Accident</option>
                               <option value="Critical Illness">Critical Illness</option>
                               <option value="Hospital Income">Hospital Income</option>
+                              <option value="Surgical Cash">Surgical Cash</option>
+                              <option value="Pay Waiver">Pay Waiver</option>
                               <option value="Life">Life</option>
                               <option value="Savings">Savings</option>
                               <option value="Other">Other</option>

@@ -250,18 +250,41 @@ const App: React.FC = () => {
       }
     });
 
-    // 3. Add Product to Library
-    if (isNewProduct) {
-      const newProduct: Product = {
-        name: policy.planName,
-        provider: 'Unknown',
-        type: policy.type,
-        defaultTags: [policy.type]
-      };
-      if (!products.some(p => p.name === newProduct.name)) {
-        setProducts(prev => [...prev, newProduct]);
+    // 3. Add Product and Riders to Library
+    setProducts(prev => {
+      const newProductsList = [...prev];
+      let didChange = false;
+
+      // Handle base product
+      if (isNewProduct) {
+        if (!newProductsList.some(p => p.name === policy.planName)) {
+          newProductsList.push({
+            name: policy.planName,
+            provider: policy.company || 'Unknown',
+            type: policy.type,
+            defaultTags: [policy.type]
+          });
+          didChange = true;
+        }
       }
-    }
+
+      // Handle riders
+      if (policy.riders && policy.riders.length > 0) {
+        policy.riders.forEach(rider => {
+          if (!newProductsList.some(p => p.name === rider.name)) {
+            newProductsList.push({
+              name: rider.name,
+              provider: policy.company || 'Unknown', // Assume rider is from same company
+              type: (rider.type as Product['type']) || 'Rider',
+              defaultTags: [rider.type || 'Rider']
+            });
+            didChange = true;
+          }
+        });
+      }
+
+      return didChange ? newProductsList : prev;
+    });
   };
 
   const handleManualPolicyAdd = (policy: PolicyData, clientId: string) => {

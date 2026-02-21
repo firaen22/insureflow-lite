@@ -6,7 +6,7 @@ export type PaymentMode = 'Yearly' | 'Half-Yearly' | 'Quarterly' | 'Monthly';
 export interface Product {
   name: string;
   provider: string;
-  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Rider';
+  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Surgical Cash' | 'Pay Waiver' | 'Rider';
   defaultTags: string[];
   isTaxDeductible?: boolean;
   annualCoverageLimit?: number; // Medical specific
@@ -33,7 +33,7 @@ export interface PolicyData {
   clientId?: string; // Optional: Link to existing client
   clientBirthday?: string; // New field for capturing birthday
   clientPhone?: string; // New field for capturing phone number
-  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Rider';
+  type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Surgical Cash' | 'Pay Waiver' | 'Rider';
   effectiveDate?: string; // New field for effective date
   policyAnniversaryDate: string; // Format: DD/MM
   maturityDate?: string; // YYYY-MM-DD (New field)
@@ -73,6 +73,12 @@ export interface PolicyData {
   accidentMedicalLimit?: number; // Sum insured for each accident
   accidentSectionLimit?: number; // Limitation on sum insured for each section
   accidentPhysioVisits?: number; // Number of times each year
+  accidentPhysioLimitType1?: 'Annual' | 'Per Treatment' | 'Per Accident';
+  accidentPhysioLimitAmount1?: number;
+  accidentPhysioLimitType2?: 'Annual' | 'Per Treatment' | 'Per Accident';
+  accidentPhysioLimitAmount2?: number;
+  accidentBonesettingLimit?: number;
+  accidentAcupunctureLimit?: number;
 }
 
 export interface MeetingLog {
