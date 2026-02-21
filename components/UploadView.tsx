@@ -695,19 +695,21 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sum Insured / Face Amount</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-2 text-slate-400">$</span>
-                      <input
-                        type="number"
-                        value={activeItem.data.sumInsured || ''}
-                        onChange={e => handleUpdateCurrentField('sumInsured', parseFloat(e.target.value))}
-                        placeholder="0"
-                        className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
-                      />
+                  {activeItem.data.type !== 'Medical' && (
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sum Insured / Face Amount</label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2 text-slate-400">$</span>
+                        <input
+                          type="number"
+                          value={activeItem.data.sumInsured || ''}
+                          onChange={e => handleUpdateCurrentField('sumInsured', parseFloat(e.target.value))}
+                          placeholder="0"
+                          className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Multipay Option for Critical Illness */}

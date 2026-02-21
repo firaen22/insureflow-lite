@@ -79,10 +79,19 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                 if (isRider) return <span className="text-blue-600 font-medium">{policy.type === 'Medical' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
 
                 if (policy.type === 'Medical') {
+                    const matchedProduct = products.find(p => p.name === policy.planName);
                     const planText = (policy.medicalPlanType === 'High-End' ? 'High-End Medical' : policy.medicalPlanType) || 'Ward';
+
                     return (
                         <div className="flex flex-col items-center justify-center leading-tight">
-                            <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>
+                            {matchedProduct ? (
+                                <div className="flex flex-col items-center">
+                                    <span className="text-blue-600 font-medium text-[10px]">Ann: {matchedProduct.annualCoverageLimit ? formatCurrency(matchedProduct.annualCoverageLimit, policy.currency) : '-'}</span>
+                                    <span className="text-blue-500 text-[9px]">Life: {matchedProduct.wholeLifeCoverageLimit ? formatCurrency(matchedProduct.wholeLifeCoverageLimit, policy.currency) : '-'}</span>
+                                </div>
+                            ) : (
+                                <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>
+                            )}
                             {planText && <span className="text-[9px] bg-blue-50 text-blue-700 border border-blue-200 px-1 py-0.5 rounded mt-0.5 whitespace-nowrap">{planText}</span>}
                         </div>
                     );
