@@ -42,6 +42,21 @@ export const PRODUCT_LIBRARY: Product[] = [
     defaultTags: ['Sunlife', 'Savings', 'Dividend']
   },
   {
+    name: 'CEO Medical Rider',
+    provider: 'AIA',
+    type: 'Rider',
+    defaultTags: ['AIA', 'Medical Rider', 'High-End'],
+    isTaxDeductible: true,
+    annualCoverageLimit: 5000000,
+    wholeLifeCoverageLimit: 15000000
+  },
+  {
+    name: 'Crisis Cover Rider',
+    provider: 'Prudential',
+    type: 'Rider',
+    defaultTags: ['Prudential', 'CI Rider']
+  },
+  {
     name: 'Home Protect Plus',
     provider: 'AIG',
     type: 'Property',

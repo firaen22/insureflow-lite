@@ -17,13 +17,15 @@ Analyze the attached image/document and extract the following details into a val
 Do NOT wrap the JSON in markdown code blocks (like \`\`\`json). Return ONLY the raw JSON string.
 
 Fields to extract:
-- planName (string): The name of the insurance plan.
+- planName (string): The exact name of the insurance plan (e.g., "CEO Medical Plan"). Try to be as exact as possible to facilitate system matching.
 - company (string): The name of the insurance company (e.g., AIA, Prudential, Manulife).
 - policyNumber (string): The policy ID/Number.
 - holderName (string): The name of the policyholder.
 - insuredName (string): Compare the Policyholder and the Insured Person. If they are different individuals, YOU MUST extract the Insured Person's name. If identical, you may omit or extract the same name.
 - premiumAmount (number): Annual premium amount for the BASIC PLAN only (remove currency symbols). If unsure, use Total Premium.
-- sumInsured (number): The Sum Insured / Face Amount / Principal Amount of the basic plan.
+- sumInsured (number): The Sum Insured / Face Amount / Principal Amount of the basic plan. Note: Base Medical plans usually don't have a single sum insured in the same way.
+- medicalPlanType (string): ONLY IF type is "Medical", extract the ward grade exactly as one of: "Ward", "Semi-Private", "Private", "High-End Semi-Private", "High-End Private".
+- medicalExcess (number): ONLY IF medicalPlanType is "High-End Semi-Private" or "High-End Private", extract the annual excess amount if found (e.g. 16000, 25000). Otherwise null.
 - policyAnniversaryDate (string): Format DD/MM (e.g., "01/01").
 - effectiveDate (string): The policy effective date, Format YYYY-MM-DD.
 - type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident", "Hospital Income". Infer from content.
@@ -32,10 +34,11 @@ Fields to extract:
 - clientPhone (string): Phone number if available (remove spaces/dashes).
 - paymentMode (string): "Yearly" or "Monthly".
 - riders (array of objects): Extract any rider/supplementary benefits. Each object should have:
-    - name (string): Name of the rider.
+    - name (string): Exact name of the rider to facilitate system matching.
     - type (string): "Medical", "Accident", "Critical Illness", "Waiver", "Other".
     - premiumAmount (number): Premium for this specific rider.
-    - sumInsured (number): Sum Insured / Benefit Amount for this rider.
+    - sumInsured (number): Sum Insured / Benefit Amount for this rider (if applicable).
+    - medicalPlanType (string): ONLY IF this rider type is "Medical", extract the ward grade exactly as one of: "Ward", "Semi-Private", "Private", "High-End Semi-Private", "High-End Private".
 - cashValue (number): Guaranteed Cash Value from the latest statement.
 - accumulatedDividend (number): Accumulated Dividends/Interest/Coupons.
 - totalCashValue (number): Total Surrender Value / Cash Value (Sum of guaranteed + non-guaranteed).
