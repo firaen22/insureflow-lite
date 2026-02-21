@@ -11,12 +11,13 @@ export const DEFAULT_PDF_LAYOUT: PDFColumnConfig[] = [
   // Coverage Section
   { id: 'life', labelKey: 'Life', visible: true, order: 5, width: 10 },
   { id: 'ci', labelKey: 'CI', visible: true, order: 6, width: 10 },
-  { id: 'med_acc', labelKey: 'Med/Acc', visible: true, order: 7, width: 10 },
+  { id: 'medical', labelKey: 'Medical', visible: true, order: 7, width: 7 },
+  { id: 'accident', labelKey: 'Accident', visible: true, order: 8, width: 7 },
   // Premium Section
-  { id: 'currency', labelKey: 'Curr.', visible: true, order: 8, width: 5 },
-  { id: 'premium_amt', labelKey: 'Amt', visible: true, order: 9, width: 10 },
-  { id: 'payment_mode', labelKey: 'Mode', visible: true, order: 10, width: 5 },
-  { id: 'tax_deductible', labelKey: 'Tax Ded.', visible: true, order: 11, width: 8 },
+  { id: 'currency', labelKey: 'Curr.', visible: true, order: 9, width: 5 },
+  { id: 'premium_amt', labelKey: 'Amt', visible: true, order: 10, width: 10 },
+  { id: 'payment_mode', labelKey: 'Mode', visible: true, order: 11, width: 5 },
+  { id: 'tax_deductible', labelKey: 'Tax Ded.', visible: true, order: 12, width: 8 },
 ];
 export const PRODUCT_LIBRARY: Product[] = [
   {
@@ -284,7 +285,8 @@ export const TRANSLATIONS = {
         'insured': 'Insured',
         'life': 'Life',
         'ci': 'CI',
-        'med_acc': 'Med/Acc',
+        'medical': 'Medical',
+        'accident': 'Acc',
         'currency': 'Curr.',
         'premium_amt': 'Amt',
         'payment_mode': 'Mode',
@@ -561,7 +563,8 @@ export const TRANSLATIONS = {
         'insured': '受保人',
         'life': '人壽',
         'ci': '危疾',
-        'med_acc': '醫療/意外',
+        'medical': '醫療',
+        'accident': '意外',
         'currency': '貨幣',
         'premium_amt': '金額',
         'payment_mode': '繳費模式',

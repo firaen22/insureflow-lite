@@ -75,9 +75,22 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
             case 'ci':
                 if (isRider) return <span className="text-red-600 font-medium">{policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
                 return <span className="text-red-600 font-medium">{policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
-            case 'med_acc':
-                if (isRider) return <span className="text-blue-600 font-medium">{(policy.type === 'Medical' || policy.type === 'Accident') && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
-                return <span className="text-blue-600 font-medium">{(policy.type === 'Medical' || policy.type === 'Accident') && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
+            case 'medical':
+                if (isRider) return <span className="text-blue-600 font-medium">{policy.type === 'Medical' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
+
+                if (policy.type === 'Medical') {
+                    const planText = policy.medicalPlanType === 'High-End' ? 'High-End Medical' : policy.medicalPlanType;
+                    return (
+                        <div className="flex flex-col items-center justify-center leading-tight">
+                            <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>
+                            {planText && <span className="text-[9px] bg-blue-50 text-blue-700 border border-blue-200 px-1 py-0.5 rounded mt-0.5 whitespace-nowrap">{planText}</span>}
+                        </div>
+                    );
+                }
+                return '-';
+            case 'accident':
+                if (isRider) return <span className="text-orange-600 font-medium">{policy.type === 'Accident' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
+                return <span className="text-orange-600 font-medium">{policy.type === 'Accident' && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
             case 'currency':
                 return isRider ? '-' : policy.currency;
             case 'premium_amt':

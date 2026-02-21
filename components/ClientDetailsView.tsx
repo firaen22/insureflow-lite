@@ -322,7 +322,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         )}
                         {policy.medicalPlanType && (
                           <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded mt-1 inline-block">
-                            {policy.medicalPlanType}
+                            {policy.medicalPlanType === 'High-End' ? 'High-End Medical' : policy.medicalPlanType}
                           </span>
                         )}
                       </td>
@@ -785,6 +785,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             <option value="Ward">Ward</option>
                             <option value="Semi-Private">Semi-Private</option>
                             <option value="Private">Private</option>
+                            <option value="High-End">High-End Medical</option>
                           </select>
                         </div>
                         <div>

@@ -51,7 +51,7 @@ export interface PolicyData {
   // --- Plan Specific Features ---
 
   // Medical
-  medicalPlanType?: 'Ward' | 'Semi-Private' | 'Private';
+  medicalPlanType?: 'Ward' | 'Semi-Private' | 'Private' | 'High-End';
   medicalExcess?: number; // For High-end medical
 
   // Life / Critical Illness / Accident (Critical)

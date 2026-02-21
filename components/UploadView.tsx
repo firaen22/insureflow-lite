@@ -533,6 +533,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         <option value="Ward">Ward</option>
                         <option value="Semi-Private">Semi-Private</option>
                         <option value="Private">Private</option>
+                        <option value="High-End">High-End Medical</option>
                       </select>
                     </div>
                   )}
