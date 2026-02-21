@@ -458,7 +458,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                 </label>
               </div>
 
-              {editingProduct.type === 'Medical' && (
+              {['Medical', 'Rider', 'Critical Illness'].includes(editingProduct.type) && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.annualLimit || 'Annual Limit'}</label>

@@ -821,6 +821,18 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             <input type="number" placeholder="Annual Excess Amount" value={editingPolicy.medicalExcess || ''} onChange={e => handleUpdateField('medicalExcess', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
                           </div>
                         )}
+                        {(products.find(p => p.name === editingPolicy.planName)?.annualCoverageLimit || products.find(p => p.name === editingPolicy.planName)?.wholeLifeCoverageLimit) ? (
+                          <div className="col-span-2 bg-slate-100 p-2 rounded border border-slate-200 mt-1 flex justify-between items-center">
+                            <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider flex items-center gap-1">
+                              <Activity className="w-3 h-3" />
+                              Library Limits Mapped
+                            </div>
+                            <div className="text-xs text-slate-700 font-medium text-right flex gap-3">
+                              {products.find(p => p.name === editingPolicy.planName)?.annualCoverageLimit && <span>Ann: ${products.find(p => p.name === editingPolicy.planName)?.annualCoverageLimit?.toLocaleString()}</span>}
+                              {products.find(p => p.name === editingPolicy.planName)?.wholeLifeCoverageLimit && <span>Life: ${products.find(p => p.name === editingPolicy.planName)?.wholeLifeCoverageLimit?.toLocaleString()}</span>}
+                            </div>
+                          </div>
+                        ) : null}
                       </>
                     )}
 
@@ -862,7 +874,24 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         <div className="grid grid-cols-12 gap-2">
                           <div className="col-span-8">
                             <label className="block font-medium text-slate-500 mb-1">Rider Name</label>
-                            <input type="text" value={rider.name} placeholder="Plan / Rider Name" onChange={e => handleUpdateRider(idx, 'name', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                            <input
+                              list={`edit-rider-products-${idx}`}
+                              type="text"
+                              value={rider.name}
+                              placeholder="Plan / Rider Name"
+                              onChange={e => {
+                                const val = e.target.value;
+                                handleUpdateRider(idx, 'name', val);
+                                const matchedProduct = products.find(p => p.name === val);
+                                if (matchedProduct) {
+                                  handleUpdateRider(idx, 'type', matchedProduct.type);
+                                }
+                              }}
+                              className="w-full px-2 py-1.5 border rounded border-slate-300 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+                            />
+                            <datalist id={`edit-rider-products-${idx}`}>
+                              {products.map(p => <option key={p.name} value={p.name}>{p.provider} - {p.name}</option>)}
+                            </datalist>
                           </div>
                           <div className="col-span-4">
                             <label className="block font-medium text-slate-500 mb-1">Type</label>
@@ -915,6 +944,18 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             <input type="text" value={rider.premiumMatureDate || ''} placeholder="Age 65/Date" onChange={e => handleUpdateRider(idx, 'premiumMatureDate', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
                           </div>
                         </div>
+                        {(products.find(p => p.name === rider.name)?.annualCoverageLimit || products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit) ? (
+                          <div className="bg-slate-100 p-2 rounded border border-slate-200 mt-2 flex justify-between items-center">
+                            <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider flex items-center gap-1">
+                              <Activity className="w-3 h-3" />
+                              Library Limits Mapped
+                            </div>
+                            <div className="text-xs text-slate-700 font-medium text-right flex gap-3">
+                              {products.find(p => p.name === rider.name)?.annualCoverageLimit && <span>Ann: ${products.find(p => p.name === rider.name)?.annualCoverageLimit?.toLocaleString()}</span>}
+                              {products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit && <span>Life: ${products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit?.toLocaleString()}</span>}
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
                     ))}
                     {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-400 italic">No riders added.</p>}

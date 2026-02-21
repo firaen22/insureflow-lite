@@ -568,6 +568,18 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           />
                         </div>
                       )}
+                      {(products.find(p => p.name === activeItem.data.planName)?.annualCoverageLimit || products.find(p => p.name === activeItem.data.planName)?.wholeLifeCoverageLimit) ? (
+                        <div className="col-span-2 bg-white/60 p-2.5 rounded border border-blue-100 mt-1 flex justify-between items-center">
+                          <div className="text-[10px] text-blue-500 font-semibold uppercase tracking-wider flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                            Library Limits Mapped
+                          </div>
+                          <div className="text-xs text-blue-900 font-medium text-right flex gap-3">
+                            {products.find(p => p.name === activeItem.data.planName)?.annualCoverageLimit && <span>Ann: ${products.find(p => p.name === activeItem.data.planName)?.annualCoverageLimit?.toLocaleString()}</span>}
+                            {products.find(p => p.name === activeItem.data.planName)?.wholeLifeCoverageLimit && <span>Life: ${products.find(p => p.name === activeItem.data.planName)?.wholeLifeCoverageLimit?.toLocaleString()}</span>}
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   )}
 
@@ -801,12 +813,23 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         </button>
                         <div className="space-y-2">
                           <input
+                            list={`rider-products-${idx}`}
                             type="text"
                             value={rider.name}
-                            onChange={e => handleUpdateRider(idx, 'name', e.target.value)}
+                            onChange={e => {
+                              const val = e.target.value;
+                              handleUpdateRider(idx, 'name', val);
+                              const matchedProduct = products.find(p => p.name === val);
+                              if (matchedProduct) {
+                                handleUpdateRider(idx, 'type', matchedProduct.type);
+                              }
+                            }}
                             placeholder="Rider Name"
-                            className="w-full p-1.5 border border-slate-300 rounded text-sm bg-white"
+                            className="w-full p-1.5 border border-slate-300 rounded text-sm bg-white focus:ring-1 focus:ring-brand-500 focus:outline-none"
                           />
+                          <datalist id={`rider-products-${idx}`}>
+                            {products.map(p => <option key={p.name} value={p.name}>{p.provider} - {p.name}</option>)}
+                          </datalist>
                           <div className="flex gap-2">
                             <select
                               value={rider.type}
@@ -849,6 +872,17 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
                             />
                           </div>
+                          {(products.find(p => p.name === rider.name)?.annualCoverageLimit || products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit) ? (
+                            <div className="bg-white/60 p-2 rounded border border-blue-100 flex justify-between items-center mt-1">
+                              <div className="text-[9px] text-blue-500 font-semibold uppercase tracking-wider flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Library Limits Mapped
+                              </div>
+                              <div className="text-[10px] text-blue-900 font-medium text-right flex gap-2">
+                                {products.find(p => p.name === rider.name)?.annualCoverageLimit && <span>Ann: ${products.find(p => p.name === rider.name)?.annualCoverageLimit?.toLocaleString()}</span>}
+                                {products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit && <span>Life: ${products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit?.toLocaleString()}</span>}
+                              </div>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     ))}
