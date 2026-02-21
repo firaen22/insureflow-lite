@@ -13,6 +13,11 @@ export const PRODUCT_TYPES = [
   'Pay Waiver'
 ] as const;
 
+export const HK_PROVIDERS = [
+  'AIA', 'Prudential', 'Manulife', 'Sun Life', 'FWD', 'AXA',
+  'China Life', 'HSBC Life', 'BOC Life', 'Bupa', 'Cigna', 'Zurich'
+];
+
 // Default Layout Config for PDF Studio
 export const DEFAULT_PDF_LAYOUT: PDFColumnConfig[] = [
   // Basic Info Section

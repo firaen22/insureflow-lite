@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Upload, FileText, CheckCircle, Loader2, AlertCircle, X, ShieldCheck, Pencil, Save, Tag, Sparkles, BookOpen, Cake, Plus, Calendar, Layers, Trash2, Activity, Keyboard, FileSpreadsheet, ListChecks } from 'lucide-react';
 import { UploadStatus, PolicyData, Product, Rider } from '../types';
-import { TRANSLATIONS, PRODUCT_TYPES } from '../constants';
+import { TRANSLATIONS, PRODUCT_TYPES, HK_PROVIDERS } from '../constants';
 
 import { Client } from '../types';
 
@@ -29,6 +29,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
   const [processedFiles, setProcessedFiles] = useState<ProcessedFile[]>([]);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [newTagInput, setNewTagInput] = useState('');
+  const [isCustomProvider, setIsCustomProvider] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -342,6 +343,14 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
     }
   }, [activeItem?.file]);
 
+  React.useEffect(() => {
+    if (activeItem?.data?.company) {
+      setIsCustomProvider(!HK_PROVIDERS.includes(activeItem.data.company));
+    } else {
+      setIsCustomProvider(false);
+    }
+  }, [activeItem?.id]);
+
   // --- Render ---
 
   if (viewMode === 'upload' && processedFiles.length === 0) {
@@ -537,25 +546,38 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Insurance Company</label>
-                      <input
-                        list="company-options"
-                        type="text"
-                        value={activeItem.data.company || ''}
-                        onChange={e => handleUpdateCurrentField('company', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
-                        placeholder="e.g. AIA, Prudential"
-                      />
-                      <datalist id="company-options">
-                        <option value="AIA" />
-                        <option value="Prudential" />
-                        <option value="Manulife" />
-                        <option value="Sun Life" />
-                        <option value="FWD" />
-                        <option value="AXA" />
-                        <option value="China Life" />
-                        <option value="HSBC Life" />
-                        <option value="BOC Life" />
-                      </datalist>
+                      <div className="space-y-2">
+                        <select
+                          value={isCustomProvider ? 'Other' : (activeItem.data.company || '')}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === 'Other') {
+                              setIsCustomProvider(true);
+                              handleUpdateCurrentField('company', '');
+                            } else {
+                              setIsCustomProvider(false);
+                              handleUpdateCurrentField('company', val);
+                            }
+                          }}
+                          className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                          style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2rem' }}
+                        >
+                          <option value="">Select insurer...</option>
+                          {HK_PROVIDERS.map(p => <option key={p} value={p}>{p}</option>)}
+                          <option value="Other">Other / Custom...</option>
+                        </select>
+
+                        {isCustomProvider && (
+                          <input
+                            type="text"
+                            value={activeItem.data.company || ''}
+                            onChange={(e) => handleUpdateCurrentField('company', e.target.value)}
+                            className="w-full p-2 border border-slate-300 rounded-lg text-sm animate-in fade-in slide-in-from-top-1"
+                            placeholder="Enter custom insurer..."
+                            autoFocus
+                          />
+                        )}
+                      </div>
                     </div>
 
                     <div>

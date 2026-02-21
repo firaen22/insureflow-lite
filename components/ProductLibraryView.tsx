@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { TRANSLATIONS, PRODUCT_TYPES } from '../constants';
+import { TRANSLATIONS, PRODUCT_TYPES, HK_PROVIDERS } from '../constants';
 import { Search, Plus, MoreHorizontal, Shield, Tag, Box, HeartPulse, Home, Car, AlertTriangle, PiggyBank, Briefcase, Pencil, X, Check, Save, Layers } from 'lucide-react';
 
 interface ProductLibraryViewProps {
@@ -24,6 +24,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [originalName, setOriginalName] = useState<string>(''); // To track name changes
   const [newTagInput, setNewTagInput] = useState('');
+  const [isCustomProvider, setIsCustomProvider] = useState(false);
 
   const filteredProducts = products.filter(product => {
     const searchLower = searchTerm.toLowerCase();
@@ -132,6 +133,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
   const handleEditClick = (product: Product) => {
     setEditingProduct({ ...product });
     setOriginalName(product.name);
+    setIsCustomProvider(product.provider !== '' && !HK_PROVIDERS.includes(product.provider));
     setIsModalOpen(true);
   };
 
@@ -146,6 +148,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
       wholeLifeCoverageLimit: undefined
     });
     setOriginalName('');
+    setIsCustomProvider(false);
     setIsModalOpen(true);
   };
 
@@ -176,10 +179,6 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
     }
   };
 
-  const HK_PROVIDERS = [
-    'AIA', 'Prudential', 'Manulife', 'Sun Life', 'FWD', 'AXA',
-    'China Life', 'HSBC Life', 'BOC Life', 'Bupa', 'Cigna', 'Zurich'
-  ];
 
   return (
     <div className="space-y-6 relative">
@@ -444,17 +443,38 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">{t.form.provider}</label>
-                <input
-                  list="provider-list"
-                  type="text"
-                  value={editingProduct.provider}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, provider: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  placeholder="Select or type insurer..."
-                />
-                <datalist id="provider-list">
-                  {HK_PROVIDERS.map(p => <option key={p} value={p} />)}
-                </datalist>
+                <div className="space-y-2">
+                  <select
+                    value={isCustomProvider ? 'Other' : editingProduct.provider}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === 'Other') {
+                        setIsCustomProvider(true);
+                        setEditingProduct({ ...editingProduct, provider: '' });
+                      } else {
+                        setIsCustomProvider(false);
+                        setEditingProduct({ ...editingProduct, provider: val });
+                      }
+                    }}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                  >
+                    <option value="" disabled>Select insurer...</option>
+                    {HK_PROVIDERS.map(p => <option key={p} value={p}>{p}</option>)}
+                    <option value="Other">Other / Custom...</option>
+                  </select>
+
+                  {isCustomProvider && (
+                    <input
+                      type="text"
+                      value={editingProduct.provider}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, provider: e.target.value })}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 animate-in fade-in slide-in-from-top-1"
+                      placeholder="Enter custom insurer name..."
+                      autoFocus
+                    />
+                  )}
+                </div>
               </div>
 
               <div>
