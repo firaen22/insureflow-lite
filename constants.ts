@@ -290,7 +290,7 @@ export const TRANSLATIONS = {
   },
   zh: {
     nav: {
-      brand: 'InsureFlow 保險通',
+      brand: 'InsureFlow',
       dashboard: '儀表板',
       upload: '保單上傳',
       clients: '客戶管理',
