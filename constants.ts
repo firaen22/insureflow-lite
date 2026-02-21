@@ -286,6 +286,36 @@ export const TRANSLATIONS = {
         'premium_amt': 'Amt',
         'payment_mode': 'Mode'
       }
+    },
+    settings: {
+      title: 'Settings',
+      accountSystem: 'Account & System',
+      notSignedIn: 'Not Signed In',
+      signInPrompt: 'Sign in via the Sync button to link account.',
+      preferences: 'Preferences',
+      language: 'Language',
+      aiParsing: 'AI Parsing Settings',
+      aiProvider: 'AI Provider',
+      baseUrl: 'Base URL',
+      apiKey: 'API Key',
+      storedLocally: 'Stored locally in your browser.',
+      verifySave: 'Verify & Save',
+      clear: 'Clear',
+      selectModel: 'Select AI Model',
+      keyWorks: 'key works with selected model.',
+      keyNotVerified: 'Key saved, but not verified. Click "Verify & Save" to check models.',
+      connection: 'Connection',
+      spreadsheetId: 'Spreadsheet ID',
+      notConnected: 'Not connected',
+      test: 'Test',
+      rulesNotifs: 'Rules & Notifications',
+      reminderDays: 'Policy Anniversary Reminder (Days)',
+      reminderDesc: 'Show reminders for policies originating within this many days.',
+      pdfStudio: 'PDF Report Layout (Studio)',
+      pdfStudioDesc: 'Customize the columns shown in the client PDF report. Changes apply globally.',
+      dataManagement: 'Data Management',
+      exportData: 'Export Data (JSON)',
+      clearCache: 'Clear Local Cache'
     }
   },
   zh: {
@@ -529,6 +559,36 @@ export const TRANSLATIONS = {
         'premium_amt': '金額',
         'payment_mode': '繳費模式'
       }
+    },
+    settings: {
+      title: '設定',
+      accountSystem: '帳戶與系統',
+      notSignedIn: '未登入',
+      signInPrompt: '請透過同步按鈕登入以連結帳戶。',
+      preferences: '偏好設定',
+      language: '語言',
+      aiParsing: 'AI 解析設定',
+      aiProvider: 'AI 供應商',
+      baseUrl: 'API 基礎網址',
+      apiKey: 'API 金鑰',
+      storedLocally: '金鑰儲存於瀏覽器本地端中。',
+      verifySave: '驗證並儲存',
+      clear: '清除',
+      selectModel: '選擇 AI 模型',
+      keyWorks: '金鑰與所選模型可用。',
+      keyNotVerified: '金鑰已儲存但未經驗證。請點擊「驗證並儲存」檢查可用模型。',
+      connection: '資料庫連線',
+      spreadsheetId: 'Google Sheet ID',
+      notConnected: '未連線',
+      test: '測試連線',
+      rulesNotifs: '規則與通知',
+      reminderDays: '保單週年日提醒 (天數)',
+      reminderDesc: '此天數內將顯示客戶保單檢閱續保的提醒。',
+      pdfStudio: 'PDF 報告版面 (工作室)',
+      pdfStudioDesc: '自訂在客戶 PDF 報告中顯示的欄位。變更將套用至全域。',
+      dataManagement: '資料管理',
+      exportData: '匯出資料 (JSON)',
+      clearCache: '清除本地快取'
     }
   }
 };
