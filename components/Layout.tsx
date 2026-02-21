@@ -168,14 +168,6 @@ export const Layout: React.FC<LayoutProps> = ({
               <span>{language === 'en' ? 'EN' : '中'}</span>
             </button>
 
-            <button
-              onClick={() => onChangeView(AppView.DASHBOARD)}
-              className="p-2 text-slate-400 hover:text-brand-600 transition-colors relative"
-            >
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-            </button>
-
           </div>
         </header>
 
