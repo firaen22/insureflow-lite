@@ -453,6 +453,7 @@ const App: React.FC = () => {
               t={t.report}
               client={selectedClient}
               policies={selectedClientPolicies}
+              products={products}
               pdfLayout={settings.pdfLayout || DEFAULT_PDF_LAYOUT}
               onUpdateLayout={(newLayout) => setSettings(prev => ({ ...prev, pdfLayout: newLayout }))}
               onBack={() => setCurrentView(AppView.CLIENT_DETAILS)}
