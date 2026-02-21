@@ -133,7 +133,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
   const handleEditClick = (product: Product) => {
     setEditingProduct({ ...product });
     setOriginalName(product.name);
-    setIsCustomProvider(product.provider !== '' && !HK_PROVIDERS.includes(product.provider));
+    setIsCustomProvider(product.provider !== '' && !HK_PROVIDERS.some(p => p.toLowerCase() === product.provider.toLowerCase()));
     setIsModalOpen(true);
   };
 
@@ -291,11 +291,16 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center text-slate-600">
-                          {product.provider === 'AIA' && <Shield className="w-3 h-3 mr-1.5 text-red-500" />}
-                          {product.provider === 'Prudential' && <Shield className="w-3 h-3 mr-1.5 text-brand-500" />}
-                          {product.provider === 'Manulife' && <Shield className="w-3 h-3 mr-1.5 text-green-500" />}
-                          {product.provider !== 'AIA' && product.provider !== 'Prudential' && product.provider !== 'Manulife' && <Shield className="w-3 h-3 mr-1.5 text-slate-400" />}
-                          {product.provider}
+                          {product.provider.toLowerCase() === 'aia' && <Shield className="w-3.5 h-3.5 mr-2 text-rose-600" />}
+                          {product.provider.toLowerCase() === 'prudential' && <Shield className="w-3.5 h-3.5 mr-2 text-brand-600" />}
+                          {product.provider.toLowerCase() === 'manulife' && <Shield className="w-3.5 h-3.5 mr-2 text-emerald-600" />}
+                          {product.provider.toLowerCase() === 'sun life' && <Shield className="w-3.5 h-3.5 mr-2 text-amber-500" />}
+                          {product.provider.toLowerCase() === 'fwd' && <Shield className="w-3.5 h-3.5 mr-2 text-orange-500" />}
+                          {product.provider.toLowerCase() === 'axa' && <Shield className="w-3.5 h-3.5 mr-2 text-blue-600" />}
+                          {product.provider.toLowerCase() === 'china life' && <Shield className="w-3.5 h-3.5 mr-2 text-red-700" />}
+                          {product.provider.toLowerCase() === 'hsbc life' && <Shield className="w-3.5 h-3.5 mr-2 text-slate-800" />}
+                          {!['aia', 'prudential', 'manulife', 'sun life', 'fwd', 'axa', 'china life', 'hsbc life'].includes(product.provider.toLowerCase()) && <Shield className="w-3.5 h-3.5 mr-2 text-slate-400" />}
+                          <span className="font-medium">{product.provider}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">

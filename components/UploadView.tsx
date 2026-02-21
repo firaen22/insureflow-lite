@@ -345,7 +345,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
   React.useEffect(() => {
     if (activeItem?.data?.company) {
-      setIsCustomProvider(!HK_PROVIDERS.includes(activeItem.data.company));
+      setIsCustomProvider(!HK_PROVIDERS.some(p => p.toLowerCase() === activeItem.data.company?.toLowerCase()));
     } else {
       setIsCustomProvider(false);
     }
@@ -518,6 +518,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         const matchedProduct = products.find(p => p.name === val);
                         if (matchedProduct) {
                           handleUpdateCurrentField('type', matchedProduct.type);
+                          handleUpdateCurrentField('company', matchedProduct.provider);
                         }
                       }}
                       className="w-full p-2.5 border border-brand-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
@@ -545,7 +546,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Insurance Company</label>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.company || 'Insurance Company'}</label>
                       <div className="space-y-2">
                         <select
                           value={isCustomProvider ? 'Other' : (activeItem.data.company || '')}

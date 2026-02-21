@@ -370,7 +370,8 @@ export const saveData = async (spreadsheetId: string, clients: Client[], policie
                 currency: p.currency,
                 cashValue: p.cashValue,
                 accumulatedDividend: p.accumulatedDividend,
-                totalCashValue: p.totalCashValue
+                totalCashValue: p.totalCashValue,
+                company: p.company
             })
         ]);
 

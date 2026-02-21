@@ -168,7 +168,8 @@ export const TRANSLATIONS = {
         newProductDesc: 'This plan is not in the library. Saving this policy will record it for future auto-tagging.',
         noTags: 'No library tags found.',
         emptyState: 'Upload a document to see extracted details here.',
-        effectiveDate: 'Effective Date (YYYY-MM-DD)'
+        effectiveDate: 'Effective Date (YYYY-MM-DD)',
+        company: 'Insurance Company'
       }
     },
     clients: {
@@ -450,7 +451,8 @@ export const TRANSLATIONS = {
         newProductDesc: '此計劃不在產品庫中。儲存此保單將記錄以供未來自動標記。',
         noTags: '未找到產品庫標籤。',
         emptyState: '上傳文件以在此處查看提取詳情。',
-        effectiveDate: '生效日期 (YYYY-MM-DD)'
+        effectiveDate: '生效日期 (YYYY-MM-DD)',
+        company: '保險公司'
       }
     },
     clients: {
