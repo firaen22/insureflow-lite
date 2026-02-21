@@ -858,7 +858,16 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           </div>
                           <div className="col-span-4">
                             <label className="block font-medium text-slate-500 mb-1">Type</label>
-                            <input type="text" value={rider.type || ''} placeholder="e.g. CI, Medical" onChange={e => handleUpdateRider(idx, 'type', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                            <select value={rider.type || 'Other'} onChange={e => handleUpdateRider(idx, 'type', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300 bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none" style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em', paddingRight: '1.5rem' }}>
+                              <option value="" disabled>Select Type...</option>
+                              <option value="Medical">Medical</option>
+                              <option value="Accident">Accident</option>
+                              <option value="Critical Illness">Critical Illness</option>
+                              <option value="Hospital Income">Hospital Income</option>
+                              <option value="Life">Life</option>
+                              <option value="Savings">Savings</option>
+                              <option value="Other">Other</option>
+                            </select>
                           </div>
                         </div>
 
