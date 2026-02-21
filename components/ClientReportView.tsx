@@ -76,11 +76,30 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                 if (isRider) return <span className="text-red-600 font-medium">{policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
                 return <span className="text-red-600 font-medium">{policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
             case 'medical':
-                if (isRider) return <span className="text-blue-600 font-medium">{policy.type === 'Medical' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
+                if (isRider) {
+                    if (policy.type === 'Medical') {
+                        const matchedRiderProduct = products.find(p => p.name === policy.name);
+                        const riderPlanText = (['High-End Semi-Private', 'High-End Private'].includes(policy.medicalPlanType || '') ? 'High-End Medical' : policy.medicalPlanType) || 'Ward';
+                        return (
+                            <div className="flex flex-col items-center justify-center leading-tight">
+                                {matchedRiderProduct && (matchedRiderProduct.annualCoverageLimit || matchedRiderProduct.wholeLifeCoverageLimit) ? (
+                                    <div className="flex flex-col items-center">
+                                        <span className="text-blue-600 font-medium text-[10px] whitespace-nowrap">Ann: {matchedRiderProduct.annualCoverageLimit ? formatCurrency(matchedRiderProduct.annualCoverageLimit, 'HKD') : '-'}</span>
+                                        <span className="text-blue-500 text-[9px] whitespace-nowrap">Life: {matchedRiderProduct.wholeLifeCoverageLimit ? formatCurrency(matchedRiderProduct.wholeLifeCoverageLimit, 'HKD') : '-'}</span>
+                                    </div>
+                                ) : (
+                                    <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>
+                                )}
+                                {riderPlanText && <span className="text-[8px] bg-blue-50 text-blue-700 border border-blue-200 px-1 rounded mt-0.5 whitespace-nowrap">{riderPlanText}</span>}
+                            </div>
+                        );
+                    }
+                    return '-';
+                }
 
                 if (policy.type === 'Medical') {
                     const matchedProduct = products.find(p => p.name === policy.planName);
-                    const planText = (policy.medicalPlanType === 'High-End' ? 'High-End Medical' : policy.medicalPlanType) || 'Ward';
+                    const planText = (['High-End Semi-Private', 'High-End Private'].includes(policy.medicalPlanType || '') ? 'High-End Medical' : policy.medicalPlanType) || 'Ward';
 
                     return (
                         <div className="flex flex-col items-center justify-center leading-tight">
