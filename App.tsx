@@ -47,7 +47,14 @@ const App: React.FC = () => {
     if (savedClients) setClients(JSON.parse(savedClients));
     if (savedPolicies) setPolicies(JSON.parse(savedPolicies));
     if (savedProducts) setProducts(JSON.parse(savedProducts));
-    if (savedSettings) setSettings(prev => ({ ...prev, ...JSON.parse(savedSettings) }));
+    if (savedSettings) {
+      const parsed = JSON.parse(savedSettings);
+      // Migration for old layouts that used merged 'med_acc'
+      if (parsed.pdfLayout && parsed.pdfLayout.some((c: any) => c.id === 'med_acc')) {
+        parsed.pdfLayout = DEFAULT_PDF_LAYOUT;
+      }
+      setSettings(prev => ({ ...prev, ...parsed }));
+    }
   }, []);
 
   const { getToken, userId } = useAuth();
