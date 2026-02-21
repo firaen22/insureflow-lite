@@ -28,6 +28,8 @@ Fields to extract:
 - medicalExcess (number): ONLY IF medicalPlanType is "High-End Semi-Private" or "High-End Private", extract the annual excess amount if found (e.g. 16000, 25000). Otherwise null.
 - policyAnniversaryDate (string): Format DD/MM (e.g., "01/01").
 - effectiveDate (string): The policy effective date, Format YYYY-MM-DD.
+- protectionMatureDate (string): The date the protection coverage expires or maturity (e.g. "2050-01-01" or "Age 100").
+- premiumMatureDate (string): The date premium payments end (e.g. "2040-01-01" or "At age 65" or "20 Years").
 - type (string): One of "Life", "Medical", "Savings", "Critical Illness", "Accident", "Hospital Income", "Surgical Cash", "Pay Waiver". Infer from content.
 - extractedTags (array of strings): Keywords like "High Value", "Term", "VHIS", etc.
 - clientBirthday (string): Format YYYY-MM-DD (e.g., "1990-01-01").
@@ -45,6 +47,8 @@ Fields to extract:
     - premiumAmount (number): Premium for this specific rider.
     - sumInsured (number): Sum Insured / Benefit Amount for this rider (if applicable).
     - medicalPlanType (string): ONLY IF this rider type is "Medical", extract the ward grade exactly as one of: "Ward", "Semi-Private", "Private", "High-End Semi-Private", "High-End Private".
+    - protectionMatureDate (string): The protection maturity date or age.
+    - premiumMatureDate (string): The premium maturity date or age.
 - cashValue (number): Guaranteed Cash Value from the latest statement.
 - accumulatedDividend (number): Accumulated Dividends/Interest/Coupons.
 - totalCashValue (number): Total Surrender Value / Cash Value (Sum of guaranteed + non-guaranteed).

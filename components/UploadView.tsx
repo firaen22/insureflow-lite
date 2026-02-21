@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Upload, FileText, CheckCircle, Loader2, AlertCircle, X, ShieldCheck, Pencil, Save, Tag, Sparkles, BookOpen, Cake, Plus, Calendar, Layers, Trash2, Activity, Keyboard, FileSpreadsheet, ListChecks } from 'lucide-react';
 import { UploadStatus, PolicyData, Product, Rider } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { TRANSLATIONS, PRODUCT_TYPES } from '../constants';
 
 import { Client } from '../types';
 
@@ -145,7 +145,22 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
             accumulatedDividend: aiResult.accumulatedDividend || 0,
             totalCashValue: aiResult.totalCashValue || 0,
             effectiveDate: aiResult.effectiveDate || '',
-            medicalPlanType: (aiResult.medicalPlanType as any) || undefined
+            protectionMatureDate: aiResult.protectionMatureDate || '',
+            premiumMatureDate: aiResult.premiumMatureDate || '',
+            medicalPlanType: (aiResult.medicalPlanType as any) || undefined,
+            medicalExcess: aiResult.medicalExcess || undefined,
+            company: aiResult.company || '',
+            insuredName: aiResult.insuredName || '',
+            clientPhone: aiResult.clientPhone || '',
+            // Accident Specifics
+            accidentMedicalLimit: aiResult.accidentMedicalLimit,
+            accidentSectionLimit: aiResult.accidentSectionLimit,
+            accidentBonesettingLimit: aiResult.accidentBonesettingLimit,
+            accidentAcupunctureLimit: aiResult.accidentAcupunctureLimit,
+            accidentPhysioLimitType1: aiResult.accidentPhysioLimitType1,
+            accidentPhysioLimitAmount1: aiResult.accidentPhysioLimitAmount1,
+            accidentPhysioLimitType2: aiResult.accidentPhysioLimitType2,
+            accidentPhysioLimitAmount2: aiResult.accidentPhysioLimitAmount2
           };
 
           resolve({
@@ -551,16 +566,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         className="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
                         style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       >
-                        <option value="Life">Life</option>
-                        <option value="Medical">Medical</option>
-                        <option value="Savings">Savings</option>
-                        <option value="Critical Illness">Critical Illness</option>
-                        <option value="Auto">Auto</option>
-                        <option value="Property">Property</option>
-                        <option value="Accident">Accident</option>
-                        <option value="Hospital Income">Hospital Income</option>
-                        <option value="Surgical Cash">Surgical Cash</option>
-                        <option value="Pay Waiver">Pay Waiver</option>
+                        {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </div>
                   </div>
@@ -703,19 +709,21 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     <div>
                       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Protection Maturity</label>
                       <input
-                        type="date"
+                        type="text"
                         value={activeItem.data.protectionMatureDate || ''}
                         onChange={e => handleUpdateCurrentField('protectionMatureDate', e.target.value)}
                         className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        placeholder="Age 100 or YYYY-MM-DD"
                       />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium Maturity</label>
                       <input
-                        type="date"
+                        type="text"
                         value={activeItem.data.premiumMatureDate || ''}
                         onChange={e => handleUpdateCurrentField('premiumMatureDate', e.target.value)}
                         className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        placeholder="20 Years or YYYY-MM-DD"
                       />
                     </div>
                   </div>
@@ -979,9 +987,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-slate-50 hover:bg-white focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
                               style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '1.5rem' }}
                             >
-                              <option value="Medical">Medical</option>
-                              <option value="Accident">Accident</option>
-                              <option value="Critical Illness">Critical Illness</option>
+                              {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                               <option value="Other">Other</option>
                             </select>
                             {rider.type === 'Medical' ? (
@@ -1016,16 +1022,18 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           </div>
                           <div className="flex gap-2">
                             <input
-                              type="date"
+                              type="text"
                               value={rider.protectionMatureDate || ''}
                               onChange={e => handleUpdateRider(idx, 'protectionMatureDate', e.target.value)}
                               className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white text-slate-500"
+                              placeholder="Prot. Mat."
                             />
                             <input
-                              type="date"
+                              type="text"
                               value={rider.premiumMatureDate || ''}
                               onChange={e => handleUpdateRider(idx, 'premiumMatureDate', e.target.value)}
                               className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white text-slate-500"
+                              placeholder="Prem. Mat."
                             />
                           </div>
                           {(products.find(p => p.name === rider.name)?.annualCoverageLimit || products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit) ? (

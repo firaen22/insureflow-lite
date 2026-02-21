@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { TRANSLATIONS, PRODUCT_TYPES } from '../constants';
 import { Search, Plus, MoreHorizontal, Shield, Tag, Box, HeartPulse, Home, Car, AlertTriangle, PiggyBank, Briefcase, Pencil, X, Check, Save, Layers } from 'lucide-react';
 
 interface ProductLibraryViewProps {
@@ -25,11 +25,25 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
   const [originalName, setOriginalName] = useState<string>(''); // To track name changes
   const [newTagInput, setNewTagInput] = useState('');
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.provider.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.provider.toLowerCase().includes(searchLower) ||
+      product.type.toLowerCase().includes(searchLower) ||
+      product.defaultTags?.some(tag => tag.toLowerCase().includes(searchLower))
+    );
+  });
+
+  // Group filtered products by provider and sort alphabetically
+  const groupedProducts = filteredProducts.reduce((acc, product) => {
+    const provider = product.provider || 'Unknown';
+    if (!acc[provider]) acc[provider] = [];
+    acc[provider].push(product);
+    return acc;
+  }, {} as Record<string, Product[]>);
+
+  const sortedProviders = Object.keys(groupedProducts).sort();
 
   const handleSelectProduct = (name: string) => {
     setSelectedProductNames(prev =>
@@ -240,68 +254,84 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                 <th className="px-6 py-4 text-right">{t.table.actions}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200">
-              {filteredProducts.map((product, index) => (
-                <tr key={`${product.name}-${index}`} className={`hover:bg-slate-50 transition-colors group ${selectedProductNames.includes(product.name) ? 'bg-brand-50/30' : ''}`}>
-                  <td className="px-6 py-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedProductNames.includes(product.name)}
-                      onChange={() => handleSelectProduct(product.name)}
-                      className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="font-semibold text-slate-800">{product.name}</span>
-                  </td>
-                  <td className="px-6 py-4 text-slate-600">
-                    {product.provider}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-col gap-1 items-start">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border gap-1.5 ${getTypeColor(product.type)}`}>
-                        {getTypeIcon(product.type)}
-                        {product.type}
-                      </span>
-                      {product.isTaxDeductible && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-50 text-green-700 border border-green-200">
-                          <Check className="w-3 h-3 mr-1" />
-                          {t.form.taxDeductible}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {product.defaultTags.map(tag => (
-                        <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                          <Tag className="w-3 h-3 mr-1 opacity-50" />
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => handleEditClick(product)}
-                      className="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-slate-100 transition-colors opacity-0 group-hover:opacity-100"
-                      title={t.editProduct}
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-              {filteredProducts.length === 0 && (
+            {sortedProviders.length === 0 ? (
+              <tbody>
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                    <Box className="w-12 h-12 mx-auto text-slate-300 mb-3" />
-                    <p>{t.table.noProducts}</p>
+                    <div className="flex flex-col items-center justify-center">
+                      <Box className="w-12 h-12 text-slate-300 mb-3" />
+                      <p className="text-lg font-medium text-slate-700">No products found</p>
+                      <p className="text-sm mt-1">Try adjusting your search or add a new product.</p>
+                    </div>
                   </td>
                 </tr>
-              )}
-            </tbody>
+              </tbody>
+            ) : (
+              sortedProviders.map(provider => (
+                <tbody key={provider} className="bg-white">
+                  {/* Group Header Row */}
+                  <tr className="bg-slate-100/80 border-t border-b border-slate-200">
+                    <td colSpan={6} className="px-6 py-2 text-xs font-bold text-slate-600 uppercase tracking-wider">
+                      {provider} <span className="text-slate-400 font-medium ml-2">({groupedProducts[provider].length})</span>
+                    </td>
+                  </tr>
+
+                  {/* Group Products */}
+                  {groupedProducts[provider].map((product, index) => (
+                    <tr key={`${product.name}-${index}`} className={`hover:bg-slate-50 transition-colors border-b border-slate-100 group ${selectedProductNames.includes(product.name) ? 'bg-brand-50/30' : ''}`}>
+                      <td className="px-6 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedProductNames.includes(product.name)}
+                          onChange={() => handleSelectProduct(product.name)}
+                          className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-medium text-slate-900 group-hover:text-brand-600 transition-colors">{product.name}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center text-slate-600">
+                          {product.provider === 'AIA' && <Shield className="w-3 h-3 mr-1.5 text-red-500" />}
+                          {product.provider === 'Prudential' && <Shield className="w-3 h-3 mr-1.5 text-brand-500" />}
+                          {product.provider === 'Manulife' && <Shield className="w-3 h-3 mr-1.5 text-green-500" />}
+                          {product.provider !== 'AIA' && product.provider !== 'Prudential' && product.provider !== 'Manulife' && <Shield className="w-3 h-3 mr-1.5 text-slate-400" />}
+                          {product.provider}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTypeColor(product.type)}`}>
+                          {getTypeIcon(product.type)}
+                          <span className="ml-1.5">{product.type}</span>
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {product.defaultTags?.map((tag, i) => (
+                            <span key={i} className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                              <Tag className="w-2.5 h-2.5 mr-1" />
+                              {tag}
+                            </span>
+                          ))}
+                          {(!product.defaultTags || product.defaultTags.length === 0) && (
+                            <span className="text-xs text-slate-400 italic">No tags</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleEditClick(product)}
+                          className="text-slate-400 hover:text-brand-600 transition-colors p-1"
+                          title="Edit Product"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              ))
+            )}
           </table>
         </div>
       </div>
@@ -435,16 +465,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                 >
-                  <option value="Life">Life</option>
-                  <option value="Medical">Medical</option>
-                  <option value="Auto">Auto</option>
-                  <option value="Property">Property</option>
-                  <option value="Critical Illness">Critical Illness</option>
-                  <option value="Savings">Savings</option>
-                  <option value="Accident">Accident</option>
-                  <option value="Hospital Income">Hospital Income</option>
-                  <option value="Surgical Cash">Surgical Cash</option>
-                  <option value="Pay Waiver">Pay Waiver</option>
+                  {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                   <option value="Rider">Rider</option>
                 </select>
               </div>

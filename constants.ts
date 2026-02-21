@@ -1,5 +1,18 @@
 import { Client, PolicyData, Product, Language, PDFColumnConfig } from './types';
 
+export const PRODUCT_TYPES = [
+  'Life',
+  'Medical',
+  'Critical Illness',
+  'Savings',
+  'Auto',
+  'Property',
+  'Accident',
+  'Hospital Income',
+  'Surgical Cash',
+  'Pay Waiver'
+] as const;
+
 // Default Layout Config for PDF Studio
 export const DEFAULT_PDF_LAYOUT: PDFColumnConfig[] = [
   // Basic Info Section
