@@ -521,6 +521,29 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       />
                     </div>
                     <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Insurance Company</label>
+                      <input
+                        list="company-options"
+                        type="text"
+                        value={activeItem.data.company || ''}
+                        onChange={e => handleUpdateCurrentField('company', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        placeholder="e.g. AIA, Prudential"
+                      />
+                      <datalist id="company-options">
+                        <option value="AIA" />
+                        <option value="Prudential" />
+                        <option value="Manulife" />
+                        <option value="Sun Life" />
+                        <option value="FWD" />
+                        <option value="AXA" />
+                        <option value="China Life" />
+                        <option value="HSBC Life" />
+                        <option value="BOC Life" />
+                      </datalist>
+                    </div>
+
+                    <div>
                       <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Type</label>
                       <select
                         value={activeItem.data.type}
@@ -532,6 +555,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         <option value="Medical">Medical</option>
                         <option value="Savings">Savings</option>
                         <option value="Critical Illness">Critical Illness</option>
+                        <option value="Auto">Auto</option>
+                        <option value="Property">Property</option>
                         <option value="Accident">Accident</option>
                         <option value="Hospital Income">Hospital Income</option>
                         <option value="Surgical Cash">Surgical Cash</option>
@@ -664,15 +689,35 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     </div>
                   </div>
 
-                  {/* Effective Date */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.effectiveDate || 'Effective Date'}</label>
-                    <input
-                      type="date"
-                      value={activeItem.data.effectiveDate || ''}
-                      onChange={e => handleUpdateCurrentField('effectiveDate', e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded-lg text-sm"
-                    />
+                  {/* Effective Date & Maturity Dates */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.effectiveDate || 'Effective Date'}</label>
+                      <input
+                        type="date"
+                        value={activeItem.data.effectiveDate || ''}
+                        onChange={e => handleUpdateCurrentField('effectiveDate', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Protection Maturity</label>
+                      <input
+                        type="date"
+                        value={activeItem.data.protectionMatureDate || ''}
+                        onChange={e => handleUpdateCurrentField('protectionMatureDate', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium Maturity</label>
+                      <input
+                        type="date"
+                        value={activeItem.data.premiumMatureDate || ''}
+                        onChange={e => handleUpdateCurrentField('premiumMatureDate', e.target.value)}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -967,6 +1012,20 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               onChange={e => handleUpdateRider(idx, 'premiumAmount', parseFloat(e.target.value))}
                               placeholder="Premium"
                               className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <input
+                              type="date"
+                              value={rider.protectionMatureDate || ''}
+                              onChange={e => handleUpdateRider(idx, 'protectionMatureDate', e.target.value)}
+                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white text-slate-500"
+                            />
+                            <input
+                              type="date"
+                              value={rider.premiumMatureDate || ''}
+                              onChange={e => handleUpdateRider(idx, 'premiumMatureDate', e.target.value)}
+                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white text-slate-500"
                             />
                           </div>
                           {(products.find(p => p.name === rider.name)?.annualCoverageLimit || products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit) ? (
