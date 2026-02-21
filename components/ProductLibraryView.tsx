@@ -126,7 +126,8 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
       name: '',
       provider: '',
       type: 'Life',
-      defaultTags: []
+      defaultTags: [],
+      isTaxDeductible: false
     });
     setOriginalName('');
     setIsModalOpen(true);
@@ -255,10 +256,18 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                     {product.provider}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border gap-1.5 ${getTypeColor(product.type)}`}>
-                      {getTypeIcon(product.type)}
-                      {product.type}
-                    </span>
+                    <div className="flex flex-col gap-1 items-start">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border gap-1.5 ${getTypeColor(product.type)}`}>
+                        {getTypeIcon(product.type)}
+                        {product.type}
+                      </span>
+                      {product.isTaxDeductible && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-50 text-green-700 border border-green-200">
+                          <Check className="w-3 h-3 mr-1" />
+                          {t.form.taxDeductible}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1.5">
@@ -432,6 +441,18 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                   <option value="Accident">Accident</option>
                   <option value="Rider">Rider</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="flex items-center space-x-2 text-sm font-medium text-slate-700 mb-2 cursor-pointer p-3 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={!!editingProduct.isTaxDeductible}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, isTaxDeductible: e.target.checked })}
+                    className="rounded border-slate-300 text-brand-600 focus:ring-brand-500 w-4 h-4"
+                  />
+                  <span>{t.form.taxDeductible}</span>
+                </label>
               </div>
 
               <div>

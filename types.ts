@@ -8,6 +8,7 @@ export interface Product {
   provider: string;
   type: 'Life' | 'Medical' | 'Auto' | 'Property' | 'Critical Illness' | 'Savings' | 'Accident' | 'Hospital Income' | 'Rider';
   defaultTags: string[];
+  isTaxDeductible?: boolean;
 }
 
 export interface Rider {

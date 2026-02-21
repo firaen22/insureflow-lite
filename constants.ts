@@ -16,13 +16,15 @@ export const DEFAULT_PDF_LAYOUT: PDFColumnConfig[] = [
   { id: 'currency', labelKey: 'Curr.', visible: true, order: 8, width: 5 },
   { id: 'premium_amt', labelKey: 'Amt', visible: true, order: 9, width: 10 },
   { id: 'payment_mode', labelKey: 'Mode', visible: true, order: 10, width: 5 },
+  { id: 'tax_deductible', labelKey: 'Tax Ded.', visible: true, order: 11, width: 8 },
 ];
 export const PRODUCT_LIBRARY: Product[] = [
   {
     name: 'CEO Medical Plan',
     provider: 'AIA',
     type: 'Medical',
-    defaultTags: ['AIA', 'Medical', 'High-End', 'Global Cover']
+    defaultTags: ['AIA', 'Medical', 'High-End', 'Global Cover'],
+    isTaxDeductible: true
   },
   {
     name: 'Crisis Cover Prudential',
@@ -237,7 +239,8 @@ export const TRANSLATIONS = {
         provider: 'Provider',
         type: 'Category',
         tags: 'Tags',
-        addTag: 'Add Tag'
+        addTag: 'Add Tag',
+        taxDeductible: 'Tax Deductible'
       }
     },
     reminders: {
@@ -284,7 +287,8 @@ export const TRANSLATIONS = {
         'med_acc': 'Med/Acc',
         'currency': 'Curr.',
         'premium_amt': 'Amt',
-        'payment_mode': 'Mode'
+        'payment_mode': 'Mode',
+        'tax_deductible': 'Tax Ded.'
       }
     },
     settings: {
@@ -510,7 +514,8 @@ export const TRANSLATIONS = {
         provider: '供應商',
         type: '類別',
         tags: '標籤',
-        addTag: '新增標籤'
+        addTag: '新增標籤',
+        taxDeductible: '可扣稅'
       }
     },
     reminders: {
@@ -557,7 +562,8 @@ export const TRANSLATIONS = {
         'med_acc': '醫療/意外',
         'currency': '貨幣',
         'premium_amt': '金額',
-        'payment_mode': '繳費模式'
+        'payment_mode': '繳費模式',
+        'tax_deductible': '可扣稅'
       }
     },
     settings: {

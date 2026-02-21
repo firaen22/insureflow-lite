@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ArrowLeft, Download, Loader2, Eye } from 'lucide-react';
-import { Client, PolicyData, PDFColumnConfig } from '../types';
+import { ArrowLeft, Download, Loader2, Eye, Check } from 'lucide-react';
+import { Client, PolicyData, PDFColumnConfig, Product } from '../types';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 import {
@@ -12,13 +12,14 @@ import {
 interface ClientReportViewProps {
     client: Client;
     policies: PolicyData[];
+    products?: Product[];
     pdfLayout: PDFColumnConfig[];
     onUpdateLayout?: (newLayout: PDFColumnConfig[]) => void;
     onBack: () => void;
     t: any; // Translation strings
 }
 
-export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, policies, pdfLayout, onUpdateLayout, onBack, t }) => {
+export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, policies, products = [], pdfLayout, onUpdateLayout, onBack, t }) => {
     const reportRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -60,6 +61,12 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                 return <span className="font-bold">{policy.premiumAmount ? policy.premiumAmount.toLocaleString() : '-'}</span>;
             case 'payment_mode':
                 return policy.paymentMode;
+            case 'tax_deductible':
+                const matchedProduct = products.find(p => p.name === policy.planName);
+                if (matchedProduct?.isTaxDeductible) {
+                    return <span className="bg-emerald-100 text-emerald-700 w-5 h-5 flex items-center justify-center rounded-full text-[10px] mx-auto"><Check className="w-3 h-3" /></span>;
+                }
+                return <span className="text-slate-300">-</span>;
             default:
                 return '-';
         }

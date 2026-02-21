@@ -470,6 +470,7 @@ const App: React.FC = () => {
           {currentView === AppView.SETTINGS && (
             <SettingsView
               t={t.settings}
+              tReport={t.report}
               settings={settings}
               onUpdateSettings={setSettings}
               spreadsheetId={spreadsheetId}

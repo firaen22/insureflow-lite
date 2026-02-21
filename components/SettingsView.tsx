@@ -13,6 +13,7 @@ interface SettingsViewProps {
     policies: PolicyData[];
     products: Product[];
     t: any;
+    tReport: any;
 }
 
 export const SettingsView: React.FC<SettingsViewProps> = ({
@@ -23,7 +24,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     clients,
     policies,
     products,
-    t
+    t,
+    tReport
 }) => {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [connectionStatus, setConnectionStatus] = useState<'unknown' | 'connected' | 'error'>('unknown');
@@ -454,7 +456,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                     {col.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                                 </button>
                                 <span className={`text-sm font-medium ${col.visible ? 'text-slate-700' : 'text-slate-400 line-through'}`}>
-                                    {col.labelKey}
+                                    {tReport?.columns?.[col.id] || col.labelKey}
                                 </span>
                             </div>
                             <div className="flex items-center gap-1">
