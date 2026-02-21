@@ -31,9 +31,19 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
     const activeColumns = [...pdfLayout].sort((a, b) => a.order - b.order).filter(c => c.visible);
     const gridTemplateColumns = activeColumns.map(c => `${c.width}%`).join(' ');
 
-    const renderCellContent = (policy: PolicyData, columnId: string) => {
+    const renderCellContent = (policy: PolicyData | any, columnId: string, isRider?: boolean) => {
         switch (columnId) {
             case 'company_plan':
+                if (isRider) {
+                    return (
+                        <div className="text-left leading-tight pl-4 relative">
+                            <div className="absolute left-0 top-1/2 -mt-px w-3 h-px bg-slate-200"></div>
+                            <div className="absolute left-0 top-0 bottom-1/2 w-px bg-slate-200"></div>
+                            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-1 py-0.5 rounded border border-slate-200 mr-1">Rider</span>
+                            <span className="font-medium text-slate-700 text-[10px]">{policy.name}</span>
+                        </div>
+                    );
+                }
                 return (
                     <div className="text-left leading-tight">
                         <div className="font-bold text-slate-900 truncate">{policy.company || 'Unknown'}</div>
@@ -42,26 +52,40 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                     </div>
                 );
             case 'effective':
-                return formatDate(policy.effectiveDate);
+                if (isRider) return <span className="text-[10px] text-slate-600 block leading-tight">Maturity:<br />P: {policy.protectionMatureDate || '-'}<br />$:{policy.premiumMatureDate || '-'}</span>;
+                return (
+                    <div className="text-[10px] leading-tight flex flex-col items-center">
+                        <span>{formatDate(policy.effectiveDate)}</span>
+                        {(policy.protectionMatureDate || policy.premiumMatureDate) && (
+                            <span className="text-[8px] text-slate-500 mt-1 border-t border-slate-200 pt-0.5 w-full text-center">
+                                Maturity: P:{policy.protectionMatureDate || '-'} $:{policy.premiumMatureDate || '-'}
+                            </span>
+                        )}
+                    </div>
+                );
             case 'term':
-                return 'To 100';
+                return isRider ? '-' : 'To 100';
             case 'status':
-                return <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px]">Active</span>;
+                return isRider ? '-' : <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px]">Active</span>;
             case 'insured':
-                return <div className="truncate" title={policy.insuredName || policy.holderName || 'Self'}>{policy.insuredName || policy.holderName || 'Self'}</div>;
+                return isRider ? '-' : <div className="truncate" title={policy.insuredName || policy.holderName || 'Self'}>{policy.insuredName || policy.holderName || 'Self'}</div>;
             case 'life':
+                if (isRider) return policy.type === 'Life' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-';
                 return (policy.type === 'Life' || policy.type === 'Savings') && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-';
             case 'ci':
+                if (isRider) return <span className="text-red-600 font-medium">{policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
                 return <span className="text-red-600 font-medium">{policy.type === 'Critical Illness' && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
             case 'med_acc':
+                if (isRider) return <span className="text-blue-600 font-medium">{(policy.type === 'Medical' || policy.type === 'Accident') && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
                 return <span className="text-blue-600 font-medium">{(policy.type === 'Medical' || policy.type === 'Accident') && policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>;
             case 'currency':
-                return policy.currency;
+                return isRider ? '-' : policy.currency;
             case 'premium_amt':
                 return <span className="font-bold">{policy.premiumAmount ? policy.premiumAmount.toLocaleString() : '-'}</span>;
             case 'payment_mode':
-                return policy.paymentMode;
+                return isRider ? '-' : policy.paymentMode;
             case 'tax_deductible':
+                if (isRider) return <span className="text-slate-300">-</span>;
                 const matchedProduct = products.find(p => p.name === policy.planName);
                 if (matchedProduct?.isTaxDeductible) {
                     return <span className="bg-emerald-100 text-emerald-700 w-5 h-5 flex items-center justify-center rounded-full text-[10px] mx-auto"><Check className="w-3 h-3" /></span>;
@@ -293,17 +317,34 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             {/* Rows */}
                             <div className="text-xs text-slate-700">
                                 {policies.map((policy, idx) => (
-                                    <div
-                                        key={policy.id}
-                                        className={`border-b border-slate-100 hover:bg-slate-50 items-center py-2 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
-                                        style={{ display: 'grid', gridTemplateColumns }}
-                                    >
-                                        {activeColumns.map(col => (
-                                            <div key={col.id} className="px-2 py-1 text-center flex items-center justify-center border-r border-slate-100 last:border-r-0 h-full">
-                                                {renderCellContent(policy, col.id)}
+                                    <React.Fragment key={policy.id}>
+                                        <div
+                                            className={`border-b border-slate-100 hover:bg-slate-50 items-center py-2 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                                            style={{ display: 'grid', gridTemplateColumns }}
+                                        >
+                                            {activeColumns.map(col => (
+                                                <div key={col.id} className="px-2 py-1 text-center flex items-center justify-center border-r border-slate-100 last:border-r-0 h-full">
+                                                    {renderCellContent(policy, col.id, false)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {/* Rider Sub-rows */}
+                                        {policy.riders && policy.riders.map((rider, rIdx) => (
+                                            <div
+                                                key={`${policy.id}-rider-${rIdx}`}
+                                                className={`border-b border-slate-100 hover:bg-slate-100 items-center py-1.5 ${idx % 2 === 0 ? 'bg-slate-50/50' : 'bg-slate-100/50'} relative overflow-hidden`}
+                                                style={{ display: 'grid', gridTemplateColumns }}
+                                            >
+                                                {/* Left structural border indicating hierarchy */}
+                                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-200"></div>
+                                                {activeColumns.map(col => (
+                                                    <div key={`rider-${col.id}`} className="px-2 py-0.5 text-center flex items-center justify-center border-r border-slate-100/50 last:border-r-0 h-full">
+                                                        {renderCellContent(rider, col.id, true)}
+                                                    </div>
+                                                ))}
                                             </div>
                                         ))}
-                                    </div>
+                                    </React.Fragment>
                                 ))}
                             </div>
 

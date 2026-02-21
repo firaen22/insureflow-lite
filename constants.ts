@@ -447,6 +447,8 @@ export const TRANSLATIONS = {
       deleteConfirm: '您確定要刪除此保單嗎？',
       saveChanges: '儲存變更',
       cancel: '取消',
+      protectionMatureDate: '保障期滿日',
+      premiumMatureDate: '繳費期滿日',
       summary: {
         title: '保障摘要 (HKD)',
         totalPremium: '年度總保費',

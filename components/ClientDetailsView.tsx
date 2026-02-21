@@ -276,94 +276,132 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <th className="px-4 py-3 min-w-[150px]">{t.policyCard.basePlan}</th>
                   <th className="px-4 py-3">{t.policyCard.sumInsured}</th>
                   <th className="px-4 py-3 text-right">{t.policyCard.premium}</th>
-                  <th className="px-4 py-3 min-w-[180px]">{t.policyCard.riders}</th>
+                  <th className="px-4 py-3 min-w-[150px]">{t.protectionMatureDate || 'Protection Maturity'} / {t.premiumMatureDate || 'Premium Maturity'}</th>
                   <th className="px-4 py-3 text-center">{t.policyCard.status}</th>
                   <th className="px-4 py-3 text-right print:hidden"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {policies.length > 0 ? policies.map(policy => (
-                  <tr key={policy.id} className="hover:bg-slate-50/80 group">
-                    <td className="px-4 py-4 align-top">
-                      <div className="flex flex-col gap-1 items-start">
-                        <span className={`px-2 py-1 rounded text-xs font-medium border ${policy.type === 'Life' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                          policy.type === 'Critical Illness' ? 'bg-red-50 text-red-700 border-red-100' :
-                            policy.type === 'Medical' ? 'bg-green-50 text-green-700 border-green-100' :
-                              policy.type === 'Savings' ? 'bg-amber-50 text-amber-700 border-amber-100' :
-                                'bg-slate-50 text-slate-700 border-slate-200'
-                          }`}>
-                          {policy.type}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 align-top whitespace-nowrap">
-                      <div className="flex flex-col text-xs text-slate-600">
-                        {policy.effectiveDate && (
-                          <span className="font-medium text-slate-700">Eff: {policy.effectiveDate}</span>
+                  <React.Fragment key={policy.id}>
+                    <tr className="hover:bg-slate-50/80 group">
+                      <td className="px-4 py-4 align-top">
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className={`px-2 py-1 rounded text-xs font-medium border ${policy.type === 'Life' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+                            policy.type === 'Critical Illness' ? 'bg-red-50 text-red-700 border-red-100' :
+                              policy.type === 'Medical' ? 'bg-green-50 text-green-700 border-green-100' :
+                                policy.type === 'Savings' ? 'bg-amber-50 text-amber-700 border-amber-100' :
+                                  'bg-slate-50 text-slate-700 border-slate-200'
+                            }`}>
+                            {policy.type}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 align-top whitespace-nowrap">
+                        <div className="flex flex-col text-xs text-slate-600">
+                          {policy.effectiveDate && (
+                            <span className="font-medium text-slate-700">Eff: {policy.effectiveDate}</span>
+                          )}
+                          <span className="text-slate-400">Ann: {policy.policyAnniversaryDate}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 align-top">
+                        <div className="font-bold text-slate-800 flex items-center flex-wrap gap-2">
+                          <span>{policy.planName}</span>
+                          {products.find(p => p.name === policy.planName)?.isTaxDeductible && (
+                            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded font-medium inline-flex items-center gap-1 leading-none whitespace-nowrap" title={t.taxDeductible || 'Tax Deductible'}>
+                              <FileText className="w-3 h-3" /> {t.taxDeductible || 'Tax Ded.'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs font-mono text-slate-500 mt-0.5">{policy.policyNumber}</div>
+                        {!isClientInsured(policy, client.name) && (
+                          <div className="text-[10px] bg-slate-100 text-slate-600 px-1.5 rounded mt-1 inline-flex items-center gap-1 border border-slate-200" title="Insured Person">
+                            <Shield className="w-3 h-3" /> Insured: {policy.insuredName}
+                          </div>
                         )}
-                        <span className="text-slate-400">Ann: {policy.policyAnniversaryDate}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 align-top">
-                      <div className="font-bold text-slate-800">{policy.planName}</div>
-                      <div className="text-xs font-mono text-slate-500 mt-0.5">{policy.policyNumber}</div>
-                      {!isClientInsured(policy, client.name) && (
-                        <div className="text-[10px] bg-slate-100 text-slate-600 px-1.5 rounded mt-1 inline-flex items-center gap-1 border border-slate-200" title="Insured Person">
-                          <Shield className="w-3 h-3" /> Insured: {policy.insuredName}
+                        {policy.medicalPlanType && (
+                          <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded mt-1 inline-block">
+                            {policy.medicalPlanType}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-4 align-top">
+                        {policy.sumInsured ? (
+                          <span className="font-medium text-slate-700">${policy.sumInsured.toLocaleString()}</span>
+                        ) : '-'}
+                        {policy.isMultipay && <div className="text-[10px] text-brand-600 font-medium">Multipay</div>}
+                      </td>
+                      <td className="px-4 py-4 align-top text-right">
+                        <div className="font-bold text-slate-800">
+                          {policy.currency} ${policy.premiumAmount.toLocaleString()}
                         </div>
-                      )}
-                      {policy.medicalPlanType && (
-                        <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded mt-1 inline-block">
-                          {policy.medicalPlanType}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-4 align-top">
-                      {policy.sumInsured ? (
-                        <span className="font-medium text-slate-700">${policy.sumInsured.toLocaleString()}</span>
-                      ) : '-'}
-                      {policy.isMultipay && <div className="text-[10px] text-brand-600 font-medium">Multipay</div>}
-                    </td>
-                    <td className="px-4 py-4 align-top text-right">
-                      <div className="font-bold text-slate-800">
-                        {policy.currency} ${policy.premiumAmount.toLocaleString()}
-                      </div>
-                      <div className="text-xs text-slate-400">{policy.paymentMode}</div>
-                    </td>
-                    <td className="px-4 py-4 align-top">
-                      {policy.riders && policy.riders.length > 0 ? (
-                        <div className="space-y-1">
-                          {policy.riders.map((r, idx) => (
-                            <div key={idx} className="text-xs flex justify-between bg-slate-50 p-1.5 rounded border border-slate-100">
-                              <span className="text-slate-600 truncate max-w-[100px]" title={r.name}>{r.name}</span>
-                              <span className="font-medium text-slate-500">${r.premiumAmount.toLocaleString()}</span>
+                        <div className="text-xs text-slate-400">{policy.paymentMode}</div>
+                      </td>
+                      <td className="px-4 py-4 align-top">
+                        <div className="flex flex-col text-xs mt-1">
+                          <span className="text-slate-600"><span className="text-slate-400 w-12 inline-block">Prot:</span> {policy.protectionMatureDate || '-'}</span>
+                          <span className="text-slate-600"><span className="text-slate-400 w-12 inline-block">Prem:</span> {policy.premiumMatureDate || '-'}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 align-top text-center">
+                        <span className={`inline-flex w-2.5 h-2.5 rounded-full ${policy.status === 'Active' ? 'bg-green-500' :
+                          policy.status === 'Pending' ? 'bg-amber-500' : 'bg-red-500'
+                          }`} title={policy.status}></span>
+                      </td>
+                      <td className="px-4 py-4 align-top text-right print:hidden">
+                        <div className="flex justify-end gap-1 opacity-10 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => setEditingPolicy(policy)}
+                            className="p-1.5 hover:bg-slate-100 rounded text-slate-400 hover:text-blue-600"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(policy.id)}
+                            className="p-1.5 hover:bg-slate-100 rounded text-slate-400 hover:text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Render Riders as distinct rows */}
+                    {policy.riders && policy.riders.map((rider, idx) => (
+                      <tr key={`${policy.id}-rider-${idx}`} className="bg-slate-50/50 hover:bg-slate-100/50 group border-t-0 border-l-2 border-l-brand-200">
+                        <td className="px-4 py-2 align-middle border-t-0 pl-6">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-medium border bg-slate-100 text-slate-500 border-slate-200 uppercase tracking-widest">
+                            Rider
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 align-middle border-t-0 text-slate-400 text-xs">
+                          └─
+                        </td>
+                        <td className="px-4 py-2 align-middle border-t-0">
+                          <div className="font-medium text-slate-700 text-sm">{rider.name}</div>
+                          {rider.type && <div className="text-[10px] text-slate-500">{rider.type}</div>}
+                        </td>
+                        <td className="px-4 py-2 align-middle border-t-0 text-slate-700">
+                          {rider.sumInsured ? <span className="font-medium text-slate-700">${rider.sumInsured.toLocaleString()}</span> : '-'}
+                        </td>
+                        <td className="px-4 py-2 align-middle text-right border-t-0">
+                          <div className="font-bold text-slate-700">
+                            {policy.currency} ${rider.premiumAmount.toLocaleString()}
+                          </div>
+                        </td>
+                        <td className="px-4 py-2 align-middle border-t-0 text-xs text-slate-600">
+                          {rider.protectionMatureDate || rider.premiumMatureDate ? (
+                            <div className="flex flex-col mt-1">
+                              {rider.protectionMatureDate && <span><span className="text-slate-400 w-12 inline-block">Prot:</span> {rider.protectionMatureDate}</span>}
+                              {rider.premiumMatureDate && <span><span className="text-slate-400 w-12 inline-block">Prem:</span> {rider.premiumMatureDate}</span>}
                             </div>
-                          ))}
-                        </div>
-                      ) : <span className="text-slate-300">-</span>}
-                    </td>
-                    <td className="px-4 py-4 align-top text-center">
-                      <span className={`inline-flex w-2.5 h-2.5 rounded-full ${policy.status === 'Active' ? 'bg-green-500' :
-                        policy.status === 'Pending' ? 'bg-amber-500' : 'bg-red-500'
-                        }`} title={policy.status}></span>
-                    </td>
-                    <td className="px-4 py-4 align-top text-right print:hidden">
-                      <div className="flex justify-end gap-1 opacity-10 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => setEditingPolicy(policy)}
-                          className="p-1.5 hover:bg-slate-100 rounded text-slate-400 hover:text-blue-600"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteClick(policy.id)}
-                          className="p-1.5 hover:bg-slate-100 rounded text-slate-400 hover:text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          ) : '-'}
+                        </td>
+                        <td colSpan={2} className="px-4 py-2 border-t-0"></td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
                 )) : (
                   <tr>
                     <td colSpan={8} className="px-4 py-12 text-center text-slate-400">
@@ -700,6 +738,29 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </div>
                 </div>
 
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.protectionMatureDate || 'Protection Maturity'}</label>
+                    <input
+                      type="text"
+                      value={editingPolicy.protectionMatureDate || ''}
+                      onChange={e => handleUpdateField('protectionMatureDate', e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      placeholder="e.g. YYYY-MM-DD or Age 100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t.premiumMatureDate || 'Premium Maturity'}</label>
+                    <input
+                      type="text"
+                      value={editingPolicy.premiumMatureDate || ''}
+                      onChange={e => handleUpdateField('premiumMatureDate', e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      placeholder="e.g. YYYY-MM-DD or 20 Years"
+                    />
+                  </div>
+                </div>
+
                 {/* Type Specific Fields */}
                 <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
                   <h4 className="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-1">
@@ -763,13 +824,43 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <Plus className="w-3 h-3 mr-1" /> Add
                     </button>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-4 text-xs">
                     {editingPolicy.riders?.map((rider, idx) => (
-                      <div key={idx} className="flex gap-2 items-start bg-slate-50 p-2 rounded">
-                        <input type="text" value={rider.name} placeholder="Name" onChange={e => handleUpdateRider(idx, 'name', e.target.value)} className="flex-1 px-2 py-1 text-xs border rounded" />
-                        <input type="number" value={rider.premiumAmount} placeholder="Prem" onChange={e => handleUpdateRider(idx, 'premiumAmount', Number(e.target.value))} className="w-16 px-2 py-1 text-xs border rounded" />
-                        <input type="number" value={rider.sumInsured || ''} placeholder="SI" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-20 px-2 py-1 text-xs border rounded" />
-                        <button onClick={() => handleRemoveRider(idx)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                      <div key={idx} className="flex flex-col gap-2 bg-slate-50 p-3 rounded border border-slate-200 shadow-sm relative pt-4">
+                        <button onClick={() => handleRemoveRider(idx)} className="absolute top-2 right-2 text-slate-400 hover:text-red-500 bg-white rounded-full p-1 shadow-sm"><Trash2 className="w-3 h-3" /></button>
+
+                        <div className="grid grid-cols-12 gap-2">
+                          <div className="col-span-8">
+                            <label className="block font-medium text-slate-500 mb-1">Rider Name</label>
+                            <input type="text" value={rider.name} placeholder="Plan / Rider Name" onChange={e => handleUpdateRider(idx, 'name', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                          </div>
+                          <div className="col-span-4">
+                            <label className="block font-medium text-slate-500 mb-1">Type</label>
+                            <input type="text" value={rider.type || ''} placeholder="e.g. CI, Medical" onChange={e => handleUpdateRider(idx, 'type', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-12 gap-2">
+                          <div className="col-span-6">
+                            <label className="block font-medium text-slate-500 mb-1">Premium Amt</label>
+                            <input type="number" value={rider.premiumAmount} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'premiumAmount', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                          </div>
+                          <div className="col-span-6">
+                            <label className="block font-medium text-slate-500 mb-1">Sum Insured</label>
+                            <input type="number" value={rider.sumInsured || ''} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-12 gap-2">
+                          <div className="col-span-6">
+                            <label className="block font-medium text-slate-500 mb-1">Protection Maturity</label>
+                            <input type="text" value={rider.protectionMatureDate || ''} placeholder="Age 100/Date" onChange={e => handleUpdateRider(idx, 'protectionMatureDate', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                          </div>
+                          <div className="col-span-6">
+                            <label className="block font-medium text-slate-500 mb-1">Premium Maturity</label>
+                            <input type="text" value={rider.premiumMatureDate || ''} placeholder="Age 65/Date" onChange={e => handleUpdateRider(idx, 'premiumMatureDate', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                          </div>
+                        </div>
                       </div>
                     ))}
                     {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-400 italic">No riders added.</p>}

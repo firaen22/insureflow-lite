@@ -16,6 +16,8 @@ export interface Rider {
   type: string;
   premiumAmount: number;
   sumInsured?: number;
+  protectionMatureDate?: string;
+  premiumMatureDate?: string;
 }
 
 export interface PolicyData {
@@ -32,6 +34,8 @@ export interface PolicyData {
   effectiveDate?: string; // New field for effective date
   policyAnniversaryDate: string; // Format: DD/MM
   maturityDate?: string; // YYYY-MM-DD (New field)
+  protectionMatureDate?: string;
+  premiumMatureDate?: string;
   paymentMode: PaymentMode;
   currency: 'USD' | 'HKD';
   premiumAmount: number; // Base Premium
