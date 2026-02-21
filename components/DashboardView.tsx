@@ -2,14 +2,18 @@ import React from 'react';
 import { TRANSLATIONS } from '../constants';
 import { Client, PolicyData, PaymentMode } from '../types';
 import { Users, FileText, DollarSign, ArrowUpRight, Cake, Bell, AlertCircle, Gift, Clock } from 'lucide-react';
+import { RemindersView } from './RemindersView';
 
 interface DashboardViewProps {
   t: typeof TRANSLATIONS['en']['dashboard'];
+  remindersT: typeof TRANSLATIONS['en']['reminders'];
   clients: Client[];
   policies: PolicyData[];
+  onUploadRenewal: () => void;
+  reminderDays: number;
 }
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, policies }) => {
+export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, clients, policies, onUploadRenewal, reminderDays }) => {
 
   // Logic to filter upcoming birthdays (Real-time logic)
   const upcomingBirthdays = clients.filter(client => {
@@ -161,19 +165,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, clients, polici
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2 bg-amber-50 rounded-lg">
-              <Bell className="w-6 h-6 text-amber-600" />
-            </div>
-            <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
-              {t.attentionNeeded}
-            </span>
-          </div>
-          <p className="text-slate-500 text-sm font-medium">{t.reminders}</p>
-          <h3 className="text-2xl font-bold text-slate-800">{upcomingBirthdays.length + duePolicies.length}</h3>
-        </div>
+      <div className="border-t border-slate-200 pt-6">
+        <RemindersView
+          t={remindersT}
+          policies={policies}
+          clients={clients}
+          onUploadRenewal={onUploadRenewal}
+          reminderDays={reminderDays}
+        />
       </div>
 
       {/* Main Content Grid */}

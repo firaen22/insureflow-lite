@@ -95,16 +95,6 @@ export const Layout: React.FC<LayoutProps> = ({
           </button>
 
           <button
-            onClick={() => onChangeView(AppView.REMINDERS)}
-            className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.REMINDERS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            title={isCollapsed ? t.nav.reminders : ''}
-          >
-            <Bell className="w-5 h-5 min-w-[20px]" />
-            {!isCollapsed && <span className="ml-3 truncate">{t.nav.reminders}</span>}
-          </button>
-
-          <button
             onClick={() => onChangeView(AppView.MEETINGS)}
             className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg transition-colors ${currentView === AppView.MEETINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
@@ -179,7 +169,7 @@ export const Layout: React.FC<LayoutProps> = ({
             </button>
 
             <button
-              onClick={() => onChangeView(AppView.REMINDERS)}
+              onClick={() => onChangeView(AppView.DASHBOARD)}
               className="p-2 text-slate-400 hover:text-brand-600 transition-colors relative"
             >
               <Bell className="w-5 h-5" />

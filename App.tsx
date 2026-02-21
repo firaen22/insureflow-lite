@@ -6,7 +6,6 @@ import { ClientsView } from './components/ClientsView';
 import { ProductLibraryView } from './components/ProductLibraryView';
 import { ClientDetailsView } from './components/ClientDetailsView';
 import { LoginPage } from './components/LoginPage';
-import { RemindersView } from './components/RemindersView';
 import { GoogleSheetsSync } from './components/GoogleSheetsSync';
 import { SettingsView } from './components/SettingsView';
 import { ClientReportView } from './components/ClientReportView';
@@ -406,7 +405,14 @@ const App: React.FC = () => {
             <UserButton />
           </div>
           {currentView === AppView.DASHBOARD && (
-            <DashboardView t={t.dashboard} clients={clients} policies={policies} />
+            <DashboardView
+              t={t.dashboard}
+              remindersT={t.reminders}
+              onUploadRenewal={() => setCurrentView(AppView.UPLOAD)}
+              reminderDays={settings.reminderDays}
+              clients={clients}
+              policies={policies}
+            />
           )}
           {currentView === AppView.UPLOAD && (
             <UploadView t={t.upload} products={products} onSave={handleSavePolicy} clients={clients} />
@@ -450,15 +456,6 @@ const App: React.FC = () => {
               pdfLayout={settings.pdfLayout || DEFAULT_PDF_LAYOUT}
               onUpdateLayout={(newLayout) => setSettings(prev => ({ ...prev, pdfLayout: newLayout }))}
               onBack={() => setCurrentView(AppView.CLIENT_DETAILS)}
-            />
-          )}
-          {currentView === AppView.REMINDERS && (
-            <RemindersView
-              t={t.reminders}
-              policies={policies}
-              clients={clients}
-              onUploadRenewal={() => setCurrentView(AppView.UPLOAD)}
-              reminderDays={settings.reminderDays}
             />
           )}
           {currentView === AppView.PRODUCTS && (
