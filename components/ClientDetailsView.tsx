@@ -504,7 +504,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <select
                     value={newMeeting.type}
                     onChange={e => setNewMeeting({ ...newMeeting, type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="Intro">{meetingsT.types?.Intro || 'Intro'}</option>
                     <option value="Policy Review">{meetingsT.types?.PolicyReview || 'Policy Review'}</option>
@@ -600,7 +601,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         setEditingPolicy({ ...editingPolicy, planName: selectedPlanName });
                       }
                     }}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="" disabled>Select a plan...</option>
                     {products.map(p => (
@@ -797,7 +799,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <>
                         <div className="col-span-2">
                           <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.roomType}</label>
-                          <select value={editingPolicy.medicalPlanType || 'Ward'} onChange={e => handleUpdateField('medicalPlanType', e.target.value)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded bg-white">
+                          <select value={editingPolicy.medicalPlanType || 'Ward'} onChange={e => handleUpdateField('medicalPlanType', e.target.value)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none" style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '1.75rem' }}>
                             <option value="Ward">Ward</option>
                             <option value="Semi-Private">Semi-Private</option>
                             <option value="Private">Private</option>
@@ -971,7 +973,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   {/* Tag Selection Dropdown */}
                   <div className="relative mb-2">
                     <select
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white text-slate-700"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 appearance-none text-slate-700 transition-colors cursor-pointer"
+                      style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       value=""
                       onChange={e => {
                         const val = e.target.value;
@@ -985,7 +988,6 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         <option key={tag} value={tag}>{tag}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4 pointer-events-none" />
                   </div>
 
                   {/* Custom Tag Input */}

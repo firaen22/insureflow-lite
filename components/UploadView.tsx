@@ -496,7 +496,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           handleUpdateCurrentField('type', matchedProduct.type);
                         }
                       }}
-                      className="w-full p-2.5 border border-brand-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 font-medium bg-white"
+                      className="w-full p-2.5 border border-brand-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
+                      style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                     >
                       <option value="" disabled>Select a plan...</option>
                       {products.map(p => (
@@ -545,7 +546,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         <select
                           value={activeItem.data.medicalPlanType || 'Ward'}
                           onChange={e => handleUpdateCurrentField('medicalPlanType', e.target.value)}
-                          className="w-full p-2 border border-blue-200 rounded-lg text-sm bg-white focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 border border-blue-200 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer appearance-none"
+                          style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.3em 1.3em', paddingRight: '2rem' }}
                         >
                           <option value="Ward">Ward</option>
                           <option value="Semi-Private">Semi-Private</option>
@@ -666,7 +668,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         <select
                           value={activeItem.data.currency || 'HKD'}
                           onChange={e => handleUpdateCurrentField('currency', e.target.value)}
-                          className="w-20 p-2 border border-slate-300 rounded-lg text-sm bg-white font-medium"
+                          className="w-20 p-2 border border-slate-300 rounded-lg text-sm font-medium bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                          style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.15rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em', paddingRight: '1.25rem' }}
                         >
                           <option value="HKD">HKD</option>
                           <option value="USD">USD</option>
@@ -687,7 +690,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       <select
                         value={activeItem.data.paymentMode}
                         onChange={e => handleUpdateCurrentField('paymentMode', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white"
+                        className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2rem' }}
                       >
                         <option value="Yearly">Yearly</option>
                         <option value="Monthly">Monthly</option>
