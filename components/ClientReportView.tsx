@@ -79,7 +79,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                 if (isRider) return <span className="text-blue-600 font-medium">{policy.type === 'Medical' && policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>;
 
                 if (policy.type === 'Medical') {
-                    const planText = policy.medicalPlanType === 'High-End' ? 'High-End Medical' : policy.medicalPlanType;
+                    const planText = (policy.medicalPlanType === 'High-End' ? 'High-End Medical' : policy.medicalPlanType) || 'Ward';
                     return (
                         <div className="flex flex-col items-center justify-center leading-tight">
                             <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>
