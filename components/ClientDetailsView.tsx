@@ -383,7 +383,15 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           {rider.type && <div className="text-[10px] text-slate-500">{rider.type}</div>}
                         </td>
                         <td className="px-4 py-2 align-middle border-t-0 text-slate-700">
-                          {rider.sumInsured ? <span className="font-medium text-slate-700">${rider.sumInsured.toLocaleString()}</span> : '-'}
+                          {rider.type === 'Medical' && rider.medicalPlanType ? (
+                            <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded inline-block border border-blue-200">
+                              {['High-End Semi-Private', 'High-End Private'].includes(rider.medicalPlanType as string) ? 'High-End Medical' : rider.medicalPlanType}
+                            </span>
+                          ) : rider.sumInsured ? (
+                            <span className="font-medium text-slate-700">${rider.sumInsured.toLocaleString()}</span>
+                          ) : (
+                            '-'
+                          )}
                         </td>
                         <td className="px-4 py-2 align-middle text-right border-t-0">
                           <div className="font-bold text-slate-700">
@@ -878,7 +886,22 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                           </div>
                           <div className="col-span-6">
                             <label className="block font-medium text-slate-500 mb-1">Sum Insured</label>
-                            <input type="number" value={rider.sumInsured || ''} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                            {rider.type === 'Medical' ? (
+                              <select
+                                value={rider.medicalPlanType || 'Ward'}
+                                onChange={e => handleUpdateRider(idx, 'medicalPlanType', e.target.value)}
+                                className="w-full px-2 py-1.5 border rounded border-slate-300 bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em', paddingRight: '1.5rem' }}
+                              >
+                                <option value="Ward">Ward</option>
+                                <option value="Semi-Private">Semi-Private</option>
+                                <option value="Private">Private</option>
+                                <option value="High-End Semi-Private">High-End Semi-Private</option>
+                                <option value="High-End Private">High-End Private</option>
+                              </select>
+                            ) : (
+                              <input type="number" value={rider.sumInsured || ''} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                            )}
                           </div>
                         </div>
 

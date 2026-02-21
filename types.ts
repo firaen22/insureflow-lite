@@ -18,6 +18,7 @@ export interface Rider {
   type: string;
   premiumAmount: number;
   sumInsured?: number;
+  medicalPlanType?: 'Ward' | 'Semi-Private' | 'Private' | 'High-End Semi-Private' | 'High-End Private';
   protectionMatureDate?: string;
   premiumMatureDate?: string;
 }

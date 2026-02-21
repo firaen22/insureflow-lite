@@ -819,13 +819,28 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               <option value="Critical Illness">Critical Illness</option>
                               <option value="Other">Other</option>
                             </select>
-                            <input
-                              type="number"
-                              value={rider.sumInsured || ''}
-                              onChange={e => handleUpdateRider(idx, 'sumInsured', parseFloat(e.target.value))}
-                              placeholder="Sum Insured"
-                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
-                            />
+                            {rider.type === 'Medical' ? (
+                              <select
+                                value={rider.medicalPlanType || 'Ward'}
+                                onChange={e => handleUpdateRider(idx, 'medicalPlanType', e.target.value)}
+                                className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-slate-50 hover:bg-white focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '1.5rem' }}
+                              >
+                                <option value="Ward">Ward</option>
+                                <option value="Semi-Private">Semi-Private</option>
+                                <option value="Private">Private</option>
+                                <option value="High-End Semi-Private">High-End Semi-Private</option>
+                                <option value="High-End Private">High-End Private</option>
+                              </select>
+                            ) : (
+                              <input
+                                type="number"
+                                value={rider.sumInsured || ''}
+                                onChange={e => handleUpdateRider(idx, 'sumInsured', parseFloat(e.target.value))}
+                                placeholder="Sum Insured"
+                                className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              />
+                            )}
                             <input
                               type="number"
                               value={rider.premiumAmount}
