@@ -120,12 +120,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-slate-200/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out">
           <div className="flex items-center justify-between mb-4">
             <div className="p-2 bg-blue-50 rounded-lg">
               <Users className="w-6 h-6 text-brand-600" />
             </div>
-            <span className="text-xs font-medium text-green-600 flex items-center bg-green-50 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium text-green-600 flex items-center bg-green-50/80 px-2 py-1 rounded-full">
               +12% <ArrowUpRight className="w-3 h-3 ml-1" />
             </span>
           </div>
@@ -133,12 +133,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
           <h3 className="text-2xl font-bold text-slate-800">{clients.length}</h3>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-slate-200/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out">
           <div className="flex items-center justify-between mb-4">
             <div className="p-2 bg-indigo-50 rounded-lg">
               <FileText className="w-6 h-6 text-indigo-600" />
             </div>
-            <span className="text-xs font-medium text-green-600 flex items-center bg-green-50 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium text-green-600 flex items-center bg-green-50/80 px-2 py-1 rounded-full">
               +5% <ArrowUpRight className="w-3 h-3 ml-1" />
             </span>
           </div>
@@ -146,7 +146,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
           <h3 className="text-2xl font-bold text-slate-800">{activePoliciesCount}</h3>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-slate-200/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out">
           <div className="flex items-center justify-between mb-4">
             <div className="p-2 bg-emerald-50 rounded-lg">
               <DollarSign className="w-6 h-6 text-emerald-600" />
@@ -195,7 +195,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             if (staleClients.length === 0) return null;
 
             return (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="bg-amber-50/70 backdrop-blur-sm border border-amber-200/50 rounded-xl p-4 flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
                 <div className="p-2 bg-amber-100 rounded-lg text-amber-600">
                   <Clock className="w-5 h-5" />
                 </div>
@@ -234,7 +234,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
               {duePolicies.length > 0 ? (
                 <div className="space-y-3">
                   {duePolicies.map(policy => (
-                    <div key={policy.id} className="flex items-start p-3 bg-slate-50 rounded-lg border border-slate-100 transition-colors hover:bg-slate-100">
+                    <div key={policy.id} className="group flex items-start p-3 bg-slate-50/50 rounded-lg border border-slate-100 hover:bg-slate-100/60 transition-colors">
                       <div className="flex-1">
                         <p className="text-sm font-semibold text-slate-800">{policy.holderName}</p>
                         <p className="text-xs text-slate-500">{policy.planName}</p>
@@ -283,9 +283,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                       <td className="px-6 py-4 font-mono text-slate-600">{policy.policyNumber}</td>
                       <td className="px-6 py-4 font-medium text-slate-800">{policy.holderName}</td>
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs ${policy.type === 'Life' ? 'bg-blue-100 text-blue-700' :
-                          policy.type === 'Medical' ? 'bg-green-100 text-green-700' :
-                            'bg-slate-100 text-slate-600'
+                        <span className={`px-2 py-1 rounded-full text-xs ${policy.type === 'Life' ? 'bg-blue-100/80 text-blue-700' :
+                          policy.type === 'Medical' ? 'bg-green-100/80 text-green-700' :
+                            'bg-slate-100/80 text-slate-600'
                           }`}>
                           {policy.type}
                         </span>
@@ -293,8 +293,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                       <td className="px-6 py-4 text-slate-600">{policy.policyAnniversaryDate}</td>
                       <td className="px-6 py-4 text-slate-600">{policy.paymentMode}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${policy.status === 'Active' ? 'bg-green-100 text-green-800' :
-                          policy.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${policy.status === 'Active' ? 'bg-green-100/80 text-green-800' :
+                          policy.status === 'Pending' ? 'bg-amber-100/80 text-amber-800' : 'bg-red-100/80 text-red-800'
                           }`}>
                           {policy.status}
                         </span>
@@ -325,15 +325,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                 const age = new Date().getFullYear() - new Date(client.birthday).getFullYear();
 
                 return (
-                  <div key={client.id} className="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100 transition-colors hover:bg-slate-100">
-                    <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold mr-3">
+                  <div key={client.id} className="group flex items-center p-3 bg-slate-50/50 rounded-lg border border-slate-100 hover:bg-slate-100/60 transition-colors">
+                    <div className="w-10 h-10 rounded-full bg-pink-100/80 flex items-center justify-center text-pink-600 font-bold mr-3">
                       {client.name.charAt(0)}
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-slate-800">{client.name}</p>
                       <p className="text-xs text-slate-500">Turning {age} on {new Date(client.birthday).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
                     </div>
-                    <button className="text-xs bg-white border border-pink-200 text-pink-600 px-3 py-1.5 rounded-md hover:bg-pink-50 font-medium transition-colors">
+                    <button className="text-xs bg-white border border-pink-200 text-pink-600 px-3 py-1.5 rounded-md hover:bg-pink-50 font-medium transition-all opacity-80 group-hover:opacity-100 active:scale-95">
                       {t.sendWish}
                     </button>
                   </div>
@@ -345,7 +345,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
               )}
             </div>
             <div className="p-4 border-t border-slate-100 bg-slate-50">
-              <button className="w-full py-2 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <button className="w-full py-2 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-all active:scale-95">
                 {t.viewCalendar}
               </button>
             </div>
