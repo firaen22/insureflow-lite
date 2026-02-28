@@ -149,9 +149,9 @@ export const Layout: React.FC<LayoutProps> = ({
                 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold border transition-all duration-500
                 ${['Saving', 'Syncing', 'Loading', 'Connecting'].some(s => syncStatus.includes(s)) ? 'animate-pulse' : ''}
                 ${['Saved', 'Synced', 'Loaded'].some(s => syncStatus.includes(s))
-                  ? 'bg-white dark:bg-white/5 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.1)]'
+                  ? 'bg-white dark:bg-white/5 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.1)]'
                   : ['Error', 'Auth'].some(s => syncStatus.includes(s))
-                    ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                    ? 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20'
                     : 'bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-white/5'
                 }
               `}>

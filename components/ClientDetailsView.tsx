@@ -283,9 +283,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <React.Fragment key={policy.id}>
                     <tr className="hover:bg-white dark:bg-white/[0.03] transition-colors group">
                       <td className="px-6 py-6 align-top">
-                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border ${policy.type === 'Life' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                          policy.type === 'Critical Illness' ? 'bg-red-500/10 text-red-100 border-red-500/20' :
-                            policy.type === 'Medical' ? 'bg-emerald-500/10 text-emerald-100 border-emerald-500/20' :
+                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border ${policy.type === 'Life' ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20' :
+                          policy.type === 'Critical Illness' ? 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20' :
+                            policy.type === 'Medical' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20' :
                               'bg-white dark:bg-white/5 text-slate-900 dark:text-white/50 border-slate-200 dark:border-white/10'
                           }`}>
                           {policy.type}
