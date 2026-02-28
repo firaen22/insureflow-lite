@@ -113,7 +113,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                 <Users className="w-6 h-6 text-brand-600 dark:text-slate-900 dark:text-white" />
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                   +12.5%
                 </span>
               </div>
@@ -210,11 +210,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                   </p>
                   <div className="flex flex-wrap gap-2 mt-4">
                     {staleClients.slice(0, 5).map(c => (
-                      <span key={c.id} className="bg-slate-100 dark:bg-white dark:bg-white/5 border border-slate-200 dark:border-slate-200 dark:border-white/10 px-3 py-1 rounded-full text-[10px] font-bold text-slate-600 dark:text-slate-600 dark:text-slate-300">
+                      <span key={c.id} className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-3 py-1 rounded-full text-[10px] font-bold text-slate-700 dark:text-slate-300">
                         {c.name} • {Math.ceil((new Date().getTime() - new Date(c.lastContact).getTime()) / (1000 * 60 * 60 * 24))}d
                       </span>
                     ))}
-                    {staleClients.length > 5 && <span className="text-[10px] text-slate-500 font-bold self-center">+{staleClients.length - 5} MORE</span>}
+                    {staleClients.length > 5 && <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold self-center">+{staleClients.length - 5} MORE</span>}
                   </div>
                 </div>
               </div>
@@ -229,7 +229,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                   {t.premiumsDue.toUpperCase()}
                 </h3>
                 {duePolicies.length > 0 && (
-                  <span className="text-[10px] font-black bg-red-500/20 text-red-400 px-3 py-1 rounded-full border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                  <span className="text-[10px] font-black bg-red-500/10 text-red-700 dark:text-red-400 px-3 py-1 rounded-full border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
                     {duePolicies.length} URGENT
                   </span>
                 )}
@@ -252,7 +252,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                           </div>
                         </div>
                         <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-100 dark:border-slate-100 dark:border-white/5">
-                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-500 dark:text-slate-400 bg-white dark:bg-white dark:bg-white/5 px-2 py-0.5 rounded uppercase tracking-tighter border border-slate-200 dark:border-transparent">{policy.paymentMode}</span>
+                          <span className="text-[10px] font-bold text-slate-700 dark:text-slate-400 bg-white dark:bg-white/5 px-2 py-0.5 rounded uppercase tracking-tighter border border-slate-200 dark:border-transparent">{policy.paymentMode}</span>
                           <span className="text-[10px] font-black text-red-500 dark:text-red-400 ml-auto">DUE {policy.nextDueDate.toLocaleDateString()}</span>
                         </div>
                       </div>
@@ -339,11 +339,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                         if (active && payload && payload.length) {
                           return (
                             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 p-3 rounded-xl shadow-2xl">
-                              <p className="text-xs font-black dark:text-white mb-1">{payload[0].name}</p>
+                              <p className="text-xs font-black text-slate-900 dark:text-white mb-1">{payload[0].name}</p>
                               <p className="text-sm font-bold text-brand-600 dark:text-brand-400">
                                 {payload[0].value} {payload[0].value === 1 ? 'Policy' : 'Policies'}
                               </p>
-                              <p className="text-[10px] text-slate-500">
+                              <p className="text-[10px] text-slate-600 dark:text-slate-400">
                                 {((payload[0].value / policies.length) * 100).toFixed(1)}% of total
                               </p>
                             </div>
@@ -356,7 +356,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                 </ResponsiveContainer>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Total</span>
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Total</span>
                   <span className="text-2xl font-black text-slate-900 dark:text-white">{policies.length}</span>
                 </div>
               </div>
@@ -367,7 +367,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: entry.name === 'Medical' ? '#0ea5e9' : entry.name === 'Critical Illness' ? '#ef4444' : entry.name === 'Life' ? '#6366f1' : COLORS[index % COLORS.length] }} />
                     <div className="flex-1 min-w-0">
                       <p className="text-[10px] font-black text-slate-800 dark:text-white/90 truncate uppercase tracking-tighter">{entry.name}</p>
-                      <p className="text-[9px] text-slate-500 font-bold">{entry.value} • {((entry.value / policies.length) * 100).toFixed(0)}%</p>
+                      <p className="text-[9px] text-slate-600 dark:text-slate-400 font-bold">{entry.value} • {((entry.value / policies.length) * 100).toFixed(0)}%</p>
                     </div>
                   </div>
                 ))}
@@ -382,7 +382,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                   <Gift className="w-5 h-5 text-brand-600 dark:text-slate-900 dark:text-white" />
                   {t.birthdays.toUpperCase()}
                 </h3>
-                <span className="text-[10px] font-black bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-900 dark:text-white px-3 py-1 rounded-full border border-slate-200 dark:border-slate-300 dark:border-white/20">
+                <span className="text-[10px] font-black bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-white px-3 py-1 rounded-full border border-slate-200 dark:border-white/20">
                   {upcomingBirthdays.length}
                 </span>
               </div>
