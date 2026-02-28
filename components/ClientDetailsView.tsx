@@ -171,7 +171,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               </button>
             </div>
             <div className="flex gap-2 mt-2">
-              <div className="h-1 w-12 bg-white rounded-full shadow-[0_0_15px_white]" />
+              <div className="h-1 w-12 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
               <div className="h-1 w-4 bg-white/20 rounded-full" />
             </div>
           </div>
@@ -259,7 +259,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         <div className="bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
           <div className="p-8 border-b border-white/5 flex justify-between items-center bg-slate-900/40">
             <h3 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.2em]">
-              <FileText className="w-5 h-5 text-white shadow-[0_0_10px_white]" />
+              <FileText className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
               {t.policiesHeld?.toUpperCase()} ({policies.length})
             </h3>
             <div className="h-1 w-12 bg-white/20 rounded-full" />
@@ -284,9 +284,9 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <tr className="hover:bg-white/[0.03] transition-colors group">
                       <td className="px-6 py-6 align-top">
                         <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border ${policy.type === 'Life' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                            policy.type === 'Critical Illness' ? 'bg-red-500/10 text-red-100 border-red-500/20' :
-                              policy.type === 'Medical' ? 'bg-emerald-500/10 text-emerald-100 border-emerald-500/20' :
-                                'bg-white/5 text-white/50 border-white/10'
+                          policy.type === 'Critical Illness' ? 'bg-red-500/10 text-red-100 border-red-500/20' :
+                            policy.type === 'Medical' ? 'bg-emerald-500/10 text-emerald-100 border-emerald-500/20' :
+                              'bg-white/5 text-white/50 border-white/10'
                           }`}>
                           {policy.type}
                         </span>
@@ -320,7 +320,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       </td>
                       <td className="px-6 py-6 align-top text-center">
                         <span className={`inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase border tracking-tighter shadow-lg ${policy.status === 'Active' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
-                            'bg-red-500/20 text-red-400 border-red-500/30'
+                          'bg-red-500/20 text-red-400 border-red-500/30'
                           }`}>
                           {policy.status}
                         </span>
@@ -411,7 +411,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
             {(client.meetingLogs || []).length > 0 ? [...(client.meetingLogs || [])].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(log => (
               <div key={log.id} className="relative pl-10 pb-8 last:pb-0">
                 <div className="absolute left-0 top-0 w-[2px] h-full bg-white/5" />
-                <div className="absolute left-[-4px] top-0 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_white]" />
+                <div className="absolute left-[-4px] top-0 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
 
                 <div className="flex justify-between items-start mb-2">
                   <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{log.date}</span>

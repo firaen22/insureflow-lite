@@ -228,7 +228,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             <div className="flex flex-col h-full">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-black text-white flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  <AlertCircle className="w-5 h-5 text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                   {t.premiumsDue.toUpperCase()}
                 </h3>
                 {duePolicies.length > 0 && (
@@ -319,7 +319,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             <div className="flex flex-col h-full">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-lg font-black text-white flex items-center gap-3">
-                  <Gift className="w-5 h-5 text-white shadow-[0_0_15px_white]" />
+                  <Gift className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
                   {t.birthdays.toUpperCase()}
                 </h3>
                 <span className="text-[10px] font-black bg-white/10 text-white px-3 py-1 rounded-full border border-white/20">
