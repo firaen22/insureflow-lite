@@ -4,6 +4,7 @@ import { Client, PolicyData, PaymentMode } from '../types';
 import { Users, FileText, DollarSign, ArrowUpRight, Cake, Bell, AlertCircle, Gift, Clock } from 'lucide-react';
 import { RemindersView } from './RemindersView';
 import { Card3D } from './ui/Card3D';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface DashboardViewProps {
   t: typeof TRANSLATIONS['en']['dashboard'];
@@ -16,7 +17,6 @@ interface DashboardViewProps {
 
 export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, clients, policies, onUploadRenewal, reminderDays }) => {
 
-  // ... (Logic remains unchanged) ...
   const upcomingBirthdays = clients.filter(client => {
     const today = new Date();
     const bday = new Date(client.birthday);
@@ -77,6 +77,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
   }, {} as Record<string, number>);
 
   const activePoliciesCount = policies.filter(p => p.status === 'Active').length;
+
+  const policyDistribution = policies.reduce((acc, p) => {
+    const type = p.type || 'Other';
+    acc[type] = (acc[type] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const chartData = Object.entries(policyDistribution).map(([name, value]) => ({
+    name,
+    value
+  })).sort((a, b) => b.value - a.value);
+
+  const COLORS = ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
   return (
     <div className="space-y-10">
@@ -173,23 +186,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
         </div>
       </div>
 
-      <div className="border-t border-slate-200 pt-6">
-        <RemindersView
-          t={remindersT}
-          policies={policies}
-          clients={clients}
-          onUploadRenewal={onUploadRenewal}
-          reminderDays={reminderDays}
-        />
-      </div>
-
-      {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        {/* Left Column: Attention & Policies */}
         <div className="lg:col-span-2 space-y-8">
-
-          {/* Stale Contact Reminder Logic */}
           {(() => {
             const staleClients = clients.filter(c => {
               if (!c.lastContact) return true;
@@ -223,7 +221,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             );
           })()}
 
-          {/* Attention Section */}
           <Card3D depth={20} className="w-full">
             <div className="flex flex-col h-full p-8">
               <div className="flex items-center justify-between mb-6">
@@ -270,7 +267,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             </div>
           </Card3D>
 
-          {/* Recent Policies Table - Modernized Lite */}
           <div className="bg-white dark:bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-100 dark:border-white/5 overflow-hidden shadow-sm dark:shadow-sm dark:shadow-2xl">
             <div className="p-6 border-b border-slate-100 dark:border-slate-100 dark:border-white/5 flex items-center justify-between">
               <h3 className="text-sm font-black text-slate-900 dark:text-white tracking-widest">{t.recentUpdates.toUpperCase()}</h3>
@@ -313,8 +309,72 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
           </div>
         </div>
 
-        {/* Right Column: Birthdays */}
         <div className="space-y-8">
+          <Card3D depth={15} className="w-full">
+            <div className="p-8 flex flex-col h-full">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-sm font-black text-slate-900 dark:text-white tracking-widest">{t.policyDist.toUpperCase()}</h3>
+                <div className="h-1 w-8 bg-brand-500 dark:bg-white/20 rounded-full" />
+              </div>
+
+              <div className="h-[240px] w-full relative">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.name === 'Medical' ? '#0ea5e9' : entry.name === 'Critical Illness' ? '#ef4444' : entry.name === 'Life' ? '#6366f1' : COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 p-3 rounded-xl shadow-2xl">
+                              <p className="text-xs font-black dark:text-white mb-1">{payload[0].name}</p>
+                              <p className="text-sm font-bold text-brand-600 dark:text-brand-400">
+                                {payload[0].value} {payload[0].value === 1 ? 'Policy' : 'Policies'}
+                              </p>
+                              <p className="text-[10px] text-slate-500">
+                                {((payload[0].value / policies.length) * 100).toFixed(1)}% of total
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Total</span>
+                  <span className="text-2xl font-black text-slate-900 dark:text-white">{policies.length}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6">
+                {chartData.slice(0, 6).map((entry, index) => (
+                  <div key={entry.name} className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: entry.name === 'Medical' ? '#0ea5e9' : entry.name === 'Critical Illness' ? '#ef4444' : entry.name === 'Life' ? '#6366f1' : COLORS[index % COLORS.length] }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] font-black text-slate-800 dark:text-white/90 truncate uppercase tracking-tighter">{entry.name}</p>
+                      <p className="text-[9px] text-slate-500 font-bold">{entry.value} • {((entry.value / policies.length) * 100).toFixed(0)}%</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card3D>
+
           <Card3D depth={30} className="h-full min-h-[500px]">
             <div className="flex flex-col h-full p-8">
               <div className="flex items-center justify-between mb-8">
@@ -354,7 +414,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                   </div>
                 )}
               </div>
-
               <div className="mt-8 pt-6 border-t border-slate-100 dark:border-white/5">
                 <button className="w-full py-4 text-[10px] font-black uppercase tracking-[.25em] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 rounded-2xl hover:bg-white dark:bg-white/5 transition-all">
                   {t.viewCalendar}
@@ -363,7 +422,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             </div>
           </Card3D>
         </div>
-
       </div>
     </div>
   );
