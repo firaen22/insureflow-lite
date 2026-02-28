@@ -65,7 +65,7 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.25em] uppercase">
-            <Bell className="w-5 h-5 text-white shadow-[0_0_15px_white]" />
+            <Bell className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
             {t.title}
           </h1>
           <p className="text-slate-500 text-[10px] font-bold mt-2 uppercase tracking-wider">{t.subtitle}</p>
