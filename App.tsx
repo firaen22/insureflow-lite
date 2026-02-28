@@ -22,7 +22,8 @@ const App: React.FC = () => {
   const [settings, setSettings] = useState<AppSettings>({
     language: 'en',
     reminderDays: 60,
-    pdfLayout: DEFAULT_PDF_LAYOUT
+    pdfLayout: DEFAULT_PDF_LAYOUT,
+    theme: 'dark'
   });
   const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
 
@@ -189,6 +190,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('insureflow_settings', JSON.stringify(settings));
+    // Apply theme to document
+    if (settings.theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, [settings]);
 
   // Settings are likely handled by a context now, but keeping for compatibility if local
@@ -422,11 +429,19 @@ const App: React.FC = () => {
           currentView={currentView}
           onChangeView={setCurrentView}
           language={settings.language}
-          onToggleLanguage={() => setSettings(prev => ({ ...prev, language: prev.language === 'en' ? 'zh' : 'en' }))}
+          onToggleLanguage={() => setSettings(prev => {
+            let nextLang: Language = 'en';
+            if (prev.language === 'en') nextLang = 'zh';
+            else if (prev.language === 'zh') nextLang = 'zh-CN';
+            else nextLang = 'en';
+            return { ...prev, language: nextLang };
+          })}
+          theme={settings.theme || 'dark'}
+          onToggleTheme={() => setSettings(prev => ({ ...prev, theme: prev.theme === 'light' ? 'dark' : 'light' }))}
           t={t}
           syncStatus={syncStatus}
         >
-          <div className="absolute top-4 right-20 z-10">
+          <div className="absolute top-4 right-24 z-10 transition-all">
             <UserButton />
           </div>
           {currentView === AppView.DASHBOARD && (

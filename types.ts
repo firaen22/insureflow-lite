@@ -1,5 +1,5 @@
 
-export type Language = 'en' | 'zh';
+export type Language = 'en' | 'zh' | 'zh-CN';
 
 export type PaymentMode = 'Yearly' | 'Half-Yearly' | 'Quarterly' | 'Monthly';
 
@@ -137,6 +137,7 @@ export interface AppSettings {
   aiBaseUrl?: string; // For custom OpenAI/Kimi endpoints
   aiModel?: string; // Selected model ID
   pdfLayout?: PDFColumnConfig[]; // Global PDF Layout preferences
+  theme?: 'light' | 'dark';
 }
 
 export interface UserProfile {

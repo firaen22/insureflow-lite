@@ -56,7 +56,7 @@ Fields to extract:
 Important:
 - For numeric fields, remove commas (e.g., "1,000" -> 1000).
 - If a field is not found, use null.
-- Support Traditional Chinese and English documents.
+- Support Traditional Chinese, Simplified Chinese and English documents.
 `;
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

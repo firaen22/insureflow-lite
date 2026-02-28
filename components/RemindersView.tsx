@@ -64,25 +64,25 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.25em] uppercase">
-            <Bell className="w-5 h-5 text-white" />
+          <h1 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-3 tracking-[0.25em] uppercase">
+            <Bell className="w-5 h-5 text-slate-900 dark:text-white" />
             {t.title}
           </h1>
           <p className="text-slate-500 text-[10px] font-bold mt-2 uppercase tracking-wider">{t.subtitle}</p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex bg-white/5 backdrop-blur-xl rounded-2xl p-1 border border-white/10 shadow-2xl">
+        <div className="flex bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-2xl p-1 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-2xl">
           <button
             onClick={() => setFilter('all')}
-            className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${filter === 'all' ? 'bg-white text-slate-900 shadow-lg scale-105' : 'text-slate-500 hover:text-white'
+            className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${filter === 'all' ? 'bg-white text-slate-900 shadow-lg scale-105' : 'text-slate-500 hover:text-slate-900 dark:text-white'
               }`}
           >
             {t.filterAll}
           </button>
           <button
             onClick={() => setFilter('urgent')}
-            className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${filter === 'urgent' ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] scale-105' : 'text-slate-500 hover:text-red-400'
+            className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${filter === 'urgent' ? 'bg-red-500 text-slate-900 dark:text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] scale-105' : 'text-slate-500 hover:text-red-400'
               }`}
           >
             {t.filterUrgent}
@@ -93,7 +93,7 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
       <div className="grid gap-6">
         {filteredReminders.length > 0 ? (
           filteredReminders.map(reminder => (
-            <div key={reminder.id} className="group bg-white/[0.03] backdrop-blur-3xl rounded-[2rem] border border-white/5 shadow-2xl hover:bg-white/[0.05] hover:border-white/10 transition-all duration-300 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div key={reminder.id} className="group bg-white dark:bg-white/[0.03] backdrop-blur-3xl rounded-[2rem] border border-slate-100 dark:border-white/5 shadow-sm dark:shadow-2xl hover:bg-white dark:bg-white/[0.05] hover:border-slate-200 dark:border-white/10 transition-all duration-300 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               {/* Left Section: Days Remaining Indicator */}
               <div className="flex items-center gap-6">
                 <div className={`flex flex-col items-center justify-center w-20 h-20 rounded-[1.5rem] border-2 transition-transform group-hover:scale-110 duration-500 ${getUrgencyColor(reminder.daysRemaining)}`}>
@@ -102,10 +102,10 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
                 </div>
 
                 <div>
-                  <h3 className="font-black text-white text-xl tracking-tight leading-tight group-hover:translate-x-1 transition-transform">{reminder.planName}</h3>
+                  <h3 className="font-black text-slate-900 dark:text-white text-xl tracking-tight leading-tight group-hover:translate-x-1 transition-transform">{reminder.planName}</h3>
                   <div className="flex items-center gap-2 text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1.5 mb-2">
-                    <span className="text-slate-400">{reminder.holderName}</span>
-                    <span className="w-1 h-1 bg-white/20 rounded-full"></span>
+                    <span className="text-slate-500 dark:text-slate-400">{reminder.holderName}</span>
+                    <span className="w-1 h-1 bg-slate-200 dark:bg-white/20 rounded-full"></span>
                     <span className="font-mono">{reminder.policyNumber}</span>
                   </div>
                   <div className="flex items-center gap-3">
@@ -123,21 +123,21 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
               </div>
 
               {/* Right Section: Actions */}
-              <div className="flex items-center gap-6 w-full md:w-auto pt-6 md:pt-0 border-t md:border-t-0 border-white/5">
+              <div className="flex items-center gap-6 w-full md:w-auto pt-6 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-white/5">
                 <div className="flex flex-col gap-1 mr-4 text-right hidden lg:block">
                   <span className="text-[9px] text-slate-600 uppercase font-black tracking-widest leading-none">{t.policyDetails}</span>
-                  <span className="text-sm font-black text-white">${reminder.premiumAmount.toLocaleString()} <span className="text-[10px] text-slate-500">/ {reminder.paymentMode}</span></span>
+                  <span className="text-sm font-black text-slate-900 dark:text-white">${reminder.premiumAmount.toLocaleString()} <span className="text-[10px] text-slate-500">/ {reminder.paymentMode}</span></span>
                 </div>
 
                 {reminder.client && (
                   <div className="flex gap-2">
                     {reminder.client.email && (
-                      <a href={`mailto:${reminder.client.email}`} className="p-3 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 rounded-2xl border border-white/5 transition-all active:scale-95" title={reminder.client.email}>
+                      <a href={`mailto:${reminder.client.email}`} className="p-3 bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white hover:bg-slate-100 dark:bg-white/10 rounded-2xl border border-slate-100 dark:border-white/5 transition-all active:scale-95" title={reminder.client.email}>
                         <Mail className="w-5 h-5" />
                       </a>
                     )}
                     {reminder.client.phone && (
-                      <a href={`tel:${reminder.client.phone}`} className="p-3 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 rounded-2xl border border-white/5 transition-all active:scale-95" title={reminder.client.phone}>
+                      <a href={`tel:${reminder.client.phone}`} className="p-3 bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white hover:bg-slate-100 dark:bg-white/10 rounded-2xl border border-slate-100 dark:border-white/5 transition-all active:scale-95" title={reminder.client.phone}>
                         <Phone className="w-5 h-5" />
                       </a>
                     )}
@@ -155,8 +155,8 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
             </div>
           ))
         ) : (
-          <div className="text-center py-24 bg-white/[0.02] rounded-[3rem] border border-dashed border-white/5 shadow-inner">
-            <Bell className="w-16 h-16 text-white/5 mx-auto mb-6" />
+          <div className="text-center py-24 bg-slate-50 dark:bg-white/[0.02] rounded-[3rem] border border-dashed border-slate-100 dark:border-white/5 shadow-inner">
+            <Bell className="w-16 h-16 text-slate-900 dark:text-white/5 mx-auto mb-6" />
             <p className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">{t.noReminders}</p>
           </div>
         )}

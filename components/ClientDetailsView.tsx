@@ -153,26 +153,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         <div className="flex items-center gap-6">
           <button
             onClick={onBack}
-            className="p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white transition-all active:scale-95 print:hidden group"
+            className="p-3 bg-white dark:bg-white/5 hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-2xl text-slate-900 dark:text-white transition-all active:scale-95 print:hidden group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           </button>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-4xl font-black text-white tracking-tight">
+              <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
                 {client.name.toUpperCase()}
               </h1>
               <button
                 onClick={() => setEditingClient(client)}
-                className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white border border-white/5 transition-all"
+                className="p-2 bg-white dark:bg-white/5 hover:bg-white/10 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white border border-slate-100 dark:border-white/5 transition-all"
                 title="Edit Client Details"
               >
                 <Edit className="w-4 h-4" />
               </button>
             </div>
             <div className="flex gap-2 mt-2">
-              <div className="h-1 w-12 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
-              <div className="h-1 w-4 bg-white/20 rounded-full" />
+              <div className="h-1 w-12 bg-brand-600 dark:bg-white rounded-full shadow-[0_0_15px_rgba(14,165,233,0.3)] dark:shadow-[0_0_15px_white]" />
+              <div className="h-1 w-4 bg-slate-200 dark:bg-white/20 rounded-full" />
             </div>
           </div>
         </div>
@@ -194,26 +194,26 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         {/* Left Column: Client Info & Summary */}
         <Card3D className="h-full">
           <div className="flex flex-col h-full p-8">
-            <h3 className="text-white text-xs font-black uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+            <h3 className="text-slate-900 dark:text-white text-xs font-black uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
               <Shield className="w-4 h-4" /> {t.summary?.title || 'Protection Summary'}
             </h3>
 
             <div className="space-y-8">
               <div>
                 <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{t.summary?.totalPremium || 'Total Annual Premium'}</p>
-                <p className="text-4xl font-black text-white hover:translate-x-1 transition-transform cursor-default">
+                <p className="text-4xl font-black text-slate-900 dark:text-white hover:translate-x-1 transition-transform cursor-default">
                   HKD ${(totalAnnualPremiumHKD / 1000).toFixed(1)}K
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-6 pt-8 border-t border-white/5">
+              <div className="grid grid-cols-2 gap-6 pt-8 border-t border-slate-100 dark:border-white/5">
                 <div>
                   <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{t.summary?.life || 'Life Coverage'}</p>
-                  <p className="text-2xl font-black text-white">${(totalLifeSumInsuredHKD / 1000000).toFixed(1)}M</p>
+                  <p className="text-2xl font-black text-slate-900 dark:text-white">${(totalLifeSumInsuredHKD / 1000000).toFixed(1)}M</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{t.summary?.ci || 'Critical Illness'}</p>
-                  <p className="text-2xl font-black text-white">${(totalCISumInsuredHKD / 1000000).toFixed(1)}M</p>
+                  <p className="text-2xl font-black text-slate-900 dark:text-white">${(totalCISumInsuredHKD / 1000000).toFixed(1)}M</p>
                 </div>
               </div>
             </div>
@@ -223,7 +223,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         {/* Contact Info Card */}
         <Card3D className="h-full">
           <div className="flex flex-col h-full p-8">
-            <h3 className="text-white text-xs font-black uppercase tracking-[0.2em] mb-8">{t.contactInfo?.toUpperCase()}</h3>
+            <h3 className="text-slate-900 dark:text-white text-xs font-black uppercase tracking-[0.2em] mb-8">{t.contactInfo?.toUpperCase()}</h3>
 
             <div className="space-y-6">
               {[
@@ -232,19 +232,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                 { icon: Calendar, label: t.birthday, value: client.birthday }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-4 group/item">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 group-hover/item:bg-white/10 group-hover/item:scale-110 transition-all">
-                    <item.icon className="w-4 h-4 text-white" />
+                  <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/10 group-hover/item:bg-slate-100 dark:hover:bg-white/10 group-hover/item:scale-110 transition-all">
+                    <item.icon className="w-4 h-4 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <p className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">{item.label}</p>
-                    <p className="text-sm text-white font-bold">{item.value || '-'}</p>
+                    <p className="text-sm text-slate-900 dark:text-white font-bold">{item.value || '-'}</p>
                   </div>
                 </div>
               ))}
 
-              <div className="flex flex-wrap gap-2 pt-6 border-t border-white/5">
+              <div className="flex flex-wrap gap-2 pt-6 border-t border-slate-100 dark:border-white/5">
                 {client.tags.length > 0 ? client.tags.map(tag => (
-                  <span key={tag} className="bg-white/5 text-slate-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-white/10 flex items-center gap-1 hover:bg-white/10 hover:text-white transition-colors">
+                  <span key={tag} className="bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-slate-200 dark:border-white/10 flex items-center gap-1 hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-colors">
                     <Tag className="w-3 h-3" /> {tag}
                   </span>
                 )) : <span className="text-[10px] text-slate-600 font-black uppercase py-1">No metadata tags</span>}
@@ -256,19 +256,19 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* Policies Table */}
       <div className="space-y-8">
-        <div className="bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
-          <div className="p-8 border-b border-white/5 flex justify-between items-center bg-slate-900/40">
-            <h3 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.2em]">
-              <FileText className="w-5 h-5 text-white" />
+        <div className="bg-white dark:bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-slate-100 dark:border-white/5 overflow-hidden shadow-sm dark:shadow-2xl">
+          <div className="p-8 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50 dark:bg-slate-900/40">
+            <h3 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-3 tracking-[0.2em]">
+              <FileText className="w-5 h-5 text-slate-900 dark:text-white" />
               {t.policiesHeld?.toUpperCase()} ({policies.length})
             </h3>
-            <div className="h-1 w-12 bg-white/20 rounded-full" />
+            <div className="h-1 w-12 bg-slate-200 dark:bg-white/20 rounded-full" />
           </div>
 
           <div className="overflow-x-auto print:overflow-visible">
             <table className="w-full text-xs text-left">
               <thead>
-                <tr className="text-slate-500 font-black uppercase tracking-widest border-b border-white/5">
+                <tr className="text-slate-500 font-black uppercase tracking-widest border-b border-slate-100 dark:border-white/5">
                   <th className="px-6 py-5 min-w-[100px]">{t.policyCard.type}</th>
                   <th className="px-6 py-5 min-w-[120px]">{t.policyCard.effectiveDate}</th>
                   <th className="px-6 py-5 min-w-[200px]">{t.policyCard.basePlan}</th>
@@ -278,42 +278,42 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <th className="px-6 py-5 text-right print:hidden"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-200 dark:divide-white/5">
                 {policies.length > 0 ? policies.map(policy => (
                   <React.Fragment key={policy.id}>
-                    <tr className="hover:bg-white/[0.03] transition-colors group">
+                    <tr className="hover:bg-white dark:bg-white/[0.03] transition-colors group">
                       <td className="px-6 py-6 align-top">
                         <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border ${policy.type === 'Life' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
                           policy.type === 'Critical Illness' ? 'bg-red-500/10 text-red-100 border-red-500/20' :
                             policy.type === 'Medical' ? 'bg-emerald-500/10 text-emerald-100 border-emerald-500/20' :
-                              'bg-white/5 text-white/50 border-white/10'
+                              'bg-white dark:bg-white/5 text-slate-900 dark:text-white/50 border-slate-200 dark:border-white/10'
                           }`}>
                           {policy.type}
                         </span>
                       </td>
                       <td className="px-6 py-6 align-top">
                         <div className="flex flex-col text-[10px] font-black text-slate-500">
-                          <span className="text-white mb-1 uppercase tracking-tighter">Eff: {policy.effectiveDate || '-'}</span>
+                          <span className="text-slate-900 dark:text-white mb-1 uppercase tracking-tighter">Eff: {policy.effectiveDate || '-'}</span>
                           <span className="uppercase tracking-widest font-bold">Ann: {policy.policyAnniversaryDate}</span>
                         </div>
                       </td>
                       <td className="px-6 py-6 align-top">
-                        <div className="font-black text-white text-base tracking-tight flex items-center flex-wrap gap-2 group-hover:translate-x-1 transition-transform">
+                        <div className="font-black text-slate-900 dark:text-white text-base tracking-tight flex items-center flex-wrap gap-2 group-hover:translate-x-1 transition-transform">
                           <span>{policy.planName}</span>
                         </div>
                         <div className="text-[10px] font-mono text-slate-500 mt-1 uppercase tracking-widest">{policy.policyNumber}</div>
                         {policy.medicalPlanType && (
-                          <span className="text-[9px] font-black uppercase bg-white/5 text-slate-400 px-2 py-0.5 rounded mt-2 inline-block border border-white/10">
+                          <span className="text-[9px] font-black uppercase bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded mt-2 inline-block border border-slate-200 dark:border-white/10">
                             {policy.medicalPlanType}
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-6 align-top font-black text-white text-sm">
+                      <td className="px-6 py-6 align-top font-black text-slate-900 dark:text-white text-sm">
                         {policy.sumInsured ? `$${policy.sumInsured.toLocaleString()}` : '-'}
                         {policy.isMultipay && <div className="text-[9px] text-emerald-400 font-black uppercase tracking-tighter mt-1">✓ Multipay</div>}
                       </td>
                       <td className="px-6 py-6 align-top text-right">
-                        <div className="font-black text-white text-sm">
+                        <div className="font-black text-slate-900 dark:text-white text-sm">
                           {policy.currency} ${policy.premiumAmount.toLocaleString()}
                         </div>
                         <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">{policy.paymentMode}</div>
@@ -327,10 +327,10 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       </td>
                       <td className="px-6 py-6 align-top text-right print:hidden">
                         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                          <button onClick={() => setEditingPolicy(policy)} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white border border-white/5 transition-all">
+                          <button onClick={() => setEditingPolicy(policy)} className="p-2 bg-white dark:bg-white/5 hover:bg-white/10 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white border border-slate-100 dark:border-white/5 transition-all">
                             <Edit className="w-4 h-4" />
                           </button>
-                          <button onClick={() => handleDeleteClick(policy.id)} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-red-400 border border-white/5 transition-all">
+                          <button onClick={() => handleDeleteClick(policy.id)} className="p-2 bg-white dark:bg-white/5 hover:bg-slate-100 dark:bg-white/10 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-400 border border-slate-100 dark:border-white/5 transition-all">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -345,7 +345,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                             Rider
                           </span>
                         </td>
-                        <td className="px-4 py-2 align-middle border-t-0 text-slate-400 text-xs">
+                        <td className="px-4 py-2 align-middle border-t-0 text-slate-500 dark:text-slate-400 text-xs">
                           └─
                         </td>
                         <td className="px-4 py-2 align-middle border-t-0">
@@ -371,8 +371,8 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         <td className="px-4 py-2 align-middle border-t-0 text-xs text-slate-600">
                           {rider.protectionMatureDate || rider.premiumMatureDate ? (
                             <div className="flex flex-col mt-1">
-                              {rider.protectionMatureDate && <span><span className="text-slate-400 w-12 inline-block">Prot:</span> {rider.protectionMatureDate}</span>}
-                              {rider.premiumMatureDate && <span><span className="text-slate-400 w-12 inline-block">Prem:</span> {rider.premiumMatureDate}</span>}
+                              {rider.protectionMatureDate && <span><span className="text-slate-500 dark:text-slate-400 w-12 inline-block">Prot:</span> {rider.protectionMatureDate}</span>}
+                              {rider.premiumMatureDate && <span><span className="text-slate-500 dark:text-slate-400 w-12 inline-block">Prem:</span> {rider.premiumMatureDate}</span>}
                             </div>
                           ) : '-'}
                         </td>
@@ -382,7 +382,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </React.Fragment>
                 )) : (
                   <tr>
-                    <td colSpan={8} className="px-4 py-12 text-center text-slate-400">
+                    <td colSpan={8} className="px-4 py-12 text-center text-slate-500 dark:text-slate-400">
                       {t.noPolicies}
                     </td>
                   </tr>
@@ -393,10 +393,10 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         </div>
 
         {/* Meeting Logs Section */}
-        <div className="bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
-          <div className="p-8 border-b border-white/5 flex justify-between items-center bg-slate-900/40">
-            <h3 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.2em]">
-              <Clock className="w-5 h-5 text-white/50" />
+        <div className="bg-white dark:bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-slate-100 dark:border-white/5 overflow-hidden shadow-sm dark:shadow-2xl">
+          <div className="p-8 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50 dark:bg-slate-900/40">
+            <h3 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-3 tracking-[0.2em]">
+              <Clock className="w-5 h-5 text-slate-900 dark:text-white/50" />
               {meetingsT.title?.toUpperCase()} ({(client.meetingLogs || []).length})
             </h3>
             <button
@@ -410,13 +410,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           <div className="p-8 space-y-8 max-h-[600px] overflow-y-auto custom-scrollbar">
             {(client.meetingLogs || []).length > 0 ? [...(client.meetingLogs || [])].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(log => (
               <div key={log.id} className="relative pl-10 pb-8 last:pb-0">
-                <div className="absolute left-0 top-0 w-[2px] h-full bg-white/5" />
+                <div className="absolute left-0 top-0 w-[2px] h-full bg-white dark:bg-white/5" />
                 <div className="absolute left-[-4px] top-0 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
 
                 <div className="flex justify-between items-start mb-2">
                   <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{log.date}</span>
                   <div className="flex items-center gap-3">
-                    <span className="text-[9px] px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-slate-300 font-black uppercase tracking-tighter">
+                    <span className="text-[9px] px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-600 dark:text-slate-300 font-black uppercase tracking-tighter">
                       {log.type.toUpperCase()}
                     </span>
                     <button onClick={() => {
@@ -429,11 +429,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     </button>
                   </div>
                 </div>
-                <p className="text-sm text-slate-200 font-bold leading-relaxed">{log.summary}</p>
+                <p className="text-sm text-slate-700 dark:text-slate-200 font-bold leading-relaxed">{log.summary}</p>
               </div>
             )) : (
-              <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
-                <MessageSquare className="w-12 h-12 text-white/10 mx-auto mb-4" />
+              <div className="text-center py-20 bg-white dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-white/10">
+                <MessageSquare className="w-12 h-12 text-slate-900 dark:text-white/10 mx-auto mb-4" />
                 <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest leading-loose">{meetingsT.noLogs}</p>
               </div>
             )}
@@ -443,13 +443,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
       {/* Add Meeting Modal */}
       {isAddMeetingOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in duration-200">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-100 dark:bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-sm dark:shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in duration-200">
             <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h3 className="font-bold text-slate-800 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-brand-500" /> {meetingsT.addLog}
               </h3>
-              <button onClick={() => setIsAddMeetingOpen(false)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setIsAddMeetingOpen(false)} className="text-slate-500 dark:text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -488,7 +488,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <button
                     onClick={handleAISummarize}
                     disabled={isSummarizing || !newMeeting.rawNotes}
-                    className={`flex items-center gap-1 text-[10px] px-2 py-0.5 rounded transition-all ${isSummarizing ? 'bg-slate-100 text-slate-400' : 'bg-brand-50 text-brand-600 hover:bg-brand-100 hover:shadow-sm'
+                    className={`flex items-center gap-1 text-[10px] px-2 py-0.5 rounded transition-all ${isSummarizing ? 'bg-slate-100 text-slate-500 dark:text-slate-400' : 'bg-brand-50 text-brand-600 hover:bg-brand-100 hover:shadow-sm'
                       }`}
                   >
                     {isSummarizing ? 'Thinking...' : `✨ ${meetingsT.summarize}`}
@@ -535,13 +535,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       {/* Edit Policy Modal */}
       {
         editingPolicy && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
-            <div className="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
+            <div className="bg-white rounded-xl shadow-sm dark:shadow-xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
               <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 className="font-bold text-slate-800">{t.editPolicy}</h3>
                 <button
                   onClick={() => setEditingPolicy(null)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                  className="text-slate-500 dark:text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -845,7 +845,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   </div>
 
                   <div className="mt-3 pt-3 border-t border-slate-200">
-                    <h5 className="text-[10px] text-slate-400 font-bold uppercase mb-2">Cash Values</h5>
+                    <h5 className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase mb-2">Cash Values</h5>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1">Total Cash Value</label>
@@ -868,7 +868,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <div className="space-y-4 text-xs">
                     {editingPolicy.riders?.map((rider, idx) => (
                       <div key={idx} className="flex flex-col gap-2 bg-slate-50 p-3 rounded border border-slate-200 shadow-sm relative pt-4">
-                        <button onClick={() => handleRemoveRider(idx)} className="absolute top-2 right-2 text-slate-400 hover:text-red-500 bg-white rounded-full p-1 shadow-sm"><Trash2 className="w-3 h-3" /></button>
+                        <button onClick={() => handleRemoveRider(idx)} className="absolute top-2 right-2 text-slate-500 dark:text-slate-400 hover:text-red-500 bg-white rounded-full p-1 shadow-sm"><Trash2 className="w-3 h-3" /></button>
 
                         <div className="grid grid-cols-12 gap-2">
                           <div className="col-span-8">
@@ -952,7 +952,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         ) : null}
                       </div>
                     ))}
-                    {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-400 italic">No riders added.</p>}
+                    {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-500 dark:text-slate-400 italic">No riders added.</p>}
                   </div>
                 </div>
 
@@ -980,13 +980,13 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       {/* Edit Client Modal */}
       {
         editingClient && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
+            <div className="bg-white rounded-xl shadow-sm dark:shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
               <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 className="font-bold text-slate-800">Edit Client Details</h3>
                 <button
                   onClick={() => setEditingClient(null)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                  className="text-slate-500 dark:text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1062,7 +1062,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <input
                       type="text"
                       id="custom-tag-input"
-                      className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-400"
+                      className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-500 dark:placeholder-slate-400"
                       placeholder="Or type custom tag..."
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
@@ -1107,7 +1107,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       </span>
                     ))}
                     {editingClient.tags.length === 0 && (
-                      <span className="text-slate-400 text-xs italic py-1">No tags selected</span>
+                      <span className="text-slate-500 dark:text-slate-400 text-xs italic py-1">No tags selected</span>
                     )}
                   </div>
                 </div>

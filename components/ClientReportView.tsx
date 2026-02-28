@@ -48,7 +48,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                     <div className="text-left leading-tight">
                         <div className="font-bold text-slate-900 truncate">{policy.company || 'Unknown'}</div>
                         <div className="text-[10px] text-slate-500 truncate">{policy.planName}</div>
-                        <div className="text-[9px] text-slate-400 truncate">{policy.policyNumber}</div>
+                        <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">{policy.policyNumber}</div>
                     </div>
                 );
             case 'effective':
@@ -126,12 +126,12 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
             case 'payment_mode':
                 return isRider ? '-' : policy.paymentMode;
             case 'tax_deductible':
-                if (isRider) return <span className="text-slate-300">-</span>;
+                if (isRider) return <span className="text-slate-600 dark:text-slate-300">-</span>;
                 const matchedProduct = products.find(p => p.name === policy.planName);
                 if (matchedProduct?.isTaxDeductible) {
                     return <span className="bg-emerald-100 text-emerald-700 w-5 h-5 flex items-center justify-center rounded-full text-[10px] mx-auto"><Check className="w-3 h-3" /></span>;
                 }
-                return <span className="text-slate-300">-</span>;
+                return <span className="text-slate-600 dark:text-slate-300">-</span>;
             default:
                 return '-';
         }
@@ -246,17 +246,17 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
     };
 
     return (
-        <div className="h-full flex flex-col bg-white/[0.02]">
+        <div className="h-full flex flex-col bg-slate-50 dark:bg-white/[0.02]">
             {/* Header / Actions */}
-            <div className="p-4 bg-white/5 backdrop-blur-xl border-b border-white/10 flex justify-between items-center shadow-lg shadow-black/20 z-10">
+            <div className="p-4 bg-white/80 dark:bg-white/5 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 flex justify-between items-center shadow-lg shadow-black/20 z-10">
                 <button
                     onClick={onBack}
-                    className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:text-white transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     {t.backToDetails}
                 </button>
-                <h1 className="text-lg font-bold text-white">{t.title}</h1>
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white">{t.title}</h1>
                 <button
                     onClick={handleDownloadPDF}
                     disabled={isGenerating}
@@ -272,7 +272,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                 {/* Report Container - A4 Landscape Approximate Aspect Ratio */}
                 <div
                     ref={reportRef}
-                    className="w-[1123px] min-h-[794px] bg-white shadow-2xl p-8 text-slate-900 origin-top transform scale-90" // White background for PDF
+                    className="w-[1123px] min-h-[794px] bg-white shadow-sm dark:shadow-2xl p-8 text-slate-900 origin-top transform scale-90" // White background for PDF
                     style={{ fontFamily: 'Inter, sans-serif' }}
                 >
                     {/* Header Section */}
@@ -298,19 +298,23 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             <div className="h-10 w-px bg-slate-200"></div>
                             <div>
                                 <div className="text-[10px] text-slate-500 uppercase font-bold mb-1 tracking-wider">{t.totalCI}</div>
-                                <div className="text-xl font-bold text-red-600">{formatCurrency(totalCISA)}</div>
+                                <div className="text-xl font-bold text-blue-700">{formatCurrency(totalCISA)}</div>
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1 tracking-wider">{t.totalAnnualPremium}</div>
-                            <div className="text-2xl font-bold text-slate-900">{formatCurrency(totalPremiumHKD)}</div>
+                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1 tracking-wider">{t.totalPremium}</div>
+                            <div className="text-3xl font-black text-slate-900 leading-none">
+                                <span className="text-sm font-bold mr-1">HKD</span>
+                                {formatCurrency(totalPremiumHKD).replace('HKD', '').replace('$', '')}
+                                <span className="text-xs font-bold block text-slate-400 mt-1 uppercase">Annual Total</span>
+                            </div>
                         </div>
                     </div>
 
                     {/* Inline Column Visibility Toggles */}
                     {onUpdateLayout && (
-                        <div className="mb-4 p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg flex flex-wrap gap-2 items-center shadow-lg shadow-black/20">
-                            <span className="text-xs font-semibold text-slate-400 mr-2 flex items-center gap-1">
+                        <div className="mb-4 p-3 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-lg flex flex-wrap gap-2 items-center shadow-lg shadow-black/20">
+                            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-2 flex items-center gap-1">
                                 <Eye className="w-3 h-3" /> {t.visibleColumns}
                             </span>
                             {pdfLayout.sort((a, b) => a.order - b.order).map(col => (
@@ -323,8 +327,8 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         onUpdateLayout(newLayout);
                                     }}
                                     className={`text-[10px] px-2.5 py-1 rounded-full border transition-colors ${col.visible
-                                        ? 'bg-white/10 border-brand-200 text-brand-700 hover:bg-brand-100 font-medium'
-                                        : 'bg-white/5 backdrop-blur-xl border-white/10 text-slate-400 hover:bg-white/[0.02]'
+                                        ? 'bg-slate-100 dark:bg-white/10 border-brand-200 text-brand-700 hover:bg-brand-100 font-medium'
+                                        : 'bg-white/80 dark:bg-white/5 backdrop-blur-xl border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:bg-white/[0.02]'
                                         }`}
                                 >
                                     {t.columns[col.id] || col.labelKey}
@@ -335,45 +339,37 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
 
                     {/* Main Content (Policy Table Full Width) */}
                     <div className="w-full">
-                        <div className="flex-1 border border-slate-200 rounded-lg overflow-hidden">
-                            {/* Headers */}
+                        {/* Table Section */}
+                        <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                             <div
-                                className="bg-slate-100 border-b border-slate-200 text-center text-xs font-bold text-slate-800 py-3.5"
-                                style={{ display: 'grid', gridTemplateColumns }}
+                                className="grid bg-[#2d3b5d] text-white text-[10px] font-bold uppercase tracking-wider py-4 px-3"
+                                style={{ gridTemplateColumns }}
                             >
-                                {activeColumns.map((col, index) => (
-                                    <div key={col.id} className="px-2 truncate relative group select-none border-r border-slate-200 last:border-r-0">
-                                        {t.columns[col.id] || col.labelKey}
-                                        {onUpdateLayout && index < activeColumns.length - 1 && (
-                                            <div
-                                                className="absolute right-0 top-0 bottom-0 w-2 -mr-1 cursor-col-resize hover:bg-brand-400 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                                                onMouseDown={(e) => handleResizeStart(e, index)}
-                                            />
-                                        )}
+                                {activeColumns.map(col => (
+                                    <div key={col.id} className={col.id === 'premium' ? 'text-right pr-2' : col.id === 'status' ? 'text-center' : 'text-center'}>
+                                        {t.policyCard[col.labelKey] || col.labelKey.toUpperCase()}
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Rows */}
-                            <div className="text-xs text-slate-700">
+                            <div className="divide-y divide-slate-100">
                                 {policies.map((policy, idx) => (
                                     <React.Fragment key={policy.id}>
                                         <div
-                                            className={`border-b border-slate-100 hover:bg-slate-50 items-center py-2.5 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
-                                            style={{ display: 'grid', gridTemplateColumns }}
+                                            className={`grid items-center py-4 px-3 text-[11px] ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
+                                            style={{ gridTemplateColumns }}
                                         >
                                             {activeColumns.map(col => (
-                                                <div key={col.id} className="px-2 py-1 text-center flex items-center justify-center border-r border-slate-100/50 last:border-r-0 h-full">
-                                                    {renderCellContent(policy, col.id, false)}
+                                                <div key={col.id} className={col.id === 'premium' ? 'text-right pr-2' : col.id === 'status' ? 'text-center' : 'text-center'}>
+                                                    {renderCellContent(policy, col.id)}
                                                 </div>
                                             ))}
                                         </div>
-                                        {/* Rider Sub-rows */}
-                                        {policy.riders && policy.riders.map((rider, rIdx) => (
+                                        {policy.riders?.map((rider, ridx) => (
                                             <div
-                                                key={`${policy.id}-rider-${rIdx}`}
-                                                className={`border-b border-slate-100 hover:bg-slate-100 items-center py-2 ${idx % 2 === 0 ? 'bg-slate-50/50' : 'bg-white'} relative overflow-hidden`}
-                                                style={{ display: 'grid', gridTemplateColumns }}
+                                                key={`${policy.id}-rider-${ridx}`}
+                                                className={`grid items-center py-3 px-3 text-[10px] border-t border-slate-100/50 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
+                                                style={{ gridTemplateColumns }}
                                             >
                                                 {/* Left structural border indicating hierarchy */}
                                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-slate-200"></div>
@@ -393,7 +389,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                 <div className="text-slate-500 italic">{t.totalsApprox}</div>
                                 <div className="flex gap-10 text-right pr-4 items-baseline">
                                     <div className="flex flex-col">
-                                        <span className="text-[9px] text-slate-400 uppercase tracking-tighter">{t.life}</span>
+                                        <span className="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-tighter">{t.life}</span>
                                         <span className="text-sm">{formatCurrency(totalLifeSA)}</span>
                                     </div>
                                     <div className="flex flex-col text-red-600">
@@ -401,7 +397,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         <span className="text-sm">{formatCurrency(totalCISA)}</span>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[9px] text-slate-400 uppercase tracking-tighter">{t.prem}</span>
+                                        <span className="text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-tighter">{t.prem}</span>
                                         <span className="text-sm">{formatCurrency(totalPremiumHKD)} {t.yr}</span>
                                     </div>
                                 </div>

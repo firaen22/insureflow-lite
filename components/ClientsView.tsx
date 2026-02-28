@@ -64,7 +64,7 @@ const TAG_COLORS = [
   },
   {
     name: "Slate",
-    class: "bg-white/[0.05] text-slate-200 border-white/10",
+    class: "bg-white dark:bg-white/[0.05] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/10",
     dot: "bg-slate-400",
   },
 ];
@@ -173,7 +173,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
   // Helper to determine tag color
   const getTagStyle = (tag: string) => {
-    return tagColors[tag] || "bg-white/[0.05] text-slate-200 border-white/10";
+    return tagColors[tag] || "bg-white dark:bg-white/[0.05] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/10";
   };
 
   const filteredClients = clients.filter((client) => {
@@ -417,12 +417,12 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
     <div className="space-y-6 relative">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">{t.title}</h1>
-          <p className="text-slate-400 text-sm mt-1">{t.subtitle}</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t.title}</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t.subtitle}</p>
         </div>
         <button
           onClick={openAddClientModal}
-          className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-sm w-full md:w-auto justify-center"
+          className="bg-brand-600 hover:bg-brand-700 text-slate-900 dark:text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-sm w-full md:w-auto justify-center"
         >
           <UserPlus className="w-4 h-4" />
           <span>{t.addClient}</span>
@@ -430,22 +430,22 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white/5 backdrop-blur-xl p-4 rounded-xl border border-white/10 shadow-sm space-y-4">
+      <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl p-4 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm space-y-4">
         {/* Search Input */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 dark:text-slate-400" />
           <input
             type="text"
             placeholder={t.searchPlaceholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-white/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         </div>
 
         {/* Tag Filters */}
         <div>
-          <div className="flex items-center space-x-2 mb-3 text-sm font-semibold text-slate-200">
+          <div className="flex items-center space-x-2 mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
             <Filter className="w-4 h-4 text-brand-500" />
             <span>{t.filterTags}</span>
           </div>
@@ -454,8 +454,8 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
               onClick={() => setActiveTagFilter(null)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTagFilter === null
-                  ? "bg-brand-600 text-white shadow-sm shadow-blue-500/20"
-                  : "bg-white/[0.05] text-slate-300 hover:bg-white/10"
+                  ? "bg-brand-600 text-slate-900 dark:text-white shadow-sm shadow-blue-500/20"
+                  : "bg-white dark:bg-white/[0.05] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:bg-white/10"
               }`}
             >
               {t.all}
@@ -466,7 +466,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                 return (
                   <div
                     key={tag}
-                    className="flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-brand-300 rounded-lg px-2 py-1.5 shadow-sm animate-in fade-in zoom-in duration-200"
+                    className="flex items-center gap-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-brand-300 rounded-lg px-2 py-1.5 shadow-sm animate-in fade-in zoom-in duration-200"
                   >
                     <input
                       autoFocus
@@ -477,9 +477,9 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         if (e.key === "Enter") handleSaveEdit();
                         if (e.key === "Escape") setEditingTag(null);
                       }}
-                      className="w-24 bg-transparent text-sm text-slate-200 placeholder-slate-400 focus:outline-none border-b border-transparent focus:border-brand-300 pb-0.5"
+                      className="w-24 bg-transparent text-sm text-slate-700 dark:text-slate-200 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none border-b border-transparent focus:border-brand-300 pb-0.5"
                     />
-                    <div className="flex gap-1 border-l border-white/10 pl-2">
+                    <div className="flex gap-1 border-l border-slate-200 dark:border-white/10 pl-2">
                       {TAG_COLORS.map((color) => (
                         <button
                           key={color.name}
@@ -497,7 +497,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                     </button>
                     <button
                       onClick={() => setEditingTag(null)}
-                      className="p-1 text-slate-400 hover:text-slate-300 hover:bg-white/[0.02] rounded-full transition-colors"
+                      className="p-1 text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-white/[0.02] rounded-full transition-colors"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -513,7 +513,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                     }
                     className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all pr-7 ${
                       activeTagFilter === tag
-                        ? "bg-brand-600 text-white border-brand-600 shadow-sm"
+                        ? "bg-brand-600 text-slate-900 dark:text-white border-brand-600 shadow-sm"
                         : getTagStyle(tag) + " hover:opacity-80"
                     }`}
                   >
@@ -523,8 +523,8 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                     onClick={(e) => handleStartEditing(tag, e)}
                     className={`absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-black/10 transition-all opacity-0 group-hover:opacity-100 ${
                       activeTagFilter === tag
-                        ? "text-white/80 hover:text-white"
-                        : "text-slate-400 hover:text-white"
+                        ? "text-slate-900 dark:text-white/80 hover:text-slate-900 dark:text-white"
+                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white"
                     }`}
                     title="Edit tag"
                   >
@@ -536,7 +536,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
             {/* Add System Tag Button/Input */}
             {isAddingSystemTag ? (
-              <div className="flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-white/20 rounded-lg px-2 py-1.5 shadow-sm animate-in fade-in zoom-in duration-200">
+              <div className="flex items-center gap-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-slate-300 dark:border-white/20 rounded-lg px-2 py-1.5 shadow-sm animate-in fade-in zoom-in duration-200">
                 <input
                   autoFocus
                   type="text"
@@ -546,12 +546,12 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                     if (e.key === "Enter") handleAddSystemTag();
                     if (e.key === "Escape") setIsAddingSystemTag(false);
                   }}
-                  className="w-24 bg-transparent text-sm text-slate-200 placeholder-slate-400 focus:outline-none border-b border-transparent focus:border-brand-300 pb-0.5"
+                  className="w-24 bg-transparent text-sm text-slate-700 dark:text-slate-200 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none border-b border-transparent focus:border-brand-300 pb-0.5"
                   placeholder="New tag..."
                 />
 
                 {/* Color Picker */}
-                <div className="flex gap-1 border-l border-white/10 pl-2">
+                <div className="flex gap-1 border-l border-slate-200 dark:border-white/10 pl-2">
                   {TAG_COLORS.map((color) => (
                     <button
                       key={color.name}
@@ -562,7 +562,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   ))}
                 </div>
 
-                <div className="flex items-center border-l border-white/10 pl-2 ml-1 gap-1">
+                <div className="flex items-center border-l border-slate-200 dark:border-white/10 pl-2 ml-1 gap-1">
                   <button
                     onClick={handleAddSystemTag}
                     className="p-1 text-emerald-400 hover:text-green-700 hover:bg-emerald-500/10 rounded-full transition-colors"
@@ -571,7 +571,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   </button>
                   <button
                     onClick={() => setIsAddingSystemTag(false)}
-                    className="p-1 text-slate-400 hover:text-slate-300 hover:bg-white/[0.02] rounded-full transition-colors"
+                    className="p-1 text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-white/[0.02] rounded-full transition-colors"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -580,7 +580,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
             ) : (
               <button
                 onClick={() => setIsAddingSystemTag(true)}
-                className="px-3 py-1.5 rounded-full text-xs font-medium border border-dashed border-white/20 text-slate-400 hover:text-brand-600 hover:border-brand-400 flex items-center transition-colors"
+                className="px-3 py-1.5 rounded-full text-xs font-medium border border-dashed border-slate-300 dark:border-white/20 text-slate-500 dark:text-slate-400 hover:text-brand-600 hover:border-brand-400 flex items-center transition-colors"
               >
                 <Plus className="w-3 h-3 mr-1" />
                 {t.addTag}
@@ -590,10 +590,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
         </div>
       </div>
 
-      <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 shadow-sm min-h-[400px] hover:shadow-md transition-shadow">
+      <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-xl border border-slate-200 dark:border-white/10 shadow-sm min-h-[400px] hover:shadow-md transition-shadow">
         <div className="overflow-visible">
           <table className="w-full text-sm text-left">
-            <thead className="bg-white/[0.02] text-slate-400 font-medium border-b border-white/10">
+            <thead className="bg-slate-50 dark:bg-white/[0.02] text-slate-500 dark:text-slate-400 font-medium border-b border-slate-200 dark:border-white/10">
               <tr>
                 <th className="px-6 py-4 w-64">{t.table.name}</th>
                 <th className="px-6 py-4">{t.table.tags}</th>
@@ -607,24 +607,24 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
               {filteredClients.map((client) => (
                 <tr
                   key={client.id}
-                  className="hover:bg-white/[0.02] transition-colors group"
+                  className="hover:bg-slate-50 dark:bg-white/[0.02] transition-colors group"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div
-                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-bold text-sm mr-3 cursor-pointer hover:bg-white/20 hover:text-brand-400 transition-colors"
+                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-900 dark:text-white font-bold text-sm mr-3 cursor-pointer hover:bg-white/20 hover:text-brand-400 transition-colors"
                         onClick={() => onViewDetails(client)}
                       >
                         {client.name.charAt(0)}
                       </div>
                       <div>
                         <div
-                          className="font-medium text-white cursor-pointer hover:text-brand-600 transition-colors"
+                          className="font-medium text-slate-900 dark:text-white cursor-pointer hover:text-brand-600 transition-colors"
                           onClick={() => onViewDetails(client)}
                         >
                           {client.name}
                         </div>
-                        <div className="text-xs text-slate-400 flex items-center mt-0.5">
+                        <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center mt-0.5">
                           <Phone className="w-3 h-3 mr-1" /> {client.phone}
                         </div>
                       </div>
@@ -642,7 +642,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                           </span>
                         ))
                       ) : (
-                        <span className="text-slate-400 text-xs italic">
+                        <span className="text-slate-500 dark:text-slate-400 text-xs italic">
                           {t.table.noTags}
                         </span>
                       )}
@@ -656,7 +656,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                               handleAddTagToClient(client, e.target.value)
                             }
                             onBlur={() => setActiveTagInputClient(null)}
-                            className="w-28 pl-1 pr-6 py-0.5 text-xs border border-brand-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none bg-white/5 backdrop-blur-xl"
+                            className="w-28 pl-1 pr-6 py-0.5 text-xs border border-brand-300 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none bg-white/80 dark:bg-white/5 backdrop-blur-xl"
                             defaultValue=""
                           >
                             <option value="" disabled>
@@ -670,12 +670,12 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                                 </option>
                               ))}
                           </select>
-                          <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          <ChevronDown className="w-3 h-3 text-slate-500 dark:text-slate-400 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
                         </div>
                       ) : (
                         <button
                           onClick={() => setActiveTagInputClient(client.id)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded-full hover:bg-white/10 text-slate-400"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded-full hover:bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400"
                           title="Add Tag"
                         >
                           <Plus className="w-3 h-3" />
@@ -683,7 +683,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-300">
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                     <div className="flex items-center">
                       <Calendar className="w-3 h-3 mr-2 text-brand-400" />
                       {new Date(client.birthday).toLocaleDateString("en-US", {
@@ -692,7 +692,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       })}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-300">
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
                     <span className="font-medium">
                       {
                         policies.filter((p) => p.holderName === client.name)
@@ -706,7 +706,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         client.status === "Active"
                           ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                          : "bg-white/[0.05] text-slate-300 border border-white/10"
+                          : "bg-white dark:bg-white/[0.05] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10"
                       }`}
                     >
                       {client.status}
@@ -716,14 +716,14 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => onViewDetails(client)}
-                        className="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-white/[0.05] transition-colors"
+                        className="p-2 text-slate-500 dark:text-slate-400 hover:text-brand-600 rounded-lg hover:bg-white dark:bg-white/[0.05] transition-colors"
                         title="View Details"
                       >
                         <Eye className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => setAddingPolicyToClient(client)}
-                        className="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-white/[0.05] transition-colors"
+                        className="p-2 text-slate-500 dark:text-slate-400 hover:text-brand-600 rounded-lg hover:bg-white dark:bg-white/[0.05] transition-colors"
                         title="Add Policy"
                       >
                         <FilePlus className="w-5 h-5" />
@@ -736,7 +736,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                               activeActionMenu === client.id ? null : client.id,
                             );
                           }}
-                          className="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-white/[0.05] transition-colors"
+                          className="p-2 text-slate-500 dark:text-slate-400 hover:text-brand-600 rounded-lg hover:bg-white dark:bg-white/[0.05] transition-colors"
                         >
                           <MoreHorizontal className="w-5 h-5" />
                         </button>
@@ -748,13 +748,13 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                               className="fixed inset-0 z-40"
                               onClick={() => setActiveActionMenu(null)}
                             ></div>
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-white/5 backdrop-blur-xl rounded-lg shadow-xl border border-white/10 z-50 py-1 animate-in fade-in zoom-in duration-100 origin-top-right">
+                            <div className="absolute right-0 top-full mt-1 w-48 bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-lg shadow-sm dark:shadow-xl border border-slate-200 dark:border-white/10 z-50 py-1 animate-in fade-in zoom-in duration-100 origin-top-right">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   openEditClientModal(client);
                                 }}
-                                className="w-full text-left px-4 py-2 text-sm text-slate-200 hover:bg-white/[0.02] hover:text-brand-600 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:bg-white/[0.02] hover:text-brand-600 flex items-center gap-2"
                               >
                                 <Pencil className="w-4 h-4" /> Edit Client
                               </button>
@@ -789,9 +789,9 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                 <tr>
                   <td
                     colSpan={6}
-                    className="px-6 py-12 text-center text-slate-400"
+                    className="px-6 py-12 text-center text-slate-500 dark:text-slate-400"
                   >
-                    <Tag className="w-12 h-12 mx-auto text-slate-300 mb-3" />
+                    <Tag className="w-12 h-12 mx-auto text-slate-600 dark:text-slate-300 mb-3" />
                     <p>{t.table.notFound}</p>
                   </td>
                 </tr>
@@ -803,10 +803,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
       {/* Add/Edit Client Modal */}
       {isClientModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white/5 backdrop-blur-xl rounded-xl shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-white/[0.02]">
-              <h3 className="font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-xl shadow-sm dark:shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 dark:bg-white/[0.02]">
+              <h3 className="font-bold text-slate-900 dark:text-white">
                 {isEditingClient ? "Edit Client" : t.addClient}
               </h3>
               <button
@@ -814,14 +814,14 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   setIsClientModalOpen(false);
                   resetClientForm();
                 }}
-                className="text-slate-400 hover:text-slate-300 transition-colors"
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:text-slate-300 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                   Full Name
                 </label>
                 <input
@@ -830,12 +830,12 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   onChange={(e) =>
                     setNewClientForm({ ...newClientForm, name: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   placeholder="e.g. John Doe"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                   Email
                 </label>
                 <input
@@ -847,13 +847,13 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       email: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   placeholder="john@example.com"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-200 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Birthday
                   </label>
                   <input
@@ -865,11 +865,11 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         birthday: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-200 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Phone
                   </label>
                   <input
@@ -881,21 +881,21 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         phone: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                     placeholder="+1 234..."
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                   Tags
                 </label>
 
                 {/* Tag Selection Dropdown */}
                 <div className="relative mb-2">
                   <select
-                    className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white/5 backdrop-blur-xl text-slate-200"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white/80 dark:bg-white/5 backdrop-blur-xl text-slate-700 dark:text-slate-200"
                     value=""
                     onChange={(e) => {
                       const val = e.target.value;
@@ -918,7 +918,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         </option>
                       ))}
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 w-4 h-4 pointer-events-none" />
                 </div>
 
                 {/* Optional Custom Tag Input */}
@@ -940,7 +940,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         setNewClientTagInput("");
                       }
                     }}
-                    className="flex-1 px-3 py-1.5 text-sm border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-400"
+                    className="flex-1 px-3 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-500 dark:placeholder-slate-400"
                     placeholder="Or type custom tag..."
                   />
                   <button
@@ -956,7 +956,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         setNewClientTagInput("");
                       }
                     }}
-                    className="px-3 py-1.5 bg-white/10 text-white rounded-lg hover:bg-white/20 text-xs font-medium"
+                    className="px-3 py-1.5 bg-white/10 text-slate-900 dark:text-white rounded-lg hover:bg-white/20 text-xs font-medium"
                   >
                     Add
                   </button>
@@ -984,20 +984,20 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                     </span>
                   ))}
                   {newClientForm.tags?.length === 0 && (
-                    <span className="text-slate-400 text-xs italic py-1">
+                    <span className="text-slate-500 dark:text-slate-400 text-xs italic py-1">
                       No tags selected
                     </span>
                   )}
                 </div>
               </div>
             </div>
-            <div className="p-5 border-t border-slate-100 bg-white/[0.02] flex justify-end gap-3">
+            <div className="p-5 border-t border-slate-100 bg-slate-50 dark:bg-white/[0.02] flex justify-end gap-3">
               <button
                 onClick={() => {
                   setIsClientModalOpen(false);
                   resetClientForm();
                 }}
-                className="px-4 py-2 text-slate-300 font-medium hover:text-white"
+                className="px-4 py-2 text-slate-600 dark:text-slate-300 font-medium hover:text-slate-900 dark:text-white"
               >
                 Cancel
               </button>
@@ -1014,23 +1014,23 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
       {/* Add Policy Modal */}
       {addingPolicyToClient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-white/5 backdrop-blur-xl rounded-xl shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
-            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-white/[0.02]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-xl shadow-sm dark:shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200 my-8">
+            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 dark:bg-white/[0.02]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-brand-600">
+                <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-brand-600">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white">Add Policy</h3>
-                  <p className="text-xs text-slate-400">
+                  <h3 className="font-bold text-slate-900 dark:text-white">Add Policy</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     for {addingPolicyToClient.name}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setAddingPolicyToClient(null)}
-                className="text-slate-400 hover:text-slate-300 transition-colors"
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:text-slate-300 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1038,7 +1038,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                   Plan Name (Base)
                 </label>
                 <input
@@ -1054,7 +1054,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       type: product ? product.type : prev.type,
                     }));
                   }}
-                  className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   placeholder="Select or type plan name..."
                   autoFocus
                 />
@@ -1069,7 +1069,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-200 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Policy Number
                   </label>
                   <input
@@ -1081,12 +1081,12 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         policyNumber: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                     placeholder="POL-..."
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-200 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Type
                   </label>
                   <div className="relative">
@@ -1098,7 +1098,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                           type: e.target.value as any,
                         })
                       }
-                      className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white/5 backdrop-blur-xl"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white/80 dark:bg-white/5 backdrop-blur-xl"
                     >
                       <option value="Life">Life</option>
                       <option value="Medical">Medical</option>
@@ -1107,14 +1107,14 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       <option value="Critical Illness">Critical Illness</option>
                       <option value="Savings">Savings</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 w-4 h-4 pointer-events-none" />
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-200 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Base Premium ($)
                   </label>
                   <input
@@ -1126,12 +1126,12 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         premiumAmount: Number(e.target.value),
                       })
                     }
-                    className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-200 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     Anniversary Date
                   </label>
                   <input
@@ -1143,14 +1143,14 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         policyAnniversaryDate: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
                     placeholder="DD/MM"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                   Payment Mode
                 </label>
                 <div className="relative">
@@ -1162,22 +1162,22 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         paymentMode: e.target.value as any,
                       })
                     }
-                    className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white/5 backdrop-blur-xl"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none bg-white/80 dark:bg-white/5 backdrop-blur-xl"
                   >
                     <option value="Yearly">Yearly</option>
                     <option value="Half-Yearly">Half-Yearly</option>
                     <option value="Quarterly">Quarterly</option>
                     <option value="Monthly">Monthly</option>
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 w-4 h-4 pointer-events-none" />
                 </div>
               </div>
 
               {/* Riders Section */}
-              <div className="pt-2 border-t border-white/10 mt-2">
+              <div className="pt-2 border-t border-slate-200 dark:border-white/10 mt-2">
                 <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-semibold text-slate-200 flex items-center gap-1">
-                    <Layers className="w-4 h-4 text-slate-400" />
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1">
+                    <Layers className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                     Riders / Supplementary
                   </label>
                   <button
@@ -1193,11 +1193,11 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   {newPolicyForm.riders?.map((rider, idx) => (
                     <div
                       key={idx}
-                      className="bg-white/[0.02] p-3 rounded-lg border border-white/10 relative"
+                      className="bg-slate-50 dark:bg-white/[0.02] p-3 rounded-lg border border-slate-200 dark:border-white/10 relative"
                     >
                       <button
                         onClick={() => handleRemoveRiderFromForm(idx)}
-                        className="absolute right-2 top-2 text-slate-400 hover:text-red-500"
+                        className="absolute right-2 top-2 text-slate-500 dark:text-slate-400 hover:text-red-500"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -1209,7 +1209,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                           onChange={(e) =>
                             handleUpdateRiderInForm(idx, "name", e.target.value)
                           }
-                          className="w-full px-2 py-1 text-sm border border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/5 backdrop-blur-xl"
+                          className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl"
                         />
                         <div className="flex gap-2">
                           <div className="flex-1">
@@ -1224,7 +1224,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                                   parseFloat(e.target.value),
                                 )
                               }
-                              className="w-full px-2 py-1 text-sm border border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/5 backdrop-blur-xl"
+                              className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl"
                             />
                           </div>
                           <div className="flex-1">
@@ -1237,7 +1237,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                                   e.target.value,
                                 )
                               }
-                              className="w-full px-2 py-1 text-sm border border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/5 backdrop-blur-xl"
+                              className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl"
                             >
                               <option value="Medical">Medical</option>
                               <option value="Accident">Accident</option>
@@ -1253,7 +1253,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   ))}
                   {(!newPolicyForm.riders ||
                     newPolicyForm.riders.length === 0) && (
-                    <p className="text-xs text-slate-400 italic text-center py-2">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 italic text-center py-2">
                       No riders added.
                     </p>
                   )}
@@ -1261,10 +1261,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
               </div>
             </div>
 
-            <div className="p-5 border-t border-slate-100 bg-white/[0.02] flex justify-end gap-3">
+            <div className="p-5 border-t border-slate-100 bg-slate-50 dark:bg-white/[0.02] flex justify-end gap-3">
               <button
                 onClick={() => setAddingPolicyToClient(null)}
-                className="px-4 py-2 text-slate-300 font-medium hover:text-white"
+                className="px-4 py-2 text-slate-600 dark:text-slate-300 font-medium hover:text-slate-900 dark:text-white"
               >
                 Cancel
               </button>
