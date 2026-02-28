@@ -37,27 +37,27 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                 if (isRider) {
                     return (
                         <div className="text-left leading-tight pl-4 relative">
-                            <div className="absolute left-0 top-1/2 -mt-px w-3 h-px bg-slate-200"></div>
-                            <div className="absolute left-0 top-0 bottom-1/2 w-px bg-slate-200"></div>
-                            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-1 py-0.5 rounded border border-slate-200 mr-1">Rider</span>
-                            <span className="font-medium text-slate-700 text-[10px]">{policy.name}</span>
+                            <div className="absolute left-0 top-1/2 -mt-px w-3 h-px bg-white/10"></div>
+                            <div className="absolute left-0 top-0 bottom-1/2 w-px bg-white/10"></div>
+                            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest bg-white/[0.05] px-1 py-0.5 rounded border border-white/10 mr-1">Rider</span>
+                            <span className="font-medium text-slate-200 text-[10px]">{policy.name}</span>
                         </div>
                     );
                 }
                 return (
                     <div className="text-left leading-tight">
-                        <div className="font-bold text-slate-900 truncate">{policy.company || 'Unknown'}</div>
-                        <div className="text-[10px] text-slate-500 truncate">{policy.planName}</div>
+                        <div className="font-bold text-white truncate">{policy.company || 'Unknown'}</div>
+                        <div className="text-[10px] text-slate-400 truncate">{policy.planName}</div>
                         <div className="text-[9px] text-slate-400 truncate">{policy.policyNumber}</div>
                     </div>
                 );
             case 'effective':
-                if (isRider) return <span className="text-[10px] text-slate-600 block leading-tight">Maturity:<br />P: {policy.protectionMatureDate || '-'}<br />$:{policy.premiumMatureDate || '-'}</span>;
+                if (isRider) return <span className="text-[10px] text-slate-300 block leading-tight">Maturity:<br />P: {policy.protectionMatureDate || '-'}<br />$:{policy.premiumMatureDate || '-'}</span>;
                 return (
                     <div className="text-[10px] leading-tight flex flex-col items-center">
                         <span>{formatDate(policy.effectiveDate)}</span>
                         {(policy.protectionMatureDate || policy.premiumMatureDate) && (
-                            <span className="text-[8px] text-slate-500 mt-1 border-t border-slate-200 pt-0.5 w-full text-center">
+                            <span className="text-[8px] text-slate-400 mt-1 border-t border-white/10 pt-0.5 w-full text-center">
                                 Maturity: P:{policy.protectionMatureDate || '-'} $:{policy.premiumMatureDate || '-'}
                             </span>
                         )}
@@ -90,7 +90,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                 ) : (
                                     <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>
                                 )}
-                                {riderPlanText && <span className="text-[8px] bg-blue-50 text-blue-700 border border-blue-200 px-1 rounded mt-0.5 whitespace-nowrap">{riderPlanText}</span>}
+                                {riderPlanText && <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-1 rounded mt-0.5 whitespace-nowrap">{riderPlanText}</span>}
                             </div>
                         );
                     }
@@ -111,7 +111,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             ) : (
                                 <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>
                             )}
-                            {planText && <span className="text-[9px] bg-blue-50 text-blue-700 border border-blue-200 px-1 py-0.5 rounded mt-0.5 whitespace-nowrap">{planText}</span>}
+                            {planText && <span className="text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-1 py-0.5 rounded mt-0.5 whitespace-nowrap">{planText}</span>}
                         </div>
                     );
                 }
@@ -246,21 +246,21 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
     };
 
     return (
-        <div className="h-full flex flex-col bg-slate-50">
+        <div className="h-full flex flex-col bg-white/[0.02]">
             {/* Header / Actions */}
-            <div className="p-4 bg-white border-b border-slate-200 flex justify-between items-center shadow-sm z-10">
+            <div className="p-4 bg-white/5 backdrop-blur-xl border-b border-white/10 flex justify-between items-center shadow-lg shadow-black/20 z-10">
                 <button
                     onClick={onBack}
-                    className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
+                    className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     {t.backToDetails}
                 </button>
-                <h1 className="text-lg font-bold text-slate-800">{t.title}</h1>
+                <h1 className="text-lg font-bold text-white">{t.title}</h1>
                 <button
                     onClick={handleDownloadPDF}
                     disabled={isGenerating}
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-sm"
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors shadow-lg shadow-black/20"
                 >
                     {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                     {isGenerating ? t.generating : t.downloadBtn}
@@ -272,7 +272,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                 {/* Report Container - A4 Landscape Approximate Aspect Ratio */}
                 <div
                     ref={reportRef}
-                    className="w-[1123px] min-h-[794px] bg-white shadow-2xl p-6 text-slate-900 origin-top transform scale-90" // Scale for preview visibility
+                    className="w-[1123px] min-h-[794px] bg-white/5 backdrop-blur-xl shadow-2xl p-6 text-white origin-top transform scale-90" // Scale for preview visibility
                     style={{ fontFamily: 'Inter, sans-serif' }}
                 >
                     {/* Header Section */}
@@ -284,33 +284,33 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                     </div>
 
                     {/* Top Summary Bar (Horizontal) */}
-                    <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+                    <div className="flex items-center justify-between bg-white/[0.02] border border-white/10 rounded-xl p-4 mb-6">
                         <div className="flex items-center gap-6">
                             <div>
-                                <h2 className="text-xl font-bold text-slate-800">{client.name}</h2>
-                                <p className="text-sm text-slate-500">{t.age}: {client.birthday ? new Date().getFullYear() - new Date(client.birthday).getFullYear() : '-'}</p>
+                                <h2 className="text-xl font-bold text-white">{client.name}</h2>
+                                <p className="text-sm text-slate-400">{t.age}: {client.birthday ? new Date().getFullYear() - new Date(client.birthday).getFullYear() : '-'}</p>
                             </div>
-                            <div className="h-8 w-px bg-slate-200"></div>
+                            <div className="h-8 w-px bg-white/10"></div>
                             <div>
-                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">{t.totalLife}</div>
+                                <div className="text-[10px] text-slate-400 uppercase font-bold mb-0.5 tracking-wider">{t.totalLife}</div>
                                 <div className="text-lg font-bold text-blue-600">{formatCurrency(totalLifeSA)}</div>
                             </div>
-                            <div className="h-8 w-px bg-slate-200"></div>
+                            <div className="h-8 w-px bg-white/10"></div>
                             <div>
-                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">{t.totalCI}</div>
+                                <div className="text-[10px] text-slate-400 uppercase font-bold mb-0.5 tracking-wider">{t.totalCI}</div>
                                 <div className="text-lg font-bold text-red-500">{formatCurrency(totalCISA)}</div>
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-0.5 tracking-wider">{t.totalAnnualPremium}</div>
-                            <div className="text-xl font-bold text-slate-900">{formatCurrency(totalPremiumHKD)}</div>
+                            <div className="text-[10px] text-slate-400 uppercase font-bold mb-0.5 tracking-wider">{t.totalAnnualPremium}</div>
+                            <div className="text-xl font-bold text-white">{formatCurrency(totalPremiumHKD)}</div>
                         </div>
                     </div>
 
                     {/* Inline Column Visibility Toggles */}
                     {onUpdateLayout && (
-                        <div className="mb-4 p-3 bg-white border border-slate-200 rounded-lg flex flex-wrap gap-2 items-center shadow-sm">
-                            <span className="text-xs font-semibold text-slate-500 mr-2 flex items-center gap-1">
+                        <div className="mb-4 p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg flex flex-wrap gap-2 items-center shadow-lg shadow-black/20">
+                            <span className="text-xs font-semibold text-slate-400 mr-2 flex items-center gap-1">
                                 <Eye className="w-3 h-3" /> {t.visibleColumns}
                             </span>
                             {pdfLayout.sort((a, b) => a.order - b.order).map(col => (
@@ -323,8 +323,8 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         onUpdateLayout(newLayout);
                                     }}
                                     className={`text-[10px] px-2.5 py-1 rounded-full border transition-colors ${col.visible
-                                        ? 'bg-brand-50 border-brand-200 text-brand-700 hover:bg-brand-100 font-medium'
-                                        : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'
+                                        ? 'bg-white/10 border-brand-200 text-brand-700 hover:bg-brand-100 font-medium'
+                                        : 'bg-white/5 backdrop-blur-xl border-white/10 text-slate-400 hover:bg-white/[0.02]'
                                         }`}
                                 >
                                     {t.columns[col.id] || col.labelKey}
@@ -335,15 +335,15 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
 
                     {/* Main Content (Policy Table Full Width) */}
                     <div className="w-full">
-                        <div className="flex-1 border border-slate-200 rounded-lg overflow-hidden">
+                        <div className="flex-1 border border-white/10 rounded-lg overflow-hidden">
                             {/* Headers */}
                             {/* Headers */}
                             <div
-                                className="bg-white border-b border-slate-200 text-center text-xs font-bold text-slate-800 py-3"
+                                className="bg-white/5 backdrop-blur-xl border-b border-white/10 text-center text-xs font-bold text-white py-3"
                                 style={{ display: 'grid', gridTemplateColumns }}
                             >
                                 {activeColumns.map((col, index) => (
-                                    <div key={col.id} className="px-2 truncate relative group select-none border-r border-slate-200 last:border-r-0">
+                                    <div key={col.id} className="px-2 truncate relative group select-none border-r border-white/10 last:border-r-0">
                                         {t.columns[col.id] || col.labelKey}
                                         {onUpdateLayout && index < activeColumns.length - 1 && (
                                             <div
@@ -356,15 +356,15 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             </div>
 
                             {/* Rows */}
-                            <div className="text-xs text-slate-700">
+                            <div className="text-xs text-slate-200">
                                 {policies.map((policy, idx) => (
                                     <React.Fragment key={policy.id}>
                                         <div
-                                            className={`border-b border-slate-100 hover:bg-slate-50 items-center py-2 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                                            className={`border-b border-white/5 hover:bg-white/[0.02] items-center py-2 ${idx % 2 === 0 ? 'bg-white/5 backdrop-blur-xl' : 'bg-white/[0.02]/50'}`}
                                             style={{ display: 'grid', gridTemplateColumns }}
                                         >
                                             {activeColumns.map(col => (
-                                                <div key={col.id} className="px-2 py-1 text-center flex items-center justify-center border-r border-slate-100 last:border-r-0 h-full">
+                                                <div key={col.id} className="px-2 py-1 text-center flex items-center justify-center border-r border-white/5 last:border-r-0 h-full">
                                                     {renderCellContent(policy, col.id, false)}
                                                 </div>
                                             ))}
@@ -373,7 +373,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         {policy.riders && policy.riders.map((rider, rIdx) => (
                                             <div
                                                 key={`${policy.id}-rider-${rIdx}`}
-                                                className={`border-b border-slate-100 hover:bg-slate-100 items-center py-1.5 ${idx % 2 === 0 ? 'bg-slate-50/50' : 'bg-slate-100/50'} relative overflow-hidden`}
+                                                className={`border-b border-white/5 hover:bg-white/[0.05] items-center py-1.5 ${idx % 2 === 0 ? 'bg-white/[0.02]/50' : 'bg-white/[0.05]/50'} relative overflow-hidden`}
                                                 style={{ display: 'grid', gridTemplateColumns }}
                                             >
                                                 {/* Left structural border indicating hierarchy */}
@@ -390,7 +390,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             </div>
 
                             {/* Footer Totals Row */}
-                            <div className="bg-slate-100 border-t border-slate-300 p-3 flex justify-between items-center text-xs font-bold">
+                            <div className="bg-white/[0.05] border-t border-white/20 p-3 flex justify-between items-center text-xs font-bold">
                                 <div>{t.totalsApprox}</div>
                                 <div className="flex gap-8 text-right pr-4">
                                     <div>{t.life} {formatCurrency(totalLifeSA)}</div>

@@ -160,10 +160,10 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
 
             {isOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 w-full max-w-md shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-bold text-slate-900">Google Sheets Sync</h2>
-                            <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+                            <h2 className="text-xl font-bold text-white">Google Sheets Sync</h2>
+                            <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-300">✕</button>
                         </div>
 
                         <div className="space-y-6">
@@ -176,9 +176,9 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
                                 </button>
                             ) : (
                                 <>
-                                    <div className="flex items-center justify-between text-sm text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                    <div className="flex items-center justify-between text-sm text-slate-300 bg-white/[0.02] p-3 rounded-lg border border-white/10">
                                         <span className="flex items-center gap-2">
-                                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500/100"></span>
                                             {spreadsheetId ? 'Connected' : 'Signed In'}
                                         </span>
                                         <button onClick={handleSignOut} className="text-red-500 hover:text-red-600 font-medium">Sign Out</button>
@@ -186,14 +186,14 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
 
                                     {!spreadsheetId && (
                                         <div className="space-y-3">
-                                            <p className="text-sm text-slate-500">Select a spreadsheet or create a new one:</p>
+                                            <p className="text-sm text-slate-400">Select a spreadsheet or create a new one:</p>
                                             {availableSheets.length > 0 && (
                                                 <div className="max-h-32 overflow-y-auto border rounded p-2">
                                                     {availableSheets.map(s => (
                                                         <button
                                                             key={s.id}
                                                             onClick={() => { setSpreadsheetId(s.id); setStatus(`Selected ${s.name}`); }}
-                                                            className="block w-full text-left px-2 py-1 hover:bg-slate-100 text-sm truncate"
+                                                            className="block w-full text-left px-2 py-1 hover:bg-white/[0.05] text-sm truncate"
                                                         >
                                                             {s.name}
                                                         </button>
@@ -213,7 +213,7 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
                                         <div className="space-y-3">
                                             <button
                                                 onClick={handleLoad}
-                                                className="w-full py-3 px-4 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg font-medium flex justify-center gap-2"
+                                                className="w-full py-3 px-4 bg-blue-100 text-blue-400 hover:bg-blue-200 rounded-lg font-medium flex justify-center gap-2"
                                             >
                                                 ⬇️ Load from Sheets
                                             </button>
@@ -230,7 +230,7 @@ export const GoogleSheetsSync: React.FC<Props> = ({ clients, policies, products,
                                     {lastSync && <div className="text-center text-xs text-slate-400">Last Sync: {lastSync}</div>}
 
                                     {status && (
-                                        <div className={`p-3 rounded-lg text-sm text-center ${status.includes('failed') || status.includes('Error') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                                        <div className={`p-3 rounded-lg text-sm text-center ${status.includes('failed') || status.includes('Error') ? 'bg-red-50 text-red-600' : 'bg-emerald-500/10 text-emerald-400'}`}>
                                             {status}
                                         </div>
                                     )}

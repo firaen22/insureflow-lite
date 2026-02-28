@@ -357,21 +357,21 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
     return (
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">{t.title}</h1>
-          <p className="text-slate-500 mt-2">{t.subtitle}</p>
+          <h1 className="text-2xl font-bold text-white">{t.title}</h1>
+          <p className="text-slate-400 mt-2">{t.subtitle}</p>
         </div>
 
         <div
-          className="border-2 border-dashed border-slate-300 rounded-xl p-12 text-center hover:border-brand-400 hover:bg-brand-50/10 transition-all cursor-pointer bg-slate-50"
+          className="border-2 border-dashed border-white/20 rounded-[2rem] p-12 text-center hover:border-white/40 hover:bg-white/[0.05] transition-all cursor-pointer bg-white/[0.02] backdrop-blur-xl shadow-2xl"
           onDrop={onDrop}
           onDragOver={e => e.preventDefault()}
           onClick={() => fileInputRef.current?.click()}
         >
-          <div className="w-20 h-20 bg-white rounded-full shadow-sm flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-white/5 backdrop-blur-xl rounded-full shadow-lg shadow-black/20 flex items-center justify-center mx-auto mb-6">
             <Upload className="w-10 h-10 text-brand-500" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-700 mb-3">{t.dragDropTitle}</h3>
-          <p className="text-slate-500 mb-8 max-w-sm mx-auto">{t.dragDropDesc}</p>
+          <h3 className="text-xl font-semibold text-slate-200 mb-3">{t.dragDropTitle}</h3>
+          <p className="text-slate-400 mb-8 max-w-sm mx-auto">{t.dragDropDesc}</p>
 
           <input
             type="file"
@@ -383,12 +383,12 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
           />
 
           <div className="flex gap-4 justify-center">
-            <button className="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg shadow-sm transition-colors">
+            <button className="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg shadow-lg shadow-black/20 transition-colors">
               Select Files
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); downloadTemplate(); }}
-              className="px-6 py-3 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-medium rounded-lg shadow-sm transition-colors flex items-center gap-2"
+              className="px-6 py-3 bg-white/5 backdrop-blur-xl border border-white/20 text-slate-200 hover:bg-white/[0.02] font-medium rounded-lg shadow-lg shadow-black/20 transition-colors flex items-center gap-2"
             >
               <FileSpreadsheet className="w-4 h-4" />
               CSV Template
@@ -403,22 +403,22 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
     <div className="h-[calc(100vh-140px)] flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <ListChecks className="w-6 h-6 text-brand-600" />
+          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+            <ListChecks className="w-6 h-6 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
             Review & Validate
           </h1>
-          <p className="text-slate-500 text-sm">Review {processedFiles.length} extracted policies before saving.</p>
+          <p className="text-slate-400 text-sm">Review {processedFiles.length} extracted policies before saving.</p>
         </div>
         <div className="flex gap-3">
           <button
             onClick={() => { setProcessedFiles([]); setViewMode('upload'); }}
-            className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium"
+            className="px-4 py-2 text-slate-300 hover:text-white font-medium"
           >
             Cancel
           </button>
           <button
             onClick={handleSaveAll}
-            className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm flex items-center gap-2"
+            className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-lg shadow-black/20 flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
             Save All ({processedFiles.filter(p => p.status === UploadStatus.COMPLETE).length})
@@ -428,8 +428,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
       <div className="flex-1 flex gap-4 overflow-hidden">
         {/* Left Sidebar: File List */}
-        <div className="w-64 bg-white rounded-xl border border-slate-200 overflow-y-auto flex-shrink-0">
-          <div className="p-4 border-b border-slate-100 bg-slate-50 sticky top-0 font-semibold text-slate-700">
+        <div className="w-64 bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 overflow-y-auto flex-shrink-0">
+          <div className="p-4 border-b border-white/5 bg-white/[0.02] sticky top-0 font-semibold text-slate-200">
             Files ({processedFiles.length})
           </div>
           <div className="divide-y divide-slate-100">
@@ -437,7 +437,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
               <div
                 key={item.id}
                 onClick={() => setSelectedFileId(item.id)}
-                className={`p-3 cursor-pointer hover:bg-slate-50 transition-colors flex items-center justify-between ${selectedFileId === item.id ? 'bg-brand-50 border-l-4 border-brand-500' : ''}`}
+                className={`p-3 cursor-pointer hover:bg-white/[0.02] transition-colors flex items-center justify-between ${selectedFileId === item.id ? 'bg-white/10 border-l-4 border-brand-500' : ''}`}
               >
                 <div className="flex items-center gap-2 overflow-hidden">
                   {item.status === UploadStatus.ANALYZING ? (
@@ -448,7 +448,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   )}
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-slate-900 truncate">{item.file.name}</p>
+                    <p className="text-xs font-medium text-white truncate">{item.file.name}</p>
                   </div>
                 </div>
                 <button
@@ -463,7 +463,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
           <div className="p-4">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full py-2 border border-dashed border-slate-300 text-slate-500 rounded-lg text-xs hover:border-brand-300 hover:text-brand-600 hover:bg-brand-50 transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2 border border-dashed border-white/20 text-slate-400 rounded-lg text-xs hover:border-brand-300 hover:text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
             >
               <Plus className="w-3 h-3" />
               Add More
@@ -472,19 +472,19 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
         </div>
 
         {/* Center Panel: Document Preview */}
-        <div className="flex-1 bg-slate-100 rounded-xl border border-slate-200 overflow-hidden relative flex items-center justify-center p-4">
+        <div className="flex-1 bg-white/[0.05] rounded-xl border border-white/10 overflow-hidden relative flex items-center justify-center p-4">
           {activeItem && previewUrl ? (
             activeItem.file.type.includes('pdf') ? (
               <iframe
                 src={previewUrl}
-                className="w-full h-full rounded shadow-sm"
+                className="w-full h-full rounded shadow-lg shadow-black/20"
                 title="PDF Preview"
               />
             ) : (
               <img
                 src={previewUrl}
                 alt="Preview"
-                className="max-w-full max-h-full object-contain shadow-sm rounded bg-white"
+                className="max-w-full max-h-full object-contain shadow-lg shadow-black/20 rounded bg-white/5 backdrop-blur-xl"
               />
             )
           ) : (
@@ -493,12 +493,12 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
         </div>
 
         {/* Right Panel: Editor */}
-        <div className="w-[400px] bg-white rounded-xl border border-slate-200 overflow-y-auto p-6 flex-shrink-0 shadow-lg">
+        <div className="w-[400px] bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 overflow-y-auto p-6 flex-shrink-0 shadow-lg">
           {activeItem ? (
             activeItem.status === UploadStatus.COMPLETE && activeItem.data ? (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-lg text-slate-800">Policy Details</h3>
+                  <h3 className="font-bold text-lg text-white">Policy Details</h3>
                   {activeItem.isNewProduct && (
                     <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1">
                       <BookOpen className="w-3 h-3" />
@@ -509,7 +509,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">{t.fields.planName}</label>
+                    <label className="block text-sm font-semibold text-slate-200 mb-1">{t.fields.planName}</label>
                     <select
                       value={activeItem.data.planName}
                       onChange={e => {
@@ -521,7 +521,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           handleUpdateCurrentField('company', matchedProduct.provider);
                         }
                       }}
-                      className="w-full p-2.5 border border-brand-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
+                      className="w-full p-2.5 border border-brand-300 rounded-lg text-sm bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
                       style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                     >
                       <option value="" disabled>Select a plan...</option>
@@ -537,16 +537,16 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Policy Number</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Policy Number</label>
                       <input
                         type="text"
                         value={activeItem.data.policyNumber}
                         onChange={e => handleUpdateCurrentField('policyNumber', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm font-mono"
+                        className="w-full p-2 border border-white/20 rounded-lg text-sm font-mono"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.company || 'Insurance Company'}</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">{t.fields.company || 'Insurance Company'}</label>
                       <div className="space-y-2">
                         <select
                           value={isCustomProvider ? 'Other' : (activeItem.data.company || '')}
@@ -560,7 +560,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               handleUpdateCurrentField('company', val);
                             }
                           }}
-                          className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                          className="w-full p-2 border border-white/20 rounded-lg text-sm bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
                           style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2rem' }}
                         >
                           <option value="">Select insurer...</option>
@@ -573,7 +573,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                             type="text"
                             value={activeItem.data.company || ''}
                             onChange={(e) => handleUpdateCurrentField('company', e.target.value)}
-                            className="w-full p-2 border border-slate-300 rounded-lg text-sm animate-in fade-in slide-in-from-top-1"
+                            className="w-full p-2 border border-white/20 rounded-lg text-sm animate-in fade-in slide-in-from-top-1"
                             placeholder="Enter custom insurer..."
                             autoFocus
                           />
@@ -582,11 +582,11 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Type</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Type</label>
                       <select
                         value={activeItem.data.type}
                         onChange={e => handleUpdateCurrentField('type', e.target.value)}
-                        className="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
+                        className="w-full p-2.5 border border-white/20 rounded-lg text-sm bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
                         style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       >
                         {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -596,13 +596,13 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   {/* Medical Plan Type Specifics */}
                   {activeItem.data.type === 'Medical' && (
-                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 grid grid-cols-2 gap-3">
+                    <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20 grid grid-cols-2 gap-3">
                       <div className="col-span-2">
-                        <label className="block text-xs font-semibold text-blue-700 uppercase mb-1">Medical Plan Type</label>
+                        <label className="block text-xs font-semibold text-blue-400 uppercase mb-1">Medical Plan Type</label>
                         <select
                           value={activeItem.data.medicalPlanType || 'Ward'}
                           onChange={e => handleUpdateCurrentField('medicalPlanType', e.target.value)}
-                          className="w-full p-2 border border-blue-200 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer appearance-none"
+                          className="w-full p-2 border border-blue-500/30 rounded-lg text-sm bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer appearance-none"
                           style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.3em 1.3em', paddingRight: '2rem' }}
                         >
                           <option value="Ward">Ward</option>
@@ -614,20 +614,20 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       </div>
                       {['High-End Semi-Private', 'High-End Private'].includes(activeItem.data.medicalPlanType || '') && (
                         <div className="col-span-2 mt-1">
-                          <label className="block text-xs font-semibold text-blue-700 uppercase mb-1">Annual Excess</label>
+                          <label className="block text-xs font-semibold text-blue-400 uppercase mb-1">Annual Excess</label>
                           <input
                             type="number"
                             placeholder="Excess Amount"
                             value={activeItem.data.medicalExcess || ''}
                             onChange={e => handleUpdateCurrentField('medicalExcess', Number(e.target.value))}
-                            className="w-full p-2 border border-blue-200 rounded-lg text-sm"
+                            className="w-full p-2 border border-blue-500/30 rounded-lg text-sm"
                           />
                         </div>
                       )}
                       {(products.find(p => p.name === activeItem.data.planName)?.annualCoverageLimit || products.find(p => p.name === activeItem.data.planName)?.wholeLifeCoverageLimit) ? (
-                        <div className="col-span-2 bg-white/60 p-2.5 rounded border border-blue-100 mt-1 flex justify-between items-center">
+                        <div className="col-span-2 bg-white/5 p-2.5 rounded border border-blue-500/20 mt-1 flex justify-between items-center">
                           <div className="text-[10px] text-blue-500 font-semibold uppercase tracking-wider flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500/100"></span>
                             Library Limits Mapped
                           </div>
                           <div className="text-xs text-blue-900 font-medium text-right flex gap-3">
@@ -641,7 +641,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Holder Name</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Holder Name</label>
                       <div className="relative">
                         <input
                           list="client-list"
@@ -658,7 +658,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               handleUpdateCurrentField('clientId', undefined); // Clear if no match
                             }
                           }}
-                          className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                          className="w-full p-2 border border-white/20 rounded-lg text-sm"
                         />
                         <datalist id="client-list">
                           {clients.map(c => (
@@ -666,35 +666,35 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           ))}
                         </datalist>
                         {clients.find(c => c.name === activeItem.data.holderName) && (
-                          <div className="absolute right-2 top-2 text-xs text-green-600 font-medium flex items-center bg-green-50 px-1 rounded">
+                          <div className="absolute right-2 top-2 text-xs text-emerald-400 font-medium flex items-center bg-emerald-500/10 px-1 rounded">
                             {clients.find(c => c.name === activeItem.data.holderName)?.phone}
                           </div>
                         )}
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Insured Name</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Insured Name</label>
                       <input
                         type="text"
                         value={activeItem.data.insuredName || ''}
                         onChange={e => handleUpdateCurrentField('insuredName', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        className="w-full p-2 border border-white/20 rounded-lg text-sm"
                         placeholder="If different from holder"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Anniversary</label>
+                        <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Anniversary</label>
                         <input
                           type="text"
                           placeholder="DD/MM"
                           value={activeItem.data.policyAnniversaryDate}
                           onChange={e => handleUpdateCurrentField('policyAnniversaryDate', e.target.value)}
-                          className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                          className="w-full p-2 border border-white/20 rounded-lg text-sm"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Phone (Optional Match)</label>
+                        <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Phone (Optional Match)</label>
                         <input
                           type="tel"
                           placeholder="+852 1234 5678"
@@ -712,7 +712,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               }
                             }
                           }}
-                          className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                          className="w-full p-2 border border-white/20 rounded-lg text-sm"
                         />
                       </div>
                     </div>
@@ -721,31 +721,31 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                   {/* Effective Date & Maturity Dates */}
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">{t.fields.effectiveDate || 'Effective Date'}</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">{t.fields.effectiveDate || 'Effective Date'}</label>
                       <input
                         type="date"
                         value={activeItem.data.effectiveDate || ''}
                         onChange={e => handleUpdateCurrentField('effectiveDate', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        className="w-full p-2 border border-white/20 rounded-lg text-sm"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Protection Maturity</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Protection Maturity</label>
                       <input
                         type="text"
                         value={activeItem.data.protectionMatureDate || ''}
                         onChange={e => handleUpdateCurrentField('protectionMatureDate', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        className="w-full p-2 border border-white/20 rounded-lg text-sm"
                         placeholder="Age 100 or YYYY-MM-DD"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium Maturity</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Premium Maturity</label>
                       <input
                         type="text"
                         value={activeItem.data.premiumMatureDate || ''}
                         onChange={e => handleUpdateCurrentField('premiumMatureDate', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                        className="w-full p-2 border border-white/20 rounded-lg text-sm"
                         placeholder="20 Years or YYYY-MM-DD"
                       />
                     </div>
@@ -753,12 +753,12 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Premium & Currency</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Premium & Currency</label>
                       <div className="flex gap-2">
                         <select
                           value={activeItem.data.currency || 'HKD'}
                           onChange={e => handleUpdateCurrentField('currency', e.target.value)}
-                          className="w-20 p-2 border border-slate-300 rounded-lg text-sm font-medium bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                          className="w-20 p-2 border border-white/20 rounded-lg text-sm font-medium bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
                           style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.15rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em', paddingRight: '1.25rem' }}
                         >
                           <option value="HKD">HKD</option>
@@ -770,17 +770,17 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                             type="number"
                             value={activeItem.data.premiumAmount}
                             onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
-                            className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
+                            className="w-full pl-6 p-2 border border-white/20 rounded-lg text-sm"
                           />
                         </div>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Frequency</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Frequency</label>
                       <select
                         value={activeItem.data.paymentMode}
                         onChange={e => handleUpdateCurrentField('paymentMode', e.target.value)}
-                        className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                        className="w-full p-2 border border-white/20 rounded-lg text-sm bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
                         style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2rem' }}
                       >
                         <option value="Yearly">Yearly</option>
@@ -792,7 +792,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   {activeItem.data.type !== 'Medical' && (
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Sum Insured / Face Amount</label>
+                      <label className="block text-xs font-semibold text-slate-400 uppercase mb-1">Sum Insured / Face Amount</label>
                       <div className="relative">
                         <span className="absolute left-3 top-2 text-slate-400">$</span>
                         <input
@@ -800,7 +800,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.sumInsured || ''}
                           onChange={e => handleUpdateCurrentField('sumInsured', parseFloat(e.target.value))}
                           placeholder="0"
-                          className="w-full pl-6 p-2 border border-slate-300 rounded-lg text-sm"
+                          className="w-full pl-6 p-2 border border-white/20 rounded-lg text-sm"
                         />
                       </div>
                     </div>
@@ -815,9 +815,9 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         type="checkbox"
                         checked={activeItem.data.isMultipay || false}
                         onChange={e => handleUpdateCurrentField('isMultipay', e.target.checked)}
-                        className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                        className="rounded border-white/20 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] focus:ring-brand-500"
                       />
-                      <span className="text-sm text-slate-700 font-medium">Multipay Feature (多重保障)</span>
+                      <span className="text-sm text-slate-200 font-medium">Multipay Feature (多重保障)</span>
                     </label>
                   </div>
                 )}
@@ -833,7 +833,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.accidentMedicalLimit || ''}
                           onChange={e => handleUpdateCurrentField('accidentMedicalLimit', parseFloat(e.target.value))}
                           placeholder="$"
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl"
                         />
                       </div>
                       <div>
@@ -843,7 +843,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.accidentSectionLimit || ''}
                           onChange={e => handleUpdateCurrentField('accidentSectionLimit', parseFloat(e.target.value))}
                           placeholder="$"
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl"
                         />
                       </div>
                     </div>
@@ -855,7 +855,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.accidentBonesettingLimit || ''}
                           onChange={e => handleUpdateCurrentField('accidentBonesettingLimit', parseFloat(e.target.value))}
                           placeholder="$"
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl"
                         />
                       </div>
                       <div>
@@ -865,7 +865,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.accidentAcupunctureLimit || ''}
                           onChange={e => handleUpdateCurrentField('accidentAcupunctureLimit', parseFloat(e.target.value))}
                           placeholder="$"
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl"
                         />
                       </div>
                     </div>
@@ -877,7 +877,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         <select
                           value={activeItem.data.accidentPhysioLimitType1 || ''}
                           onChange={e => handleUpdateCurrentField('accidentPhysioLimitType1', e.target.value || undefined)}
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white font-medium"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl font-medium"
                         >
                           <option value="">None</option>
                           <option value="Annual">Annual Limit</option>
@@ -890,14 +890,14 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           onChange={e => handleUpdateCurrentField('accidentPhysioLimitAmount1', parseFloat(e.target.value))}
                           placeholder="$ Limit 1"
                           disabled={!activeItem.data.accidentPhysioLimitType1}
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white disabled:bg-slate-100"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl disabled:bg-white/[0.05]"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <select
                           value={activeItem.data.accidentPhysioLimitType2 || ''}
                           onChange={e => handleUpdateCurrentField('accidentPhysioLimitType2', e.target.value || undefined)}
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white font-medium"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl font-medium"
                         >
                           <option value="">None</option>
                           <option value="Annual">Annual Limit</option>
@@ -910,7 +910,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           onChange={e => handleUpdateCurrentField('accidentPhysioLimitAmount2', parseFloat(e.target.value))}
                           placeholder="$ Limit 2"
                           disabled={!activeItem.data.accidentPhysioLimitType2}
-                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white disabled:bg-slate-100"
+                          className="w-full p-2 border border-orange-200 rounded-lg text-sm bg-white/5 backdrop-blur-xl disabled:bg-white/[0.05]"
                         />
                       </div>
                     </div>
@@ -918,8 +918,8 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                 )}
 
                 {/* Policy Values Section */}
-                <div className="border-t border-slate-100 pt-4">
-                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-3">Policy Values (Statement)</label>
+                <div className="border-t border-white/5 pt-4">
+                  <label className="block text-xs font-semibold text-slate-400 uppercase mb-3">Policy Values (Statement)</label>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <div>
                       <label className="block text-[10px] text-slate-400 mb-1">Guaranteed Cash Value</label>
@@ -930,7 +930,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.cashValue || ''}
                           onChange={e => handleUpdateCurrentField('cashValue', parseFloat(e.target.value))}
                           placeholder="0.00"
-                          className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
+                          className="w-full pl-5 p-1.5 border border-white/20 rounded text-sm"
                         />
                       </div>
                     </div>
@@ -943,13 +943,13 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.accumulatedDividend || ''}
                           onChange={e => handleUpdateCurrentField('accumulatedDividend', parseFloat(e.target.value))}
                           placeholder="0.00"
-                          className="w-full pl-5 p-1.5 border border-slate-300 rounded text-sm"
+                          className="w-full pl-5 p-1.5 border border-white/20 rounded text-sm"
                         />
                       </div>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] text-slate-400 mb-1 font-semibold text-brand-600">Total Surrender Value</label>
+                    <label className="block text-[10px] text-slate-400 mb-1 font-semibold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">Total Surrender Value</label>
                     <div className="relative">
                       <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
                       <input
@@ -957,19 +957,19 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         value={activeItem.data.totalCashValue || ''}
                         onChange={e => handleUpdateCurrentField('totalCashValue', parseFloat(e.target.value))}
                         placeholder="0.00"
-                        className="w-full pl-5 p-1.5 border border-brand-200 bg-brand-50 rounded text-sm font-semibold text-brand-700"
+                        className="w-full pl-5 p-1.5 border border-brand-200 bg-white/10 rounded text-sm font-semibold text-brand-700"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Riders Section */}
-                <div className="border-t border-slate-100 pt-4">
+                <div className="border-t border-white/5 pt-4">
                   <div className="flex justify-between items-center mb-3">
-                    <label className="block text-xs font-semibold text-slate-500 uppercase">Riders / Benefits</label>
+                    <label className="block text-xs font-semibold text-slate-400 uppercase">Riders / Benefits</label>
                     <button
                       onClick={handleAddRider}
-                      className="text-xs text-brand-600 font-medium hover:text-brand-700 flex items-center gap-1"
+                      className="text-xs text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] font-medium hover:text-brand-700 flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" /> Add Rider
                     </button>
@@ -977,7 +977,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   <div className="space-y-3">
                     {activeItem.data.riders?.map((rider, idx) => (
-                      <div key={idx} className="bg-slate-50 p-3 rounded-lg border border-slate-200 relative group">
+                      <div key={idx} className="bg-white/[0.02] p-3 rounded-lg border border-white/10 relative group">
                         <button
                           onClick={() => handleRemoveRider(idx)}
                           className="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -998,7 +998,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               }
                             }}
                             placeholder="Rider Name"
-                            className="w-full p-1.5 border border-slate-300 rounded text-sm bg-white focus:ring-1 focus:ring-brand-500 focus:outline-none"
+                            className="w-full p-1.5 border border-white/20 rounded text-sm bg-white/5 backdrop-blur-xl focus:ring-1 focus:ring-brand-500 focus:outline-none"
                           />
                           <datalist id={`rider-products-${idx}`}>
                             {products.map(p => <option key={p.name} value={p.name}>{p.provider} - {p.name}</option>)}
@@ -1007,7 +1007,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                             <select
                               value={rider.type}
                               onChange={e => handleUpdateRider(idx, 'type', e.target.value)}
-                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-slate-50 hover:bg-white focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                              className="w-1/3 p-1.5 border border-white/20 rounded text-xs bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-1 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
                               style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '1.5rem' }}
                             >
                               {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -1017,7 +1017,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               <select
                                 value={rider.medicalPlanType || 'Ward'}
                                 onChange={e => handleUpdateRider(idx, 'medicalPlanType', e.target.value)}
-                                className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-slate-50 hover:bg-white focus:bg-white focus:ring-1 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                                className="w-1/3 p-1.5 border border-white/20 rounded text-xs bg-white/[0.02] hover:bg-white/5 backdrop-blur-xl focus:bg-white/5 backdrop-blur-xl focus:ring-1 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
                                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '1.5rem' }}
                               >
                                 <option value="Ward">Ward</option>
@@ -1032,7 +1032,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                                 value={rider.sumInsured || ''}
                                 onChange={e => handleUpdateRider(idx, 'sumInsured', parseFloat(e.target.value))}
                                 placeholder="Sum Insured"
-                                className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                                className="w-1/3 p-1.5 border border-white/20 rounded text-xs bg-white/5 backdrop-blur-xl"
                               />
                             )}
                             <input
@@ -1040,7 +1040,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               value={rider.premiumAmount}
                               onChange={e => handleUpdateRider(idx, 'premiumAmount', parseFloat(e.target.value))}
                               placeholder="Premium"
-                              className="w-1/3 p-1.5 border border-slate-300 rounded text-xs bg-white"
+                              className="w-1/3 p-1.5 border border-white/20 rounded text-xs bg-white/5 backdrop-blur-xl"
                             />
                           </div>
                           <div className="flex gap-2">
@@ -1048,21 +1048,21 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               type="text"
                               value={rider.protectionMatureDate || ''}
                               onChange={e => handleUpdateRider(idx, 'protectionMatureDate', e.target.value)}
-                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white text-slate-500"
+                              className="w-1/2 p-1.5 border border-white/20 rounded text-xs bg-white/5 backdrop-blur-xl text-slate-400"
                               placeholder="Prot. Mat."
                             />
                             <input
                               type="text"
                               value={rider.premiumMatureDate || ''}
                               onChange={e => handleUpdateRider(idx, 'premiumMatureDate', e.target.value)}
-                              className="w-1/2 p-1.5 border border-slate-300 rounded text-xs bg-white text-slate-500"
+                              className="w-1/2 p-1.5 border border-white/20 rounded text-xs bg-white/5 backdrop-blur-xl text-slate-400"
                               placeholder="Prem. Mat."
                             />
                           </div>
                           {(products.find(p => p.name === rider.name)?.annualCoverageLimit || products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit) ? (
-                            <div className="bg-white/60 p-2 rounded border border-blue-100 flex justify-between items-center mt-1">
+                            <div className="bg-white/5 p-2 rounded border border-blue-500/20 flex justify-between items-center mt-1">
                               <div className="text-[9px] text-blue-500 font-semibold uppercase tracking-wider flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Library Limits Mapped
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500/100"></span> Library Limits Mapped
                               </div>
                               <div className="text-[10px] text-blue-900 font-medium text-right flex gap-2">
                                 {products.find(p => p.name === rider.name)?.annualCoverageLimit && <span>Ann: ${products.find(p => p.name === rider.name)?.annualCoverageLimit?.toLocaleString()}</span>}
@@ -1080,10 +1080,10 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase mb-2">Tags</label>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase mb-2">Tags</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {activeItem.data.extractedTags?.map((tag, idx) => (
-                      <span key={idx} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-slate-200">
+                      <span key={idx} className="bg-white/[0.05] text-slate-300 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-white/10">
                         <Tag className="w-3 h-3" />
                         {tag}
                         <button
@@ -1104,7 +1104,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       value={newTagInput}
                       onChange={e => setNewTagInput(e.target.value)}
                       placeholder="Add tag..."
-                      className="flex-1 p-1.5 border border-slate-300 rounded text-xs"
+                      className="flex-1 p-1.5 border border-white/20 rounded text-xs"
                       onKeyDown={e => {
                         if (e.key === 'Enter' && newTagInput.trim()) {
                           handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
@@ -1119,7 +1119,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           setNewTagInput('');
                         }
                       }}
-                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded text-xs font-medium"
+                      className="px-3 py-1 bg-white/[0.05] hover:bg-white/10 text-slate-300 rounded text-xs font-medium"
                     >
                       Add
                     </button>
