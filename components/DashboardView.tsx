@@ -3,6 +3,7 @@ import { TRANSLATIONS } from '../constants';
 import { Client, PolicyData, PaymentMode } from '../types';
 import { Users, FileText, DollarSign, ArrowUpRight, Cake, Bell, AlertCircle, Gift, Clock } from 'lucide-react';
 import { RemindersView } from './RemindersView';
+import { Card3D } from './ui/Card3D';
 
 interface DashboardViewProps {
   t: typeof TRANSLATIONS['en']['dashboard'];
@@ -15,26 +16,18 @@ interface DashboardViewProps {
 
 export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, clients, policies, onUploadRenewal, reminderDays }) => {
 
-  // Logic to filter upcoming birthdays (Real-time logic)
+  // ... (Logic remains unchanged) ...
   const upcomingBirthdays = clients.filter(client => {
     const today = new Date();
     const bday = new Date(client.birthday);
-
-    // Create a birthday date object for the current year
     const nextBirthday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
-
-    // If birthday has already passed this year, look at next year
     if (nextBirthday < today) {
       nextBirthday.setFullYear(today.getFullYear() + 1);
     }
-
-    // Check if birthday is within the next 45 days
     const diffTime = nextBirthday.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
     return diffDays >= 0 && diffDays <= 45;
   }).sort((a, b) => {
-    // Sort logic to handle year crossover
     const today = new Date();
     const getNextBday = (dateStr: string) => {
       const d = new Date(dateStr);
@@ -45,40 +38,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
     return getNextBday(a.birthday).getTime() - getNextBday(b.birthday).getTime();
   });
 
-  // Calculate next premium date based on anniversary and mode
   const getNextPremiumDate = (anniversary: string, mode: PaymentMode): Date => {
     const today = new Date();
     const [day, month] = anniversary.split('/').map(Number);
-
-    // Anniversary for current year
     let baseDate = new Date(today.getFullYear(), month - 1, day);
-
-    // If payment is Yearly, just check anniversary
     if (mode === 'Yearly') {
       if (baseDate < today) baseDate.setFullYear(today.getFullYear() + 1);
       return baseDate;
     }
-
-    // For other modes, generate all potential dates for the year and find next one
     const interval = mode === 'Half-Yearly' ? 6 : mode === 'Quarterly' ? 3 : 1;
-
-    let candidateDate = new Date(today.getFullYear(), month - 1, day);
-    // Backtrack to start of year or ensure we cover cycles correctly relative to anniversary
-    // Simple approach: Start from anniversary this year, if past, add interval until future
-
-    // Reset to anniversary of THIS year
-    candidateDate = new Date(today.getFullYear(), month - 1, day);
-
-    // If anniversary is future, it's a candidate. If past, add months.
-    // But we need to support cycles that wrap year.
-    // Let's just project 12 months forward from anniversary and pick closest.
-
-    let nextDate = new Date(candidateDate);
-    // If original anniversary is in past, start adding intervals
+    let nextDate = new Date(baseDate);
     while (nextDate < today) {
       nextDate.setMonth(nextDate.getMonth() + interval);
     }
-
     return nextDate;
   };
 
@@ -89,20 +61,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
     const today = new Date();
     const diffTime = p.nextDueDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays >= 0 && diffDays <= 60; // Next 60 days
+    return diffDays >= 0 && diffDays <= 60;
   }).sort((a, b) => a.nextDueDate.getTime() - b.nextDueDate.getTime());
 
-  // Calculate stats
-  // FIX: Convert to HKD for unified display
   const totalPremiumHKD = policies.filter(p => p.status === 'Active').reduce((sum, p) => {
     let amount = p.premiumAmount || 0;
-    if (p.currency === 'USD') {
-      amount = amount * 7.8;
-    }
+    if (p.currency === 'USD') amount = amount * 7.8;
     return sum + amount;
   }, 0);
 
-  // Group by currency (keeping raw for detail view if needed, but main stat is HKD)
   const totalByCurrency = policies.reduce((acc, p) => {
     const c = p.currency || 'HKD';
     acc[c] = (acc[c] || 0) + p.premiumAmount;
@@ -112,57 +79,96 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
   const activePoliciesCount = policies.filter(p => p.status === 'Active').length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">{t.title}</h1>
-        <p className="text-slate-500 text-sm">{t.subtitle}</p>
+    <div className="space-y-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-black text-white tracking-tight">{t.title}</h1>
+          <p className="text-slate-400 mt-2 font-medium">{t.subtitle}</p>
+        </div>
+        <div className="flex gap-2">
+          <div className="h-1 w-12 bg-white rounded-full shadow-[0_0_15px_white]" />
+          <div className="h-1 w-4 bg-white/20 rounded-full" />
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-slate-200/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <Users className="w-6 h-6 text-brand-600" />
+      {/* Stats Cards in 3D */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Card3D className="h-full">
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between mb-8">
+              <div className="p-3 bg-white/10 rounded-2xl border border-white/10 shadow-inner">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  +12.5%
+                </span>
+              </div>
             </div>
-            <span className="text-xs font-medium text-green-600 flex items-center bg-green-50/80 px-2 py-1 rounded-full">
-              +12% <ArrowUpRight className="w-3 h-3 ml-1" />
-            </span>
+            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">{t.totalClients}</p>
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-4xl font-black text-white">{clients.length}</h3>
+              <span className="text-slate-500 text-sm font-medium">Active</span>
+            </div>
           </div>
-          <p className="text-slate-500 text-sm font-medium">{t.totalClients}</p>
-          <h3 className="text-2xl font-bold text-slate-800">{clients.length}</h3>
-        </div>
+        </Card3D>
 
-        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-slate-200/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2 bg-indigo-50 rounded-lg">
-              <FileText className="w-6 h-6 text-indigo-600" />
+        <Card3D className="h-full">
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between mb-8">
+              <div className="p-3 bg-white/10 rounded-2xl border border-white/10 shadow-inner">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] font-bold text-white/40 border border-white/10 px-2 py-0.5 rounded-full">
+                  LIFETIME
+                </span>
+              </div>
             </div>
-            <span className="text-xs font-medium text-green-600 flex items-center bg-green-50/80 px-2 py-1 rounded-full">
-              +5% <ArrowUpRight className="w-3 h-3 ml-1" />
-            </span>
+            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">{t.activePolicies}</p>
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-4xl font-black text-white">{activePoliciesCount}</h3>
+              <span className="text-slate-500 text-sm font-medium">Policies</span>
+            </div>
           </div>
-          <p className="text-slate-500 text-sm font-medium">{t.activePolicies}</p>
-          <h3 className="text-2xl font-bold text-slate-800">{activePoliciesCount}</h3>
-        </div>
+        </Card3D>
 
-        <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-slate-200/50 shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2 bg-emerald-50 rounded-lg">
-              <DollarSign className="w-6 h-6 text-emerald-600" />
+        <Card3D className="h-full">
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between mb-6">
+              <div className="p-3 bg-white/10 rounded-2xl border border-white/10 shadow-inner">
+                <DollarSign className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-[10px] font-bold text-white bg-white/10 px-2 py-0.5 rounded-full uppercase">
+                {t.monthly}
+              </span>
             </div>
-            <span className="text-xs font-medium text-slate-500">
-              {t.monthly}
-            </span>
-          </div>
-          <p className="text-slate-500 text-sm font-medium">{t.premiumRevenue}</p>
-          <div className="flex flex-col gap-1">
-            <h3 className="text-2xl font-bold text-slate-800">
+            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">{t.premiumRevenue}</p>
+            <h3 className="text-3xl font-black text-white">
               HKD ${(totalPremiumHKD / 1000).toFixed(1)}k
             </h3>
-            <div className="text-xs text-slate-400">
-              {Object.entries(totalByCurrency).map(([c, v]) => `${c} $${(v / 1000).toFixed(1)}k`).join(' + ')}
+            <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap gap-3">
+              {Object.entries(totalByCurrency).map(([c, v]) => (
+                <div key={c} className="flex flex-col">
+                  <span className="text-[10px] text-slate-500 font-bold">{c}</span>
+                  <span className="text-white text-xs font-black">${(v / 1000).toFixed(1)}k</span>
+                </div>
+              ))}
             </div>
+          </div>
+        </Card3D>
+      </div>
+
+      <div className="pt-4">
+        <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-3xl p-1 shadow-2xl overflow-hidden">
+          <div className="bg-slate-900/50 rounded-[22px] p-6">
+            <RemindersView
+              t={remindersT}
+              policies={policies}
+              clients={clients}
+              onUploadRenewal={onUploadRenewal}
+              reminderDays={reminderDays}
+            />
           </div>
         </div>
       </div>
@@ -178,10 +184,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
         {/* Left Column: Attention & Policies */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-8">
 
           {/* Stale Contact Reminder Logic */}
           {(() => {
@@ -195,22 +201,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             if (staleClients.length === 0) return null;
 
             return (
-              <div className="bg-amber-50/70 backdrop-blur-sm border border-amber-200/50 rounded-xl p-4 flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="p-2 bg-amber-100 rounded-lg text-amber-600">
+              <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-700">
+                <div className="p-3 bg-white/10 rounded-xl text-white shadow-inner">
                   <Clock className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-amber-900 font-bold text-sm">Action Needed: Stale Contacts</h3>
-                  <p className="text-amber-700 text-xs mt-1">
-                    {staleClients.length} clients haven't been contacted in over 90 days. Consider reaching out for a review.
+                  <h3 className="text-white font-black text-sm tracking-wide">ACTION REQUIRED: STALE CONTACTS</h3>
+                  <p className="text-slate-400 text-xs mt-1 font-medium">
+                    {staleClients.length} clients haven't been contacted in over 90 days.
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex flex-wrap gap-2 mt-4">
                     {staleClients.slice(0, 5).map(c => (
-                      <span key={c.id} className="bg-white/80 border border-amber-200 px-2 py-1 rounded text-[10px] font-bold text-amber-800">
-                        {c.name} ({Math.ceil((new Date().getTime() - new Date(c.lastContact).getTime()) / (1000 * 60 * 60 * 24))}d)
+                      <span key={c.id} className="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] font-bold text-slate-300">
+                        {c.name} • {Math.ceil((new Date().getTime() - new Date(c.lastContact).getTime()) / (1000 * 60 * 60 * 24))}d
                       </span>
                     ))}
-                    {staleClients.length > 5 && <span className="text-[10px] text-amber-500 font-bold self-center">+{staleClients.length - 5} more</span>}
+                    {staleClients.length > 5 && <span className="text-[10px] text-slate-500 font-bold self-center">+{staleClients.length - 5} MORE</span>}
                   </div>
                 </div>
               </div>
@@ -218,83 +224,83 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
           })()}
 
           {/* Attention Section */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-500" />
-                {t.premiumsDue}
-              </h3>
-              {duePolicies.length > 0 && (
-                <span className="text-xs font-semibold bg-red-50 text-red-600 px-2 py-1 rounded-full">
-                  {duePolicies.length}
-                </span>
-              )}
-            </div>
-            <div className="p-4">
-              {duePolicies.length > 0 ? (
-                <div className="space-y-3">
-                  {duePolicies.map(policy => (
-                    <div key={policy.id} className="group flex items-start p-3 bg-slate-50/50 rounded-lg border border-slate-100 hover:bg-slate-100/60 transition-colors">
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-slate-800">{policy.holderName}</p>
-                        <p className="text-xs text-slate-500">{policy.planName}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-600">{policy.paymentMode}</span>
-                          <span className="text-xs font-medium text-red-600">Due {policy.nextDueDate.toLocaleDateString()}</span>
+          <Card3D depth={20} className="w-full">
+            <div className="flex flex-col h-full">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-black text-white flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  {t.premiumsDue.toUpperCase()}
+                </h3>
+                {duePolicies.length > 0 && (
+                  <span className="text-[10px] font-black bg-red-500/20 text-red-400 px-3 py-1 rounded-full border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                    {duePolicies.length} URGENT
+                  </span>
+                )}
+              </div>
+              <div className="space-y-4">
+                {duePolicies.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {duePolicies.map(policy => (
+                      <div key={policy.id} className="group relative p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/20 transition-all duration-300">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="text-sm font-black text-white">{policy.holderName}</p>
+                            <p className="text-[10px] text-slate-500 font-bold mt-0.5">{policy.planName.toUpperCase()}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-black text-white">
+                              ${policy.premiumAmount.toLocaleString()}
+                            </p>
+                            <p className="text-[10px] text-slate-500 font-bold">{policy.currency || 'HKD'}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
+                          <span className="text-[10px] font-bold text-slate-400 bg-white/5 px-2 py-0.5 rounded uppercase tracking-tighter">{policy.paymentMode}</span>
+                          <span className="text-[10px] font-black text-red-400 ml-auto">DUE {policy.nextDueDate.toLocaleDateString()}</span>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-slate-900">
-                          <span className="text-xs font-normal text-gray-500 mr-1">{policy.currency || 'HKD'}</span>
-                          ${policy.premiumAmount.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-slate-400">
-                  <p>{t.noPremiums}</p>
-                </div>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-slate-500 font-bold tracking-widest text-xs">{t.noPremiums.toUpperCase()}</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          </Card3D>
 
-          {/* Recent Policies Table */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-200">
-              <h3 className="text-lg font-bold text-slate-800">{t.recentUpdates}</h3>
+          {/* Recent Policies Table - Modernized Lite */}
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-white/5 flex items-center justify-between">
+              <h3 className="text-sm font-black text-white tracking-widest">{t.recentUpdates.toUpperCase()}</h3>
+              <div className="h-1 w-8 bg-white/20 rounded-full" />
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="bg-slate-50 text-slate-500 font-medium">
-                  <tr>
-                    <th className="px-6 py-3">{t.table.policyNo}</th>
-                    <th className="px-6 py-3">{t.table.holder}</th>
-                    <th className="px-6 py-3">{t.table.type}</th>
-                    <th className="px-6 py-3">{t.table.anniversary}</th>
-                    <th className="px-6 py-3">{t.table.mode}</th>
-                    <th className="px-6 py-3 text-right">{t.table.status}</th>
+              <table className="w-full text-xs text-left">
+                <thead>
+                  <tr className="text-slate-500 font-black uppercase tracking-widest border-b border-white/5">
+                    <th className="px-6 py-4">{t.table.holder}</th>
+                    <th className="px-6 py-4">{t.table.type}</th>
+                    <th className="px-6 py-4">{t.table.anniversary}</th>
+                    <th className="px-6 py-4 text-right">{t.table.status}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {policies.slice(0, 10).map((policy) => (
-                    <tr key={policy.id} className="hover:bg-slate-50">
-                      <td className="px-6 py-4 font-mono text-slate-600">{policy.policyNumber}</td>
-                      <td className="px-6 py-4 font-medium text-slate-800">{policy.holderName}</td>
+                <tbody className="divide-y divide-white/5">
+                  {policies.slice(0, 8).map((policy) => (
+                    <tr key={policy.id} className="hover:bg-white/[0.03] transition-colors group">
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs ${policy.type === 'Life' ? 'bg-blue-100/80 text-blue-700' :
-                          policy.type === 'Medical' ? 'bg-green-100/80 text-green-700' :
-                            'bg-slate-100/80 text-slate-600'
-                          }`}>
-                          {policy.type}
-                        </span>
+                        <p className="font-black text-white group-hover:translate-x-1 transition-transform">{policy.holderName}</p>
+                        <p className="text-[10px] text-slate-500 font-mono mt-0.5">{policy.policyNumber}</p>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">{policy.policyAnniversaryDate}</td>
-                      <td className="px-6 py-4 text-slate-600">{policy.paymentMode}</td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-400 font-bold">{policy.type}</span>
+                      </td>
+                      <td className="px-6 py-4 text-slate-400 font-medium">{policy.policyAnniversaryDate}</td>
                       <td className="px-6 py-4 text-right">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${policy.status === 'Active' ? 'bg-green-100/80 text-green-800' :
-                          policy.status === 'Pending' ? 'bg-amber-100/80 text-amber-800' : 'bg-red-100/80 text-red-800'
+                        <span className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${policy.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                          policy.status === 'Pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                            'bg-red-500/10 text-red-400 border border-red-500/20'
                           }`}>
                           {policy.status}
                         </span>
@@ -305,51 +311,57 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
               </table>
             </div>
           </div>
-
         </div>
 
         {/* Right Column: Birthdays */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-96">
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <Gift className="w-5 h-5 text-pink-500" />
-                {t.birthdays}
-              </h3>
-              <span className="text-xs font-semibold bg-pink-50 text-pink-600 px-2 py-1 rounded-full">
-                {upcomingBirthdays.length}
-              </span>
-            </div>
-            <div className="p-4 overflow-y-auto flex-1 space-y-3">
-              {upcomingBirthdays.length > 0 ? upcomingBirthdays.map(client => {
-                const age = new Date().getFullYear() - new Date(client.birthday).getFullYear();
+        <div className="space-y-8">
+          <Card3D depth={30} className="h-full min-h-[500px]">
+            <div className="flex flex-col h-full">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-lg font-black text-white flex items-center gap-3">
+                  <Gift className="w-5 h-5 text-white shadow-[0_0_15px_white]" />
+                  {t.birthdays.toUpperCase()}
+                </h3>
+                <span className="text-[10px] font-black bg-white/10 text-white px-3 py-1 rounded-full border border-white/20">
+                  {upcomingBirthdays.length}
+                </span>
+              </div>
 
-                return (
-                  <div key={client.id} className="group flex items-center p-3 bg-slate-50/50 rounded-lg border border-slate-100 hover:bg-slate-100/60 transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-pink-100/80 flex items-center justify-center text-pink-600 font-bold mr-3">
-                      {client.name.charAt(0)}
+              <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+                {upcomingBirthdays.length > 0 ? upcomingBirthdays.map(client => {
+                  const age = new Date().getFullYear() - new Date(client.birthday).getFullYear();
+                  return (
+                    <div key={client.id} className="group p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/20 transition-all duration-300">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-white font-black text-lg border border-white/10 shadow-inner">
+                          {client.name.charAt(0)}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-black text-white">{client.name}</p>
+                          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-0.5">
+                            Turning {age} • {new Date(client.birthday).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                          </p>
+                        </div>
+                      </div>
+                      <button className="w-full mt-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-800 bg-white rounded-xl hover:bg-slate-200 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                        {t.sendWish}
+                      </button>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-800">{client.name}</p>
-                      <p className="text-xs text-slate-500">Turning {age} on {new Date(client.birthday).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
-                    </div>
-                    <button className="text-xs bg-white border border-pink-200 text-pink-600 px-3 py-1.5 rounded-md hover:bg-pink-50 font-medium transition-all opacity-80 group-hover:opacity-100 active:scale-95">
-                      {t.sendWish}
-                    </button>
+                  );
+                }) : (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-600 text-center py-12">
+                    <p className="text-xs font-black tracking-[0.2em]">{t.noBirthdays.toUpperCase()}</p>
                   </div>
-                );
-              }) : (
-                <div className="h-full flex flex-col items-center justify-center text-slate-400">
-                  <p>{t.noBirthdays}</p>
-                </div>
-              )}
+                )}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/5">
+                <button className="w-full py-4 text-[10px] font-black uppercase tracking-[.25em] text-white border border-white/10 rounded-2xl hover:bg-white/5 transition-all">
+                  {t.viewCalendar}
+                </button>
+              </div>
             </div>
-            <div className="p-4 border-t border-slate-100 bg-slate-50">
-              <button className="w-full py-2 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-all active:scale-95">
-                {t.viewCalendar}
-              </button>
-            </div>
-          </div>
+          </Card3D>
         </div>
 
       </div>

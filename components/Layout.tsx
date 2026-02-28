@@ -26,135 +26,132 @@ export const Layout: React.FC<LayoutProps> = ({
   const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden relative">
+    <div className="flex h-screen bg-slate-950 overflow-hidden relative font-sans selection:bg-white/20 selection:text-white">
+      {/* 
+          3D Space Atmosphere: 
+          - Navy Base
+          - White Volumetric Glows
+          - Subtle Grid/Depth 
+      */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Top-Left Volumetric Glow */}
+        <div className="absolute top-[-10%] left-[-5%] w-[800px] h-[800px] rounded-full bg-slate-800/10 blur-[120px]" />
+        {/* Bottom-Right White Glow */}
+        <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/[0.03] blur-[150px]" />
+        {/* Subtle Perspective Grid */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
+      </div>
+
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 z-40 md:hidden animate-in fade-in duration-200"
+          className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 md:hidden animate-in fade-in duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside className={`
-        fixed md:static inset-y-0 left-0 z-50 bg-slate-900/85 backdrop-blur-md border-r border-slate-800/50 text-white flex flex-col transition-all duration-300
+        fixed md:static inset-y-0 left-0 z-50 bg-slate-900/40 backdrop-blur-xl border-r border-white/5 text-white flex flex-col transition-all duration-500
         ${isMobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0'}
         ${isCollapsed ? 'md:w-20' : 'md:w-64'}
       `}>
 
         {/* Brand Area / Toggle */}
-        <div className={`h-16 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-6'} border-b border-slate-800 transition-all`}>
-          {!isCollapsed && <span className="text-lg font-bold truncate transition-opacity">{t.nav.brand}</span>}
+        <div className={`h-16 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-6'} border-b border-white/5 transition-all`}>
+          {!isCollapsed && (
+            <span className="text-lg font-black tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent transition-opacity">
+              {t.nav.brand.toUpperCase()}
+            </span>
+          )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-all active:scale-95"
+            className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-all active:scale-90"
           >
             {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
           </button>
         </div>
 
-        <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto overflow-x-hidden">
-          <button
-            onClick={() => onChangeView(AppView.DASHBOARD)}
-            className={`group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg active:scale-[0.97] transition-all duration-200 ${currentView === AppView.DASHBOARD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-            title={isCollapsed ? t.nav.dashboard : ''}
-          >
-            <LayoutDashboard className="w-5 h-5 min-w-[20px] group-hover:translate-x-1 transition-transform" />
-            {!isCollapsed && <span className="ml-3 truncate">{t.nav.dashboard}</span>}
-          </button>
-
-          <button
-            onClick={() => onChangeView(AppView.UPLOAD)}
-            className={`group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg active:scale-[0.97] transition-all duration-200 ${currentView === AppView.UPLOAD ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-            title={isCollapsed ? t.nav.upload : ''}
-          >
-            <UploadCloud className="w-5 h-5 min-w-[20px] group-hover:translate-x-1 transition-transform" />
-            {!isCollapsed && <span className="ml-3 truncate">{t.nav.upload}</span>}
-          </button>
-
-          <button
-            onClick={() => onChangeView(AppView.CLIENTS)}
-            className={`group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg active:scale-[0.97] transition-all duration-200 ${currentView === AppView.CLIENTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-            title={isCollapsed ? t.nav.clients : ''}
-          >
-            <Users className="w-5 h-5 min-w-[20px] group-hover:translate-x-1 transition-transform" />
-            {!isCollapsed && <span className="ml-3 truncate">{t.nav.clients}</span>}
-          </button>
-
-          <button
-            onClick={() => onChangeView(AppView.PRODUCTS)}
-            className={`group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg active:scale-[0.97] transition-all duration-200 ${currentView === AppView.PRODUCTS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-            title={isCollapsed ? t.nav.products : ''}
-          >
-            <BookOpen className="w-5 h-5 min-w-[20px] group-hover:translate-x-1 transition-transform" />
-            {!isCollapsed && <span className="ml-3 truncate">{t.nav.products}</span>}
-          </button>
-
-          <button
-            onClick={() => onChangeView(AppView.MEETINGS)}
-            className={`group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg active:scale-[0.97] transition-all duration-200 ${currentView === AppView.MEETINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
-            title={isCollapsed ? t.meetings.title : ''}
-          >
-            <Clock className="w-5 h-5 min-w-[20px] group-hover:translate-x-1 transition-transform" />
-            {!isCollapsed && <span className="ml-3 truncate">{t.meetings.title}</span>}
-          </button>
+        <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
+          {[
+            { id: AppView.DASHBOARD, icon: LayoutDashboard, label: t.nav.dashboard },
+            { id: AppView.UPLOAD, icon: UploadCloud, label: t.nav.upload },
+            { id: AppView.CLIENTS, icon: Users, label: t.nav.clients },
+            { id: AppView.PRODUCTS, icon: BookOpen, label: t.nav.products },
+            { id: AppView.MEETINGS, icon: Clock, label: t.meetings.title },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onChangeView(item.id)}
+              className={`
+                group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-xl transition-all duration-300
+                ${currentView === item.id
+                  ? 'bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/10'
+                  : 'text-slate-500 hover:bg-white/5 hover:text-slate-200 border border-transparent'}
+              `}
+              title={isCollapsed ? item.label : ''}
+            >
+              <item.icon className={`w-5 h-5 min-w-[20px] transition-transform duration-500 ${currentView === item.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+              {!isCollapsed && <span className="ml-3 font-medium tracking-wide">{item.label}</span>}
+              {currentView === item.id && !isCollapsed && (
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_white]" />
+              )}
+            </button>
+          ))}
         </nav>
 
-        <div className="p-4 border-t border-slate-800/50">
+        <div className="p-4 border-t border-white/5">
           <button
             onClick={() => onChangeView(AppView.SETTINGS)}
-            className={`group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-lg active:scale-[0.97] transition-all duration-200 ${currentView === AppView.SETTINGS ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-              }`}
+            className={`
+              group w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-3 rounded-xl transition-all duration-300
+              ${currentView === AppView.SETTINGS
+                ? 'bg-white/10 text-white border border-white/10'
+                : 'text-slate-500 hover:bg-white/5 hover:text-slate-200 border border-transparent'}
+            `}
             title={isCollapsed ? t.nav.settings : ''}
           >
-            <Settings className="w-5 h-5 min-w-[20px] group-hover:translate-x-1 transition-transform" />
-            {!isCollapsed && <span className="ml-3 truncate">{t.nav.settings}</span>}
+            <Settings className={`w-5 h-5 min-w-[20px] transition-transform duration-700 ${currentView === AppView.SETTINGS ? 'rotate-90 scale-110' : 'group-hover:rotate-45'}`} />
+            {!isCollapsed && <span className="ml-3 font-medium">{t.nav.settings}</span>}
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Header */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 h-16 flex items-center justify-between px-6 shadow-sm z-10">
+        <header className="bg-slate-900/20 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-6 z-10 transition-colors">
           <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-slate-500 hover:bg-slate-100 rounded-md transition-all active:scale-95"
+              className="p-2 text-slate-400 hover:text-white rounded-md transition-all"
             >
               <Menu className="w-6 h-6" />
             </button>
           </div>
 
-          <div className="flex items-center ml-auto space-x-4">
+          <div className="flex items-center ml-auto space-x-6">
 
             {/* Sync Status Badge */}
             {syncStatus && (
               <div className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all animate-in fade-in zoom-in duration-300
+                flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold border transition-all duration-500
                 ${['Saving', 'Syncing', 'Loading', 'Connecting'].some(s => syncStatus.includes(s)) ? 'animate-pulse' : ''}
                 ${['Saved', 'Synced', 'Loaded'].some(s => syncStatus.includes(s))
-                  ? 'bg-emerald-50/80 backdrop-blur-sm text-emerald-700 border-emerald-200/50'
+                  ? 'bg-white/5 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(52,211,153,0.1)]'
                   : ['Error', 'Auth'].some(s => syncStatus.includes(s))
-                    ? 'bg-red-50/80 backdrop-blur-sm text-red-700 border-red-200/50'
-                    : ['Not Connected'].some(s => syncStatus.includes(s))
-                      ? 'bg-slate-100/80 backdrop-blur-sm text-slate-500 border-slate-200/50'
-                      : 'bg-blue-50/80 backdrop-blur-sm text-blue-700 border-blue-200/50'
+                    ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                    : 'bg-white/5 text-slate-400 border-white/5'
                 }
               `}>
                 {['Saving', 'Syncing', 'Loading', 'Connecting'].some(s => syncStatus.includes(s)) && (
-                  <div className="w-2 h-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                )}
-                {['Saved', 'Synced', 'Loaded'].some(s => syncStatus.includes(s)) && (
-                  <span className="text-emerald-500 animate-in zoom-in spin-in-3 duration-300">✓</span>
-                )}
-                {['Not Connected'].some(s => syncStatus.includes(s)) && (
-                  <div className="w-2 h-2 rounded-full bg-slate-400" />
+                  <div className="w-1.5 h-1.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
                 )}
                 {syncStatus}
               </div>
@@ -163,9 +160,9 @@ export const Layout: React.FC<LayoutProps> = ({
             {/* Language Switcher */}
             <button
               onClick={onToggleLanguage}
-              className="flex items-center space-x-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-all active:scale-95 text-sm font-medium"
+              className="flex items-center space-x-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-lg border border-white/10 transition-all font-bold text-xs"
             >
-              <Languages className="w-4 h-4" />
+              <Languages className="w-3.5 h-3.5" />
               <span>{language === 'en' ? 'EN' : '中'}</span>
             </button>
 
@@ -173,8 +170,8 @@ export const Layout: React.FC<LayoutProps> = ({
         </header>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-auto p-6 md:p-8">
-          <div className="max-w-7xl mx-auto">
+        <div className="flex-1 overflow-auto p-4 md:p-8 relative">
+          <div className="max-w-7xl mx-auto pb-12">
             {children}
           </div>
         </div>
