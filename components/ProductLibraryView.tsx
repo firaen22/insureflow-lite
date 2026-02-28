@@ -120,7 +120,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
   const getTypeColor = (type: Product['type']) => {
     switch (type) {
       case 'Medical': return 'bg-rose-50 text-rose-700 border-rose-100';
-      case 'Life': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+      case 'Life': return 'bg-blue-500/100/10 text-blue-400 border-blue-500/20';
       case 'Auto': return 'bg-white/[0.05] text-slate-200 border-white/10';
       case 'Property': return 'bg-orange-50 text-orange-700 border-orange-100';
       case 'Critical Illness': return 'bg-purple-50 text-purple-700 border-purple-100';

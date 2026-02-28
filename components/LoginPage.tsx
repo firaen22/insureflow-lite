@@ -9,7 +9,7 @@ export const LoginPage: React.FC = () => {
             <div className="hidden lg:flex w-1/2 bg-slate-900 relative overflow-hidden flex-col justify-between p-12 text-white">
                 {/* Background Patterns */}
                 <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                    <div className="absolute top-[-20%] left-[-20%] w-[800px] h-[800px] rounded-full bg-blue-500/100 blur-[120px]"></div>
+                    <div className="absolute top-[-20%] left-[-20%] w-[800px] h-[800px] rounded-full bg-blue-500/100/100 blur-[120px]"></div>
                     <div className="absolute bottom-[-20%] right-[-20%] w-[600px] h-[600px] rounded-full bg-indigo-500 blur-[100px]"></div>
                 </div>
 
@@ -42,7 +42,7 @@ export const LoginPage: React.FC = () => {
                             <span className="text-slate-200">AI-Powered Policy Analysis</span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="bg-blue-500/100/20 p-1 rounded-full">
+                            <div className="bg-blue-500/100/100/20 p-1 rounded-full">
                                 <CheckCircle className="w-5 h-5 text-blue-400" />
                             </div>
                             <span className="text-slate-200">Seamless Google Sheets Sync</span>

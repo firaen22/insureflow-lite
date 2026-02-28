@@ -513,7 +513,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <div className="flex flex-col md:flex-row gap-4">
                     <button
                         onClick={handleExportData}
-                        className="px-4 py-3 bg-blue-500/10 hover:bg-blue-100 text-blue-400 rounded-lg font-medium transition-colors flex items-center gap-2 justify-center"
+                        className="px-4 py-3 bg-blue-500/100/10 hover:bg-blue-100 text-blue-400 rounded-lg font-medium transition-colors flex items-center gap-2 justify-center"
                     >
                         <Download className="w-5 h-5" />
                         {t.exportData}

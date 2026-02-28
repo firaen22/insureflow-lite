@@ -90,7 +90,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                 ) : (
                                     <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, 'HKD') : '-'}</span>
                                 )}
-                                {riderPlanText && <span className="text-[8px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-1 rounded mt-0.5 whitespace-nowrap">{riderPlanText}</span>}
+                                {riderPlanText && <span className="text-[8px] bg-blue-500/100/10 text-blue-400 border border-blue-500/30 px-1 rounded mt-0.5 whitespace-nowrap">{riderPlanText}</span>}
                             </div>
                         );
                     }
@@ -111,7 +111,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             ) : (
                                 <span className="text-blue-600 font-medium">{policy.sumInsured ? formatCurrency(policy.sumInsured, policy.currency) : '-'}</span>
                             )}
-                            {planText && <span className="text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/30 px-1 py-0.5 rounded mt-0.5 whitespace-nowrap">{planText}</span>}
+                            {planText && <span className="text-[9px] bg-blue-500/100/10 text-blue-400 border border-blue-500/30 px-1 py-0.5 rounded mt-0.5 whitespace-nowrap">{planText}</span>}
                         </div>
                     );
                 }

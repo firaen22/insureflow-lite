@@ -596,7 +596,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
 
                   {/* Medical Plan Type Specifics */}
                   {activeItem.data.type === 'Medical' && (
-                    <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-500/20 grid grid-cols-2 gap-3">
+                    <div className="bg-blue-500/100/10 p-3 rounded-lg border border-blue-500/20 grid grid-cols-2 gap-3">
                       <div className="col-span-2">
                         <label className="block text-xs font-semibold text-blue-400 uppercase mb-1">Medical Plan Type</label>
                         <select
@@ -627,7 +627,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       {(products.find(p => p.name === activeItem.data.planName)?.annualCoverageLimit || products.find(p => p.name === activeItem.data.planName)?.wholeLifeCoverageLimit) ? (
                         <div className="col-span-2 bg-white/5 p-2.5 rounded border border-blue-500/20 mt-1 flex justify-between items-center">
                           <div className="text-[10px] text-blue-500 font-semibold uppercase tracking-wider flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500/100"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500/100/100"></span>
                             Library Limits Mapped
                           </div>
                           <div className="text-xs text-blue-900 font-medium text-right flex gap-3">
@@ -1062,7 +1062,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           {(products.find(p => p.name === rider.name)?.annualCoverageLimit || products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit) ? (
                             <div className="bg-white/5 p-2 rounded border border-blue-500/20 flex justify-between items-center mt-1">
                               <div className="text-[9px] text-blue-500 font-semibold uppercase tracking-wider flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500/100"></span> Library Limits Mapped
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500/100/100"></span> Library Limits Mapped
                               </div>
                               <div className="text-[10px] text-blue-900 font-medium text-right flex gap-2">
                                 {products.find(p => p.name === rider.name)?.annualCoverageLimit && <span>Ann: ${products.find(p => p.name === rider.name)?.annualCoverageLimit?.toLocaleString()}</span>}
