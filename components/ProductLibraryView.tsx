@@ -190,7 +190,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
         <div className="flex gap-2">
           <button
             onClick={handleScanDuplicates}
-            className="px-4 py-2 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] border border-brand-200 bg-white/10 rounded-lg hover:bg-brand-100 transition-colors flex items-center space-x-2"
+            className="px-4 py-2 text-white border border-brand-200 bg-white/10 rounded-lg hover:bg-brand-100 transition-colors flex items-center space-x-2"
           >
             <AlertTriangle className="w-4 h-4" />
             <span>Standardize Library</span>
@@ -243,7 +243,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                     type="checkbox"
                     checked={selectedProductNames.length === filteredProducts.length && filteredProducts.length > 0}
                     onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="rounded border-white/20 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] focus:ring-brand-500"
+                    className="rounded border-white/20 text-white focus:ring-brand-500"
                   />
                 </th>
                 <th className="px-6 py-4 w-1/3">{t.table.name}</th>
@@ -283,16 +283,16 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                           type="checkbox"
                           checked={selectedProductNames.includes(product.name)}
                           onChange={() => handleSelectProduct(product.name)}
-                          className="rounded border-white/20 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] focus:ring-brand-500"
+                          className="rounded border-white/20 text-white focus:ring-brand-500"
                         />
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-medium text-white group-hover:text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-colors">{product.name}</div>
+                        <div className="font-medium text-white group-hover:text-white transition-colors">{product.name}</div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center text-slate-300">
                           {product.provider.toLowerCase() === 'aia' && <Shield className="w-3.5 h-3.5 mr-2 text-rose-600" />}
-                          {product.provider.toLowerCase() === 'prudential' && <Shield className="w-3.5 h-3.5 mr-2 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />}
+                          {product.provider.toLowerCase() === 'prudential' && <Shield className="w-3.5 h-3.5 mr-2 text-white" />}
                           {product.provider.toLowerCase() === 'manulife' && <Shield className="w-3.5 h-3.5 mr-2 text-emerald-600" />}
                           {product.provider.toLowerCase() === 'sun life' && <Shield className="w-3.5 h-3.5 mr-2 text-amber-500" />}
                           {product.provider.toLowerCase() === 'fwd' && <Shield className="w-3.5 h-3.5 mr-2 text-orange-500" />}
@@ -325,7 +325,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                       <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => handleEditClick(product)}
-                          className="text-slate-400 hover:text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-colors p-1"
+                          className="text-slate-400 hover:text-white transition-colors p-1"
                           title="Edit Product"
                         >
                           <Pencil className="w-4 h-4" />
@@ -346,7 +346,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
           <div className="bg-white/5 backdrop-blur-xl rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="p-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
               <h3 className="font-bold text-white flex items-center gap-2">
-                <Layers className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                <Layers className="w-5 h-5 text-white" />
                 Merge Selection
               </h3>
               <button
@@ -501,7 +501,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                     type="checkbox"
                     checked={!!editingProduct.isTaxDeductible}
                     onChange={(e) => setEditingProduct({ ...editingProduct, isTaxDeductible: e.target.checked })}
-                    className="rounded border-white/20 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] focus:ring-brand-500 w-4 h-4"
+                    className="rounded border-white/20 text-white focus:ring-brand-500 w-4 h-4"
                   />
                   <span>{t.form.taxDeductible}</span>
                 </label>
@@ -561,7 +561,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                       {tag}
                       <button
                         onClick={() => handleRemoveTag(idx)}
-                        className="ml-1.5 text-brand-400 hover:text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+                        className="ml-1.5 text-brand-400 hover:text-white"
                       >
                         <X className="w-3 h-3" />
                       </button>

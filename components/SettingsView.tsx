@@ -136,7 +136,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                 {userProfile.picture ? (
                                     <img src={userProfile.picture} alt="Profile" className="w-12 h-12 rounded-full" />
                                 ) : (
-                                    <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] font-bold text-xl">
+                                    <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center text-white font-bold text-xl">
                                         {userProfile.name?.charAt(0) || '?'}
                                     </div>
                                 )}
@@ -451,7 +451,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                         newLayout[targetIndex].visible = !newLayout[targetIndex].visible;
                                         onUpdateSettings({ ...settings, pdfLayout: newLayout });
                                     }}
-                                    className={`p-1.5 rounded-md ${col.visible ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] hover:bg-white/10' : 'text-slate-400 hover:bg-white/[0.05]'}`}
+                                    className={`p-1.5 rounded-md ${col.visible ? 'text-white hover:bg-white/10' : 'text-slate-400 hover:bg-white/[0.05]'}`}
                                 >
                                     {col.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                                 </button>

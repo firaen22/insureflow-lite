@@ -259,7 +259,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
         <div className="bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
           <div className="p-8 border-b border-white/5 flex justify-between items-center bg-slate-900/40">
             <h3 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.2em]">
-              <FileText className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+              <FileText className="w-5 h-5 text-white" />
               {t.policiesHeld?.toUpperCase()} ({policies.length})
             </h3>
             <div className="h-1 w-12 bg-white/20 rounded-full" />

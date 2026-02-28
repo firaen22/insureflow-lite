@@ -404,7 +404,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <ListChecks className="w-6 h-6 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+            <ListChecks className="w-6 h-6 text-white" />
             Review & Validate
           </h1>
           <p className="text-slate-400 text-sm">Review {processedFiles.length} extracted policies before saving.</p>
@@ -463,7 +463,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
           <div className="p-4">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-full py-2 border border-dashed border-white/20 text-slate-400 rounded-lg text-xs hover:border-brand-300 hover:text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2 border border-dashed border-white/20 text-slate-400 rounded-lg text-xs hover:border-brand-300 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
             >
               <Plus className="w-3 h-3" />
               Add More
@@ -815,7 +815,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         type="checkbox"
                         checked={activeItem.data.isMultipay || false}
                         onChange={e => handleUpdateCurrentField('isMultipay', e.target.checked)}
-                        className="rounded border-white/20 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] focus:ring-brand-500"
+                        className="rounded border-white/20 text-white focus:ring-brand-500"
                       />
                       <span className="text-sm text-slate-200 font-medium">Multipay Feature (多重保障)</span>
                     </label>
@@ -949,7 +949,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] text-slate-400 mb-1 font-semibold text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">Total Surrender Value</label>
+                    <label className="block text-[10px] text-slate-400 mb-1 font-semibold text-white">Total Surrender Value</label>
                     <div className="relative">
                       <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
                       <input
@@ -969,7 +969,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                     <label className="block text-xs font-semibold text-slate-400 uppercase">Riders / Benefits</label>
                     <button
                       onClick={handleAddRider}
-                      className="text-xs text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] font-medium hover:text-brand-700 flex items-center gap-1"
+                      className="text-xs text-white font-medium hover:text-brand-700 flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" /> Add Rider
                     </button>

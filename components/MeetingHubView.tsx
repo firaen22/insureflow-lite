@@ -44,7 +44,7 @@ export const MeetingHubView: React.FC<MeetingHubViewProps> = ({ clients, onViewC
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                        <Clock className="w-6 h-6 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                        <Clock className="w-6 h-6 text-white" />
                         {t.title}
                     </h1>
                     <p className="text-slate-400 text-sm mt-1">Timeline of all client interactions and reviews</p>
@@ -109,7 +109,7 @@ export const MeetingHubView: React.FC<MeetingHubViewProps> = ({ clients, onViewC
 
                                 <h3
                                     onClick={() => onViewClient(log.clientObj)}
-                                    className="font-bold text-white flex items-center gap-1.5 cursor-pointer hover:text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-colors"
+                                    className="font-bold text-white flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors"
                                 >
                                     <User className="w-4 h-4 text-slate-400" />
                                     {log.clientName}
