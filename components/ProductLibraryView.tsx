@@ -119,14 +119,14 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
 
   const getTypeColor = (type: Product['type']) => {
     switch (type) {
-      case 'Medical': return 'bg-rose-50 text-rose-700 border-rose-100';
-      case 'Life': return 'bg-blue-500/100/10 text-blue-400 border-blue-500/20';
+      case 'Medical': return 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-500/20';
+      case 'Life': return 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-500/20';
       case 'Auto': return 'bg-white dark:bg-white/[0.05] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/10';
-      case 'Property': return 'bg-orange-50 text-orange-700 border-orange-100';
-      case 'Critical Illness': return 'bg-purple-50 text-purple-700 border-purple-100';
-      case 'Savings': return 'bg-emerald-50 text-emerald-700 border-emerald-100';
-      case 'Rider': return 'bg-indigo-50 text-indigo-700 border-indigo-100';
-      default: return 'bg-gray-50 text-gray-700 border-gray-100';
+      case 'Property': return 'bg-orange-50 dark:bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-100 dark:border-orange-100/20';
+      case 'Critical Illness': return 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-100 dark:border-purple-500/20';
+      case 'Savings': return 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-500/20';
+      case 'Rider': return 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-100 dark:border-indigo-500/20';
+      default: return 'bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-400 border-gray-100 dark:border-white/10';
     }
   };
 
@@ -269,7 +269,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
               sortedProviders.map(provider => (
                 <tbody key={provider} className="bg-white/80 dark:bg-white/5 backdrop-blur-xl">
                   {/* Group Header Row */}
-                  <tr className="bg-white dark:bg-white/[0.05]/80 border-t border-b border-slate-200 dark:border-white/10">
+                  <tr className="bg-slate-50 dark:bg-white/[0.03] border-t border-b border-slate-200 dark:border-white/10">
                     <td colSpan={6} className="px-6 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                       {provider} <span className="text-slate-500 dark:text-slate-400 font-medium ml-2">({groupedProducts[provider].length})</span>
                     </td>
