@@ -345,9 +345,24 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                 className="grid bg-[#2d3b5d] text-white text-[10px] font-bold uppercase tracking-wider py-4 px-3"
                                 style={{ gridTemplateColumns }}
                             >
-                                {activeColumns.map(col => (
-                                    <div key={col.id} className={col.id === 'premium' ? 'text-right pr-2' : col.id === 'status' ? 'text-center' : 'text-center'}>
-                                        {t.columns[col.id] || col.labelKey}
+                                {activeColumns.map((col, idx) => (
+                                    <div
+                                        key={col.id}
+                                        className={`relative group flex items-center ${col.id === 'premium_amt' ? 'justify-end pr-2' : 'justify-center'}`}
+                                    >
+                                        <div className="truncate px-1">
+                                            {t.columns[col.id] || col.labelKey}
+                                        </div>
+
+                                        {/* Resize Handle */}
+                                        {idx < activeColumns.length - 1 && onUpdateLayout && (
+                                            <div
+                                                className="absolute top-0 right-0 w-4 h-full cursor-col-resize z-20 group-hover:bg-blue-500/20 active:bg-blue-500/40 transition-colors"
+                                                onMouseDown={(e) => handleResizeStart(e, idx)}
+                                            >
+                                                <div className="absolute right-0 top-1/4 bottom-1/4 w-px bg-white/20"></div>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
