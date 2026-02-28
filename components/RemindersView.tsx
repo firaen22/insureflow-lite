@@ -49,40 +49,40 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
     : reminders;
 
   const getUrgencyColor = (days: number) => {
-    if (days <= 14) return 'bg-red-50 text-red-700 border-red-200'; // Critical
-    if (days <= 30) return 'bg-amber-50 text-amber-700 border-amber-200'; // Warning
-    return 'bg-blue-50 text-blue-700 border-blue-200'; // Info
+    if (days <= 14) return 'bg-red-500/20 text-red-400 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]'; // Critical
+    if (days <= 30) return 'bg-amber-500/20 text-amber-400 border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.2)]'; // Warning
+    return 'bg-blue-500/20 text-blue-400 border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)]'; // Info
   };
 
   const getUrgencyIcon = (days: number) => {
-    if (days <= 14) return <AlertCircle className="w-4 h-4" />;
-    if (days <= 30) return <Clock className="w-4 h-4" />;
-    return <Calendar className="w-4 h-4" />;
+    if (days <= 14) return <AlertCircle className="w-3.5 h-3.5" />;
+    if (days <= 30) return <Clock className="w-3.5 h-3.5" />;
+    return <Calendar className="w-3.5 h-3.5" />;
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <Bell className="w-6 h-6 text-brand-500" />
+          <h1 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.25em] uppercase">
+            <Bell className="w-5 h-5 text-white shadow-[0_0_15px_white]" />
             {t.title}
           </h1>
-          <p className="text-slate-500 text-sm mt-1">{t.subtitle}</p>
+          <p className="text-slate-500 text-[10px] font-bold mt-2 uppercase tracking-wider">{t.subtitle}</p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+        <div className="flex bg-white/5 backdrop-blur-xl rounded-2xl p-1 border border-white/10 shadow-2xl">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${filter === 'all' ? 'bg-slate-100 text-slate-800' : 'text-slate-500 hover:text-slate-700'
+            className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${filter === 'all' ? 'bg-white text-slate-900 shadow-lg scale-105' : 'text-slate-500 hover:text-white'
               }`}
           >
             {t.filterAll}
           </button>
           <button
             onClick={() => setFilter('urgent')}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${filter === 'urgent' ? 'bg-red-50 text-red-700' : 'text-slate-500 hover:text-slate-700'
+            className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${filter === 'urgent' ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] scale-105' : 'text-slate-500 hover:text-red-400'
               }`}
           >
             {t.filterUrgent}
@@ -90,32 +90,32 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
         </div>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {filteredReminders.length > 0 ? (
           filteredReminders.map(reminder => (
-            <div key={reminder.id} className="bg-white rounded-xl border border-slate-200 shadow-sm hover:border-brand-300 transition-colors p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div key={reminder.id} className="group bg-white/[0.03] backdrop-blur-3xl rounded-[2rem] border border-white/5 shadow-2xl hover:bg-white/[0.05] hover:border-white/10 transition-all duration-300 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               {/* Left Section: Days Remaining Indicator */}
-              <div className="flex items-center gap-4">
-                <div className={`flex flex-col items-center justify-center w-16 h-16 rounded-xl border-2 ${getUrgencyColor(reminder.daysRemaining)}`}>
-                  <span className="text-xl font-bold">{reminder.daysRemaining}</span>
-                  <span className="text-[10px] uppercase font-bold tracking-wider">Days</span>
+              <div className="flex items-center gap-6">
+                <div className={`flex flex-col items-center justify-center w-20 h-20 rounded-[1.5rem] border-2 transition-transform group-hover:scale-110 duration-500 ${getUrgencyColor(reminder.daysRemaining)}`}>
+                  <span className="text-2xl font-black">{reminder.daysRemaining}</span>
+                  <span className="text-[9px] uppercase font-black tracking-[0.2em]">Days</span>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-slate-800 text-lg">{reminder.planName}</h3>
-                  <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
-                    <span className="font-medium text-slate-700">{reminder.holderName}</span>
-                    <span>•</span>
+                  <h3 className="font-black text-white text-xl tracking-tight leading-tight group-hover:translate-x-1 transition-transform">{reminder.planName}</h3>
+                  <div className="flex items-center gap-2 text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1.5 mb-2">
+                    <span className="text-slate-400">{reminder.holderName}</span>
+                    <span className="w-1 h-1 bg-white/20 rounded-full"></span>
                     <span className="font-mono">{reminder.policyNumber}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${getUrgencyColor(reminder.daysRemaining)}`}>
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-[9px] font-black border uppercase tracking-tighter ${getUrgencyColor(reminder.daysRemaining)}`}>
                       {getUrgencyIcon(reminder.daysRemaining)}
-                      <span className="ml-1">
+                      <span className="ml-1.5">
                         {reminder.daysRemaining <= 30 ? t.urgent : t.upcoming}
                       </span>
                     </span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.1em]">
                       {t.anniversary}: {reminder.nextAnniversary.toLocaleDateString()}
                     </span>
                   </div>
@@ -123,21 +123,21 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
               </div>
 
               {/* Right Section: Actions */}
-              <div className="flex items-center gap-3 w-full md:w-auto pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
-                <div className="flex flex-col gap-1 mr-4 text-right hidden md:block">
-                  <span className="text-xs text-slate-400 uppercase font-bold">{t.policyDetails}</span>
-                  <span className="text-sm font-medium text-slate-700">${reminder.premiumAmount.toLocaleString()} / {reminder.paymentMode}</span>
+              <div className="flex items-center gap-6 w-full md:w-auto pt-6 md:pt-0 border-t md:border-t-0 border-white/5">
+                <div className="flex flex-col gap-1 mr-4 text-right hidden lg:block">
+                  <span className="text-[9px] text-slate-600 uppercase font-black tracking-widest leading-none">{t.policyDetails}</span>
+                  <span className="text-sm font-black text-white">${reminder.premiumAmount.toLocaleString()} <span className="text-[10px] text-slate-500">/ {reminder.paymentMode}</span></span>
                 </div>
 
                 {reminder.client && (
                   <div className="flex gap-2">
                     {reminder.client.email && (
-                      <a href={`mailto:${reminder.client.email}`} className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors" title={reminder.client.email}>
+                      <a href={`mailto:${reminder.client.email}`} className="p-3 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 rounded-2xl border border-white/5 transition-all active:scale-95" title={reminder.client.email}>
                         <Mail className="w-5 h-5" />
                       </a>
                     )}
                     {reminder.client.phone && (
-                      <a href={`tel:${reminder.client.phone}`} className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors" title={reminder.client.phone}>
+                      <a href={`tel:${reminder.client.phone}`} className="p-3 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 rounded-2xl border border-white/5 transition-all active:scale-95" title={reminder.client.phone}>
                         <Phone className="w-5 h-5" />
                       </a>
                     )}
@@ -146,7 +146,7 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
 
                 <button
                   onClick={onUploadRenewal}
-                  className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg shadow-sm flex items-center gap-2 transition-colors"
+                  className="flex-1 md:flex-none px-6 py-4 bg-white text-slate-900 text-[11px] font-black uppercase tracking-[0.2em] rounded-[1.25rem] shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:bg-slate-200 transition-all flex items-center justify-center gap-2 active:scale-95"
                 >
                   <UploadCloud className="w-4 h-4" />
                   {t.uploadRenewal}
@@ -155,9 +155,9 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ t, policies, clien
             </div>
           ))
         ) : (
-          <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-300">
-            <Bell className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 font-medium">{t.noReminders}</p>
+          <div className="text-center py-24 bg-white/[0.02] rounded-[3rem] border border-dashed border-white/5 shadow-inner">
+            <Bell className="w-16 h-16 text-white/5 mx-auto mb-6" />
+            <p className="text-[10px] text-slate-600 font-black uppercase tracking-[0.3em]">{t.noReminders}</p>
           </div>
         )}
       </div>
