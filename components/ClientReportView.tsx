@@ -142,22 +142,31 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
     const [startX, setStartX] = useState(0);
     const [startWidths, setStartWidths] = useState<{ left: number, right: number } | null>(null);
 
-    const handleResizeStart = (e: React.MouseEvent, index: number) => {
+    const handleResizeStart = (e: React.MouseEvent | React.TouchEvent, index: number) => {
         if (!onUpdateLayout) return;
-        e.preventDefault();
+
+        // Don't call preventDefault on touch events as it can block scrolling if not careful, 
+        // but for resizing handles we want to block native touch behavior.
+        if ('preventDefault' in e) e.preventDefault();
+
+        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
         const leftCol = activeColumns[index];
         const rightCol = activeColumns[index + 1];
+
         setResizingIndex(index);
-        setStartX(e.clientX);
+        setStartX(clientX);
         setStartWidths({ left: leftCol.width, right: rightCol.width });
     };
 
     useEffect(() => {
         if (resizingIndex === null || !startWidths || !onUpdateLayout) return;
 
-        const handleMouseMove = (e: MouseEvent) => {
+        const handleMove = (e: MouseEvent | TouchEvent) => {
             if (!reportRef.current) return;
-            const deltaX = e.clientX - startX;
+
+            const clientX = 'touches' in e ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX;
+            const deltaX = clientX - startX;
+
             // The container is scaled down to 0.9, so we adjust deltaX by scaling factor
             const reportWidth = reportRef.current.getBoundingClientRect().width / 0.9;
             const deltaPercent = (deltaX / reportWidth) * 100;
@@ -187,15 +196,20 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
             }
         };
 
-        const handleMouseUp = () => {
+        const handleEnd = () => {
             setResizingIndex(null);
         };
 
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        window.addEventListener('touchmove', handleMove, { passive: false });
+        window.addEventListener('touchend', handleEnd);
+
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleEnd);
+            window.removeEventListener('touchmove', handleMove);
+            window.removeEventListener('touchend', handleEnd);
         };
     }, [resizingIndex, startX, startWidths, pdfLayout, onUpdateLayout, activeColumns]);
 
@@ -357,8 +371,9 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         {/* Resize Handle */}
                                         {idx < activeColumns.length - 1 && onUpdateLayout && (
                                             <div
-                                                className="absolute top-0 right-0 w-4 h-full cursor-col-resize z-20 group-hover:bg-blue-500/20 active:bg-blue-500/40 transition-colors"
+                                                className="absolute top-0 right-0 w-6 h-full cursor-col-resize z-20 group-hover:bg-blue-500/20 active:bg-blue-500/40 transition-colors touch-none"
                                                 onMouseDown={(e) => handleResizeStart(e, idx)}
+                                                onTouchStart={(e) => handleResizeStart(e, idx)}
                                             >
                                                 <div className="absolute right-0 top-1/4 bottom-1/4 w-px bg-white/20"></div>
                                             </div>
