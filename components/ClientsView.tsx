@@ -452,11 +452,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
           <div className="flex flex-wrap gap-2 items-center">
             <button
               onClick={() => setActiveTagFilter(null)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                activeTagFilter === null
-                  ? "bg-brand-600 text-slate-900 dark:text-white shadow-sm shadow-blue-500/20"
-                  : "bg-white dark:bg-white/[0.05] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:bg-white/10"
-              }`}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${activeTagFilter === null
+                ? "bg-brand-600 text-slate-900 dark:text-white shadow-sm shadow-blue-500/20"
+                : "bg-white dark:bg-white/[0.05] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:bg-white/10"
+                }`}
             >
               {t.all}
             </button>
@@ -511,21 +510,19 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                     onClick={() =>
                       setActiveTagFilter(activeTagFilter === tag ? null : tag)
                     }
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all pr-7 ${
-                      activeTagFilter === tag
-                        ? "bg-brand-600 text-slate-900 dark:text-white border-brand-600 shadow-sm"
-                        : getTagStyle(tag) + " hover:opacity-80"
-                    }`}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all pr-7 ${activeTagFilter === tag
+                      ? "bg-brand-600 text-slate-900 dark:text-white border-brand-600 shadow-sm"
+                      : getTagStyle(tag) + " hover:opacity-80"
+                      }`}
                   >
                     {tag}
                   </button>
                   <button
                     onClick={(e) => handleStartEditing(tag, e)}
-                    className={`absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-black/10 transition-all opacity-0 group-hover:opacity-100 ${
-                      activeTagFilter === tag
-                        ? "text-slate-900 dark:text-white/80 hover:text-slate-900 dark:text-white"
-                        : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white"
-                    }`}
+                    className={`absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-black/10 transition-all opacity-0 group-hover:opacity-100 ${activeTagFilter === tag
+                      ? "text-slate-900 dark:text-white/80 hover:text-slate-900 dark:text-white"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white"
+                      }`}
                     title="Edit tag"
                   >
                     <Pencil className="w-3 h-3" />
@@ -683,7 +680,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300 whitespace-nowrap">
                     <div className="flex items-center">
                       <Calendar className="w-3 h-3 mr-2 text-brand-400" />
                       {new Date(client.birthday).toLocaleDateString("en-US", {
@@ -692,22 +689,20 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       })}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300 whitespace-nowrap">
                     <span className="font-medium">
-                      {
-                        policies.filter((p) => p.holderName === client.name)
-                          .length
-                      }
-                    </span>{" "}
-                    Policies
+                      {(() => {
+                        const count = policies.filter((p) => p.holderName === client.name).length;
+                        return `${count} ${count === 1 ? 'Policy' : 'Policies'}`;
+                      })()}
+                    </span>
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        client.status === "Active"
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                          : "bg-white dark:bg-white/[0.05] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10"
-                      }`}
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.status === "Active"
+                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                        : "bg-white dark:bg-white/[0.05] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10"
+                        }`}
                     >
                       {client.status}
                     </span>
@@ -765,7 +760,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                                   if (
                                     confirm(
                                       t.table.deleteConfirm ||
-                                        "Are you sure you want to delete this client and all their policies?",
+                                      "Are you sure you want to delete this client and all their policies?",
                                     )
                                   ) {
                                     onDeleteClient(client.id);
@@ -1253,10 +1248,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   ))}
                   {(!newPolicyForm.riders ||
                     newPolicyForm.riders.length === 0) && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400 italic text-center py-2">
-                      No riders added.
-                    </p>
-                  )}
+                      <p className="text-xs text-slate-500 dark:text-slate-400 italic text-center py-2">
+                        No riders added.
+                      </p>
+                    )}
                 </div>
               </div>
             </div>
