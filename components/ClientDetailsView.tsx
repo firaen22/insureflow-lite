@@ -193,7 +193,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
         {/* Left Column: Client Info & Summary */}
         <Card3D className="h-full">
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full p-8">
             <h3 className="text-white text-xs font-black uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
               <Shield className="w-4 h-4" /> {t.summary?.title || 'Protection Summary'}
             </h3>
@@ -222,7 +222,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
 
         {/* Contact Info Card */}
         <Card3D className="h-full">
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full p-8">
             <h3 className="text-white text-xs font-black uppercase tracking-[0.2em] mb-8">{t.contactInfo?.toUpperCase()}</h3>
 
             <div className="space-y-6">

@@ -94,7 +94,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
       {/* Stats Cards in 3D */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <Card3D className="h-full">
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full p-8">
             <div className="flex items-center justify-between mb-8">
               <div className="p-3 bg-white/10 rounded-2xl border border-white/10 shadow-inner">
                 <Users className="w-6 h-6 text-white" />
@@ -114,7 +114,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
         </Card3D>
 
         <Card3D className="h-full">
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full p-8">
             <div className="flex items-center justify-between mb-8">
               <div className="p-3 bg-white/10 rounded-2xl border border-white/10 shadow-inner">
                 <FileText className="w-6 h-6 text-white" />
@@ -134,7 +134,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
         </Card3D>
 
         <Card3D className="h-full">
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full p-8">
             <div className="flex items-center justify-between mb-6">
               <div className="p-3 bg-white/10 rounded-2xl border border-white/10 shadow-inner">
                 <DollarSign className="w-6 h-6 text-white" />
@@ -225,7 +225,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
 
           {/* Attention Section */}
           <Card3D depth={20} className="w-full">
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full p-8">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-black text-white flex items-center gap-3">
                   <AlertCircle className="w-5 h-5 text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
@@ -316,7 +316,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
         {/* Right Column: Birthdays */}
         <div className="space-y-8">
           <Card3D depth={30} className="h-full min-h-[500px]">
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full p-8">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-lg font-black text-white flex items-center gap-3">
                   <Gift className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
