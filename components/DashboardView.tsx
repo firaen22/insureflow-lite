@@ -267,10 +267,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
             </div>
           </Card3D>
 
-          <div className="bg-white dark:bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-100 dark:border-white/5 overflow-hidden shadow-sm dark:shadow-sm dark:shadow-2xl">
+          <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-white/5 overflow-hidden shadow-sm dark:shadow-2xl">
             <div className="p-6 border-b border-slate-100 dark:border-slate-100 dark:border-white/5 flex items-center justify-between">
               <h3 className="text-sm font-black text-slate-900 dark:text-white tracking-widest">{t.recentUpdates.toUpperCase()}</h3>
-              <div className="h-1 w-8 bg-brand-500 dark:bg-slate-200 dark:bg-white/20 rounded-full" />
+              <div className="h-1 w-8 bg-brand-500 dark:bg-white/20 rounded-full" />
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
@@ -282,9 +282,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ t, remindersT, cli
                     <th className="px-6 py-4 text-right">{t.table.status}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-200 dark:divide-white/5">
+                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                   {policies.slice(0, 8).map((policy) => (
-                    <tr key={policy.id} className="hover:bg-slate-50 dark:hover:bg-white dark:bg-white/[0.03] transition-colors group">
+                    <tr key={policy.id} className="hover:bg-slate-50 dark:hover:bg-white/5 dark:bg-white/[0.03] transition-colors group">
                       <td className="px-6 py-4">
                         <p className="font-black text-slate-900 dark:text-white group-hover:translate-x-1 transition-transform">{policy.holderName}</p>
                         <p className="text-[10px] text-slate-500 font-mono mt-0.5">{policy.policyNumber}</p>
