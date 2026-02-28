@@ -439,7 +439,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
             placeholder={t.searchPlaceholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
           />
         </div>
 
@@ -825,7 +825,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   onChange={(e) =>
                     setNewClientForm({ ...newClientForm, name: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   placeholder="e.g. John Doe"
                 />
               </div>
@@ -842,7 +842,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       email: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   placeholder="john@example.com"
                 />
               </div>
@@ -860,7 +860,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         birthday: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -876,7 +876,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         phone: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     placeholder="+1 234..."
                   />
                 </div>
@@ -935,7 +935,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         setNewClientTagInput("");
                       }
                     }}
-                    className="flex-1 px-3 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-500 dark:placeholder-slate-400"
+                    className="flex-1 px-3 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-500 dark:placeholder-slate-400 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     placeholder="Or type custom tag..."
                   />
                   <button
@@ -1049,7 +1049,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                       type: product ? product.type : prev.type,
                     }));
                   }}
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   placeholder="Select or type plan name..."
                   autoFocus
                 />
@@ -1076,7 +1076,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         policyNumber: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     placeholder="POL-..."
                   />
                 </div>
@@ -1121,7 +1121,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         premiumAmount: Number(e.target.value),
                       })
                     }
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   />
                 </div>
 
@@ -1138,7 +1138,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                         policyAnniversaryDate: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     placeholder="DD/MM"
                   />
                 </div>
@@ -1204,7 +1204,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                           onChange={(e) =>
                             handleUpdateRiderInForm(idx, "name", e.target.value)
                           }
-                          className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl"
+                          className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl text-slate-900 dark:text-white"
                         />
                         <div className="flex gap-2">
                           <div className="flex-1">
@@ -1219,7 +1219,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                                   parseFloat(e.target.value),
                                 )
                               }
-                              className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl"
+                              className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl text-slate-900 dark:text-white"
                             />
                           </div>
                           <div className="flex-1">
@@ -1232,7 +1232,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                                   e.target.value,
                                 )
                               }
-                              className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl"
+                              className="w-full px-2 py-1 text-sm border border-slate-300 dark:border-white/20 rounded focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white/80 dark:bg-white/5 backdrop-blur-xl text-slate-900 dark:text-white"
                             >
                               <option value="Medical">Medical</option>
                               <option value="Accident">Accident</option>
