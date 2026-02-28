@@ -13,6 +13,7 @@ import {
   calculateTotalCISumInsuredHKD,
   calculateTotalLifeSumInsuredHKD
 } from '../utils/policyCalculations';
+import { Card3D } from './ui/Card3D';
 
 interface ClientDetailsViewProps {
   client: Client;
@@ -137,230 +138,199 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
   const totalLifeSumInsuredHKD = calculateTotalLifeSumInsuredHKD(policies, client.name);
 
   return (
-    <div className="space-y-6 print:space-y-4">
+    <div className="space-y-10 print:space-y-4">
       <style>{`
         @media print {
           @page { margin: 1cm; size: A4; }
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; }
           .no-print { display: none !important; }
           .print-break-inside-avoid { break-inside: avoid; }
         }
       `}</style>
+
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex items-center gap-6">
           <button
             onClick={onBack}
-            className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors print:hidden"
+            className="p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white transition-all active:scale-95 print:hidden group"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-              {client.name}
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-black text-white tracking-tight">
+                {client.name.toUpperCase()}
+              </h1>
               <button
                 onClick={() => setEditingClient(client)}
-                className="p-1 hover:bg-slate-100 rounded-full text-slate-400 hover:text-brand-600 transition-colors"
+                className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white border border-white/5 transition-all"
                 title="Edit Client Details"
               >
                 <Edit className="w-4 h-4" />
               </button>
-            </h1>
+            </div>
+            <div className="flex gap-2 mt-2">
+              <div className="h-1 w-12 bg-white rounded-full shadow-[0_0_15px_white]" />
+              <div className="h-1 w-4 bg-white/20 rounded-full" />
+            </div>
           </div>
         </div>
 
-        <div className="flex gap-2 print:hidden">
-
-
+        <div className="flex gap-3 print:hidden">
           {onGenerateReport && (
             <button
               onClick={onGenerateReport}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors shadow-sm text-sm font-medium"
+              className="flex items-center gap-2 px-6 py-3 bg-white text-slate-900 rounded-2xl hover:bg-slate-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] text-sm font-black uppercase tracking-widest active:scale-95"
             >
               <FileText className="w-4 h-4" />
-              <span>PDF Report</span>
+              <span>Generate PDF</span>
             </button>
           )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
         {/* Left Column: Client Info & Summary */}
-        {/* Summary Totals Card */}
-        <div className="bg-slate-900 rounded-xl shadow-md p-6 text-white print:bg-slate-900 print:text-white">
-          <h3 className="text-brand-100 text-sm font-medium mb-4 flex items-center gap-2">
-            <Shield className="w-4 h-4" /> {t.summary?.title || 'Protection Summary (HKD)'}
-          </h3>
+        <Card3D className="h-full">
+          <div className="flex flex-col h-full">
+            <h3 className="text-white text-xs font-black uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+              <Shield className="w-4 h-4" /> {t.summary?.title || 'Protection Summary'}
+            </h3>
 
-          <div className="space-y-4">
-            <div>
-              <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">{t.summary?.totalPremium || 'Total Annual Premium'}</p>
-              <p className="text-2xl font-bold">${totalAnnualPremiumHKD.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-brand-500/30">
+            <div className="space-y-8">
               <div>
-                <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">{t.summary?.life || 'Life Coverage'}</p>
-                <p className="text-lg font-semibold">${totalLifeSumInsuredHKD.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{t.summary?.totalPremium || 'Total Annual Premium'}</p>
+                <p className="text-4xl font-black text-white hover:translate-x-1 transition-transform cursor-default">
+                  HKD ${(totalAnnualPremiumHKD / 1000).toFixed(1)}K
+                </p>
               </div>
-              <div>
-                <p className="text-xs text-brand-200 uppercase tracking-wider mb-1">{t.summary?.ci || 'Critical Illness'}</p>
-                <p className="text-lg font-semibold">${totalCISumInsuredHKD.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+
+              <div className="grid grid-cols-2 gap-6 pt-8 border-t border-white/5">
+                <div>
+                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{t.summary?.life || 'Life Coverage'}</p>
+                  <p className="text-2xl font-black text-white">${(totalLifeSumInsuredHKD / 1000000).toFixed(1)}M</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-2">{t.summary?.ci || 'Critical Illness'}</p>
+                  <p className="text-2xl font-black text-white">${(totalCISumInsuredHKD / 1000000).toFixed(1)}M</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Card3D>
 
         {/* Contact Info Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">{t.contactInfo}</h3>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
-                <Mail className="w-4 h-4 text-slate-400" />
+        <Card3D className="h-full">
+          <div className="flex flex-col h-full">
+            <h3 className="text-white text-xs font-black uppercase tracking-[0.2em] mb-8">{t.contactInfo?.toUpperCase()}</h3>
+
+            <div className="space-y-6">
+              {[
+                { icon: Mail, label: t.email, value: client.email },
+                { icon: Phone, label: t.phone, value: client.phone },
+                { icon: Calendar, label: t.birthday, value: client.birthday }
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-4 group/item">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 group-hover/item:bg-white/10 group-hover/item:scale-110 transition-all">
+                    <item.icon className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">{item.label}</p>
+                    <p className="text-sm text-white font-bold">{item.value || '-'}</p>
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex flex-wrap gap-2 pt-6 border-t border-white/5">
+                {client.tags.length > 0 ? client.tags.map(tag => (
+                  <span key={tag} className="bg-white/5 text-slate-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-white/10 flex items-center gap-1 hover:bg-white/10 hover:text-white transition-colors">
+                    <Tag className="w-3 h-3" /> {tag}
+                  </span>
+                )) : <span className="text-[10px] text-slate-600 font-black uppercase py-1">No metadata tags</span>}
               </div>
-              <div>
-                <p className="text-xs text-slate-400 font-medium uppercase">{t.email}</p>
-                <p className="text-sm text-slate-700">{client.email || '-'}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
-                <Phone className="w-4 h-4 text-slate-400" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-400 font-medium uppercase">{t.phone}</p>
-                <p className="text-sm text-slate-700">{client.phone || '-'}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
-                <Calendar className="w-4 h-4 text-slate-400" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-400 font-medium uppercase">{t.birthday}</p>
-                <p className="text-sm text-slate-700">{client.birthday}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-              {client.tags.length > 0 ? client.tags.map(tag => (
-                <span key={tag} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md border border-slate-200 flex items-center gap-1">
-                  <Tag className="w-3 h-3" /> {tag}
-                </span>
-              )) : <span className="text-xs text-slate-400 italic">No tags</span>}
             </div>
           </div>
-        </div>
+        </Card3D>
       </div>
 
       {/* Policies Table */}
-      <div className="space-y-6">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-            <h3 className="font-bold text-slate-800 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-slate-500" />
-              {t.policiesHeld} ({policies.length})
+      <div className="space-y-8">
+        <div className="bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
+          <div className="p-8 border-b border-white/5 flex justify-between items-center bg-slate-900/40">
+            <h3 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.2em]">
+              <FileText className="w-5 h-5 text-white shadow-[0_0_10px_white]" />
+              {t.policiesHeld?.toUpperCase()} ({policies.length})
             </h3>
+            <div className="h-1 w-12 bg-white/20 rounded-full" />
           </div>
 
           <div className="overflow-x-auto print:overflow-visible">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
-                <tr>
-                  <th className="px-4 py-3 min-w-[100px]">{t.policyCard.type}</th>
-                  <th className="px-4 py-3 min-w-[120px]">
-                    <div className="flex flex-col">
-                      <span>{t.policyCard.effectiveDate}</span>
-                      <span className="text-[10px] font-normal text-slate-400 uppercase">{t.policyCard.anniversary}</span>
-                    </div>
-                  </th>
-                  <th className="px-4 py-3 min-w-[150px]">{t.policyCard.basePlan}</th>
-                  <th className="px-4 py-3">{t.policyCard.sumInsured}</th>
-                  <th className="px-4 py-3 text-right">{t.policyCard.premium}</th>
-                  <th className="px-4 py-3 min-w-[150px]">{t.protectionMatureDate || 'Protection Maturity'} / {t.premiumMatureDate || 'Premium Maturity'}</th>
-                  <th className="px-4 py-3 text-center">{t.policyCard.status}</th>
-                  <th className="px-4 py-3 text-right print:hidden"></th>
+            <table className="w-full text-xs text-left">
+              <thead>
+                <tr className="text-slate-500 font-black uppercase tracking-widest border-b border-white/5">
+                  <th className="px-6 py-5 min-w-[100px]">{t.policyCard.type}</th>
+                  <th className="px-6 py-5 min-w-[120px]">{t.policyCard.effectiveDate}</th>
+                  <th className="px-6 py-5 min-w-[200px]">{t.policyCard.basePlan}</th>
+                  <th className="px-6 py-5">{t.policyCard.sumInsured}</th>
+                  <th className="px-6 py-5 text-right">{t.policyCard.premium}</th>
+                  <th className="px-6 py-5 text-center">{t.policyCard.status}</th>
+                  <th className="px-6 py-5 text-right print:hidden"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/5">
                 {policies.length > 0 ? policies.map(policy => (
                   <React.Fragment key={policy.id}>
-                    <tr className="hover:bg-slate-50/80 group">
-                      <td className="px-4 py-4 align-top">
-                        <div className="flex flex-col gap-1 items-start">
-                          <span className={`px-2 py-1 rounded text-xs font-medium border ${policy.type === 'Life' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                            policy.type === 'Critical Illness' ? 'bg-red-50 text-red-700 border-red-100' :
-                              policy.type === 'Medical' ? 'bg-green-50 text-green-700 border-green-100' :
-                                policy.type === 'Savings' ? 'bg-amber-50 text-amber-700 border-amber-100' :
-                                  'bg-slate-50 text-slate-700 border-slate-200'
-                            }`}>
-                            {policy.type}
-                          </span>
+                    <tr className="hover:bg-white/[0.03] transition-colors group">
+                      <td className="px-6 py-6 align-top">
+                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-tighter border ${policy.type === 'Life' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                            policy.type === 'Critical Illness' ? 'bg-red-500/10 text-red-100 border-red-500/20' :
+                              policy.type === 'Medical' ? 'bg-emerald-500/10 text-emerald-100 border-emerald-500/20' :
+                                'bg-white/5 text-white/50 border-white/10'
+                          }`}>
+                          {policy.type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-6 align-top">
+                        <div className="flex flex-col text-[10px] font-black text-slate-500">
+                          <span className="text-white mb-1 uppercase tracking-tighter">Eff: {policy.effectiveDate || '-'}</span>
+                          <span className="uppercase tracking-widest font-bold">Ann: {policy.policyAnniversaryDate}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-4 align-top whitespace-nowrap">
-                        <div className="flex flex-col text-xs text-slate-600">
-                          {policy.effectiveDate && (
-                            <span className="font-medium text-slate-700">Eff: {policy.effectiveDate}</span>
-                          )}
-                          <span className="text-slate-400">Ann: {policy.policyAnniversaryDate}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 align-top">
-                        <div className="font-bold text-slate-800 flex items-center flex-wrap gap-2">
+                      <td className="px-6 py-6 align-top">
+                        <div className="font-black text-white text-base tracking-tight flex items-center flex-wrap gap-2 group-hover:translate-x-1 transition-transform">
                           <span>{policy.planName}</span>
-                          {products.find(p => p.name === policy.planName)?.isTaxDeductible && (
-                            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded font-medium inline-flex items-center gap-1 leading-none whitespace-nowrap" title={t.taxDeductible || 'Tax Deductible'}>
-                              <FileText className="w-3 h-3" /> {t.taxDeductible || 'Tax Ded.'}
-                            </span>
-                          )}
                         </div>
-                        <div className="text-xs font-mono text-slate-500 mt-0.5">{policy.policyNumber}</div>
-                        {!isClientInsured(policy, client.name) && (
-                          <div className="text-[10px] bg-slate-100 text-slate-600 px-1.5 rounded mt-1 inline-flex items-center gap-1 border border-slate-200" title="Insured Person">
-                            <Shield className="w-3 h-3" /> Insured: {policy.insuredName}
-                          </div>
-                        )}
+                        <div className="text-[10px] font-mono text-slate-500 mt-1 uppercase tracking-widest">{policy.policyNumber}</div>
                         {policy.medicalPlanType && (
-                          <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 rounded mt-1 inline-block border border-blue-200">
-                            {['High-End Semi-Private', 'High-End Private'].includes(policy.medicalPlanType as string) ? 'High-End Medical' : policy.medicalPlanType}
+                          <span className="text-[9px] font-black uppercase bg-white/5 text-slate-400 px-2 py-0.5 rounded mt-2 inline-block border border-white/10">
+                            {policy.medicalPlanType}
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-4 align-top">
-                        {policy.sumInsured ? (
-                          <span className="font-medium text-slate-700">${policy.sumInsured.toLocaleString()}</span>
-                        ) : '-'}
-                        {policy.isMultipay && <div className="text-[10px] text-brand-600 font-medium">Multipay</div>}
+                      <td className="px-6 py-6 align-top font-black text-white text-sm">
+                        {policy.sumInsured ? `$${policy.sumInsured.toLocaleString()}` : '-'}
+                        {policy.isMultipay && <div className="text-[9px] text-emerald-400 font-black uppercase tracking-tighter mt-1">✓ Multipay</div>}
                       </td>
-                      <td className="px-4 py-4 align-top text-right">
-                        <div className="font-bold text-slate-800">
+                      <td className="px-6 py-6 align-top text-right">
+                        <div className="font-black text-white text-sm">
                           {policy.currency} ${policy.premiumAmount.toLocaleString()}
                         </div>
-                        <div className="text-xs text-slate-400">{policy.paymentMode}</div>
+                        <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">{policy.paymentMode}</div>
                       </td>
-                      <td className="px-4 py-4 align-top">
-                        <div className="flex flex-col text-xs mt-1">
-                          <span className="text-slate-600"><span className="text-slate-400 w-12 inline-block">Prot:</span> {policy.protectionMatureDate || '-'}</span>
-                          <span className="text-slate-600"><span className="text-slate-400 w-12 inline-block">Prem:</span> {policy.premiumMatureDate || '-'}</span>
-                        </div>
+                      <td className="px-6 py-6 align-top text-center">
+                        <span className={`inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase border tracking-tighter shadow-lg ${policy.status === 'Active' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
+                            'bg-red-500/20 text-red-400 border-red-500/30'
+                          }`}>
+                          {policy.status}
+                        </span>
                       </td>
-                      <td className="px-4 py-4 align-top text-center">
-                        <span className={`inline-flex w-2.5 h-2.5 rounded-full ${policy.status === 'Active' ? 'bg-green-500' :
-                          policy.status === 'Pending' ? 'bg-amber-500' : 'bg-red-500'
-                          }`} title={policy.status}></span>
-                      </td>
-                      <td className="px-4 py-4 align-top text-right print:hidden">
-                        <div className="flex justify-end gap-1 opacity-10 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => setEditingPolicy(policy)}
-                            className="p-1.5 hover:bg-slate-100 rounded text-slate-400 hover:text-blue-600"
-                          >
+                      <td className="px-6 py-6 align-top text-right print:hidden">
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                          <button onClick={() => setEditingPolicy(policy)} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white border border-white/5 transition-all">
                             <Edit className="w-4 h-4" />
                           </button>
-                          <button
-                            onClick={() => handleDeleteClick(policy.id)}
-                            className="p-1.5 hover:bg-slate-100 rounded text-slate-400 hover:text-red-600"
-                          >
+                          <button onClick={() => handleDeleteClick(policy.id)} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-red-400 border border-white/5 transition-all">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -422,61 +392,49 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           </div>
         </div>
 
-        {/* Meeting Logs Section (New) */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-            <h3 className="font-bold text-slate-800 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-slate-500" />
-              {meetingsT.title} ({(client.meetingLogs || []).length})
+        {/* Meeting Logs Section */}
+        <div className="bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
+          <div className="p-8 border-b border-white/5 flex justify-between items-center bg-slate-900/40">
+            <h3 className="text-sm font-black text-white flex items-center gap-3 tracking-[0.2em]">
+              <Clock className="w-5 h-5 text-white/50" />
+              {meetingsT.title?.toUpperCase()} ({(client.meetingLogs || []).length})
             </h3>
             <button
               onClick={() => setIsAddMeetingOpen(true)}
-              className="text-xs bg-brand-600 text-white px-3 py-1.5 rounded-lg hover:bg-brand-700 transition-colors font-medium flex items-center gap-1 shadow-sm"
+              className="text-[10px] font-black uppercase tracking-widest bg-white text-slate-900 px-5 py-2.5 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
             >
               <Plus className="w-3.5 h-3.5" /> {meetingsT.addLog}
             </button>
           </div>
 
-          <div className="p-6 space-y-6 max-h-[500px] overflow-y-auto custom-scrollbar">
+          <div className="p-8 space-y-8 max-h-[600px] overflow-y-auto custom-scrollbar">
             {(client.meetingLogs || []).length > 0 ? [...(client.meetingLogs || [])].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(log => (
-              <div key={log.id} className="relative pl-6 pb-6 border-l-2 border-slate-100 last:pb-0">
-                <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-white border-2 border-brand-500 shadow-sm" />
-                <div className="flex justify-between items-start mb-1">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">{log.date}</span>
-                  <div className="flex items-center gap-2">
+              <div key={log.id} className="relative pl-10 pb-8 last:pb-0">
+                <div className="absolute left-0 top-0 w-[2px] h-full bg-white/5" />
+                <div className="absolute left-[-4px] top-0 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_white]" />
 
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold border border-slate-200">{meetingsT.types?.[log.type.replace(/\s+/g, '')] || log.type}</span>
-                    <button
-                      onClick={() => {
-                        if (window.confirm(meetingsT.deleteConfirm)) {
-                          const updatedLogs = (client.meetingLogs || []).filter(l => l.id !== log.id);
-                          onUpdateClient({ ...client, meetingLogs: updatedLogs });
-                        }
-                      }}
-                      className="text-slate-300 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 className="w-3 h-3" />
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{log.date}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[9px] px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-slate-300 font-black uppercase tracking-tighter">
+                      {log.type.toUpperCase()}
+                    </span>
+                    <button onClick={() => {
+                      if (window.confirm(meetingsT.deleteConfirm)) {
+                        const updatedLogs = (client.meetingLogs || []).filter(l => l.id !== log.id);
+                        onUpdateClient({ ...client, meetingLogs: updatedLogs });
+                      }
+                    }} className="text-slate-600 hover:text-red-500 transition-colors">
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
-
                   </div>
                 </div>
-                <p className="text-sm text-slate-700 font-medium leading-relaxed">{log.summary}</p>
-                {log.rawNotes && (
-                  <details className="mt-2 group">
-                    <summary className="text-[10px] text-slate-400 cursor-pointer hover:text-brand-600 font-bold uppercase transition-colors list-none flex items-center gap-1">
-                      <ChevronDown className="w-3 h-3 group-open:rotate-180 transition-transform" />
-                      {meetingsT.notes}
-                    </summary>
-                    <div className="mt-2 p-3 bg-slate-50 rounded-lg text-xs text-slate-500 whitespace-pre-wrap italic border border-slate-100">
-                      {log.rawNotes}
-                    </div>
-                  </details>
-                )}
+                <p className="text-sm text-slate-200 font-bold leading-relaxed">{log.summary}</p>
               </div>
             )) : (
-              <div className="text-center py-10">
-                <MessageSquare className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-                <p className="text-slate-400 text-sm italic">{meetingsT.noLogs}</p>
+              <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                <MessageSquare className="w-12 h-12 text-white/10 mx-auto mb-4" />
+                <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest leading-loose">{meetingsT.noLogs}</p>
               </div>
             )}
           </div>
