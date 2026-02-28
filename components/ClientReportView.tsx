@@ -347,7 +347,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                             >
                                 {activeColumns.map(col => (
                                     <div key={col.id} className={col.id === 'premium' ? 'text-right pr-2' : col.id === 'status' ? 'text-center' : 'text-center'}>
-                                        {t.policyCard[col.labelKey] || col.labelKey.toUpperCase()}
+                                        {t.columns[col.id] || col.labelKey}
                                     </div>
                                 ))}
                             </div>
@@ -368,13 +368,13 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
                                         {policy.riders?.map((rider, ridx) => (
                                             <div
                                                 key={`${policy.id}-rider-${ridx}`}
-                                                className={`grid items-center py-3 px-3 text-[10px] border-t border-slate-100/50 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
+                                                className={`grid items-center py-3 px-3 text-[10px] border-t border-slate-100/50 relative ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}
                                                 style={{ gridTemplateColumns }}
                                             >
                                                 {/* Left structural border indicating hierarchy */}
                                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-slate-200"></div>
-                                                {activeColumns.map(col => (
-                                                    <div key={`rider-${col.id}`} className="px-2 py-0.5 text-center flex items-center justify-center border-r border-slate-100/50 last:border-r-0 h-full">
+                                                {activeColumns.map((col, cidx) => (
+                                                    <div key={`rider-${col.id}`} className={`px-2 py-0.5 text-center flex items-center justify-center border-slate-100/50 h-full ${cidx !== activeColumns.length - 1 ? 'border-r' : ''}`}>
                                                         {renderCellContent(rider, col.id, true)}
                                                     </div>
                                                 ))}
