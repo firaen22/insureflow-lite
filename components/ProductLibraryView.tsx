@@ -215,7 +215,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
               placeholder={t.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-white dark:bg-white/5 text-slate-900 dark:text-white"
             />
           </div>
 
@@ -442,7 +442,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                   type="text"
                   value={editingProduct.name}
                   onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                 />
               </div>
 
@@ -461,7 +461,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                         setEditingProduct({ ...editingProduct, provider: val });
                       }
                     }}
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/[0.02] hover:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 backdrop-blur-xl focus:bg-white/80 dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none text-slate-900 dark:text-white"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="" disabled>Select insurer...</option>
@@ -474,7 +474,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                       type="text"
                       value={editingProduct.provider}
                       onChange={(e) => setEditingProduct({ ...editingProduct, provider: e.target.value })}
-                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 animate-in fade-in slide-in-from-top-1"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 animate-in fade-in slide-in-from-top-1 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="Enter custom insurer name..."
                       autoFocus
                     />
@@ -487,7 +487,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                 <select
                   value={editingProduct.type}
                   onChange={(e) => setEditingProduct({ ...editingProduct, type: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/[0.02] hover:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 backdrop-blur-xl focus:bg-white/80 dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none text-slate-900 dark:text-white"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                 >
                   {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -515,7 +515,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                       type="number"
                       value={editingProduct.annualCoverageLimit || ''}
                       onChange={e => setEditingProduct({ ...editingProduct, annualCoverageLimit: e.target.value ? Number(e.target.value) : undefined })}
-                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="e.g. 10000000"
                     />
                   </div>
@@ -525,7 +525,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                       type="number"
                       value={editingProduct.wholeLifeCoverageLimit || ''}
                       onChange={e => setEditingProduct({ ...editingProduct, wholeLifeCoverageLimit: e.target.value ? Number(e.target.value) : undefined })}
-                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="e.g. 30000000"
                     />
                   </div>
@@ -546,7 +546,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                       }
                     }}
                     placeholder={t.form.addTag}
-                    className="flex-1 px-3 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="flex-1 px-3 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   />
                   <button
                     onClick={handleAddTag}

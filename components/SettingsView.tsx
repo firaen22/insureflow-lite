@@ -177,7 +177,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         <select
                             value={settings.language}
                             onChange={(e) => onUpdateSettings({ ...settings, language: e.target.value as any })}
-                            className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                            className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white dark:bg-white/5"
                         >
                             <option value="en">English (English)</option>
                             <option value="zh">Traditional Chinese (繁體中文)</option>
@@ -225,7 +225,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                 )}
                                 onChange={(e) => onUpdateSettings({ ...settings, aiBaseUrl: e.target.value })}
                                 placeholder="https://api.moonshot.cn/v1"
-                                className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 text-sm"
+                                className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 text-sm bg-white dark:bg-white/5"
                             />
                             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                                 {settings.aiProvider === 'kimi' ? "Default: https://api.moonshot.cn/v1" :
@@ -267,7 +267,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                     }
                                 }}
                                 placeholder={`Enter ${settings.aiProvider === 'gemini' ? 'Gemini' : 'API'} Key...`}
-                                className="flex-1 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                className="flex-1 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5"
                             />
                             <button
                                 onClick={async () => {
@@ -393,7 +393,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                 value={spreadsheetId || ''}
                                 onChange={(e) => setSpreadsheetId(e.target.value)}
                                 placeholder={t.notConnected}
-                                className="flex-1 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 font-mono text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                                className="flex-1 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 font-mono text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white dark:bg-white/5"
                             />
                             <button
                                 onClick={handleTestConnection}
@@ -426,7 +426,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         type="number"
                         value={settings.reminderDays}
                         onChange={(e) => onUpdateSettings({ ...settings, reminderDays: parseInt(e.target.value) || 60 })}
-                        className="w-32 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                        className="w-32 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white dark:bg-white/5"
                         min="1"
                         max="365"
                     />

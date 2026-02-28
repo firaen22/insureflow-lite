@@ -567,7 +567,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         setEditingPolicy({ ...editingPolicy, planName: selectedPlanName });
                       }
                     }}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 focus:bg-white dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none text-slate-900 dark:text-white"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                   >
                     <option value="" disabled>Select a plan...</option>
@@ -588,7 +588,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="text"
                       value={editingPolicy.policyNumber}
                       onChange={e => handleUpdateField('policyNumber', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     />
                   </div>
                   <div>
@@ -597,7 +597,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="text"
                       value={editingPolicy.insuredName || ''}
                       onChange={e => handleUpdateField('insuredName', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="Same as holder"
                     />
                   </div>
@@ -611,7 +611,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     type="text"
                     value={editingPolicy.company || ''}
                     onChange={e => handleUpdateField('company', e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     placeholder="e.g. AIA, Prudential"
                   />
                   <datalist id="company-options">
@@ -634,7 +634,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <input
                       type="text"
                       id="policy-tag-input"
-                      className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg"
+                      className="flex-1 px-3 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="Add tag..."
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
@@ -683,7 +683,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       <select
                         value={editingPolicy.type}
                         onChange={e => handleUpdateField('type', e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                        className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 focus:bg-white dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none text-slate-900 dark:text-white"
                         style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       >
                         {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -700,7 +700,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="date"
                       value={editingPolicy.effectiveDate || ''}
                       onChange={e => handleUpdateField('effectiveDate', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     />
                   </div>
                   <div>
@@ -709,7 +709,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="text"
                       value={editingPolicy.policyAnniversaryDate}
                       onChange={e => handleUpdateField('policyAnniversaryDate', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="DD/MM"
                     />
                   </div>
@@ -722,7 +722,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="text"
                       value={editingPolicy.protectionMatureDate || ''}
                       onChange={e => handleUpdateField('protectionMatureDate', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="e.g. YYYY-MM-DD or Age 100"
                     />
                   </div>
@@ -732,7 +732,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="text"
                       value={editingPolicy.premiumMatureDate || ''}
                       onChange={e => handleUpdateField('premiumMatureDate', e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="e.g. YYYY-MM-DD or 20 Years"
                     />
                   </div>
@@ -749,7 +749,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     {['Life', 'Critical Illness', 'Accident'].includes(editingPolicy.type) && (
                       <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.sumInsured}</label>
-                        <input type="number" value={editingPolicy.sumInsured || ''} onChange={e => handleUpdateField('sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                        <input type="number" value={editingPolicy.sumInsured || ''} onChange={e => handleUpdateField('sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                       </div>
                     )}
 
@@ -769,7 +769,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         {['High-End Semi-Private', 'High-End Private'].includes(editingPolicy.medicalPlanType || '') && (
                           <div className="col-span-2 mt-1">
                             <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.excess}</label>
-                            <input type="number" placeholder="Annual Excess Amount" value={editingPolicy.medicalExcess || ''} onChange={e => handleUpdateField('medicalExcess', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                            <input type="number" placeholder="Annual Excess Amount" value={editingPolicy.medicalExcess || ''} onChange={e => handleUpdateField('medicalExcess', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                           </div>
                         )}
                         {(products.find(p => p.name === editingPolicy.planName)?.annualCoverageLimit || products.find(p => p.name === editingPolicy.planName)?.wholeLifeCoverageLimit) ? (
@@ -791,7 +791,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     {editingPolicy.type === 'Savings' && (
                       <div className="col-span-2">
                         <label className="block text-xs font-medium text-slate-600 mb-1">{t.policyCard.capital}</label>
-                        <input type="number" value={editingPolicy.capitalInvested || ''} onChange={e => handleUpdateField('capitalInvested', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded" />
+                        <input type="number" value={editingPolicy.capitalInvested || ''} onChange={e => handleUpdateField('capitalInvested', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                       </div>
                     )}
 
@@ -801,21 +801,21 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         <div className="grid grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs font-medium text-orange-700 mb-1">Medical Limit</label>
-                            <input type="number" value={editingPolicy.accidentMedicalLimit || ''} onChange={e => handleUpdateField('accidentMedicalLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                            <input type="number" value={editingPolicy.accidentMedicalLimit || ''} onChange={e => handleUpdateField('accidentMedicalLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 dark:border-orange-500/30 rounded bg-orange-50/50 dark:bg-orange-500/10 text-orange-900 dark:text-orange-100" />
                           </div>
                           <div>
                             <label className="block text-xs font-medium text-orange-700 mb-1">Section Limit</label>
-                            <input type="number" value={editingPolicy.accidentSectionLimit || ''} onChange={e => handleUpdateField('accidentSectionLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                            <input type="number" value={editingPolicy.accidentSectionLimit || ''} onChange={e => handleUpdateField('accidentSectionLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 dark:border-orange-500/30 rounded bg-orange-50/50 dark:bg-orange-500/10 text-orange-900 dark:text-orange-100" />
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs font-medium text-orange-700 mb-1">Bonesetting Limit</label>
-                            <input type="number" value={editingPolicy.accidentBonesettingLimit || ''} onChange={e => handleUpdateField('accidentBonesettingLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                            <input type="number" value={editingPolicy.accidentBonesettingLimit || ''} onChange={e => handleUpdateField('accidentBonesettingLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 dark:border-orange-500/30 rounded bg-orange-50/50 dark:bg-orange-500/10 text-orange-900 dark:text-orange-100" />
                           </div>
                           <div>
                             <label className="block text-xs font-medium text-orange-700 mb-1">Acupuncture Limit</label>
-                            <input type="number" value={editingPolicy.accidentAcupunctureLimit || ''} onChange={e => handleUpdateField('accidentAcupunctureLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded" />
+                            <input type="number" value={editingPolicy.accidentAcupunctureLimit || ''} onChange={e => handleUpdateField('accidentAcupunctureLimit', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-orange-200 dark:border-orange-500/30 rounded bg-orange-50/50 dark:bg-orange-500/10 text-orange-900 dark:text-orange-100" />
                           </div>
                         </div>
                         {/* Physio Limits */}
@@ -828,7 +828,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                               <option value="Per Treatment">Per Treatment</option>
                               <option value="Per Accident">Per Accident</option>
                             </select>
-                            <input type="number" value={editingPolicy.accidentPhysioLimitAmount1 || ''} onChange={e => handleUpdateField('accidentPhysioLimitAmount1', Number(e.target.value))} placeholder="$ Limit 1" disabled={!editingPolicy.accidentPhysioLimitType1} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded bg-white disabled:bg-slate-100" />
+                            <input type="number" value={editingPolicy.accidentPhysioLimitAmount1 || ''} onChange={e => handleUpdateField('accidentPhysioLimitAmount1', Number(e.target.value))} placeholder="$ Limit 1" disabled={!editingPolicy.accidentPhysioLimitType1} className="w-full px-2 py-1.5 text-sm border border-orange-200 dark:border-orange-500/30 rounded bg-white dark:bg-white/5 disabled:bg-slate-100 dark:disabled:bg-white/10 text-slate-900 dark:text-white" />
                           </div>
                           <div className="grid grid-cols-2 gap-3">
                             <select value={editingPolicy.accidentPhysioLimitType2 || ''} onChange={e => handleUpdateField('accidentPhysioLimitType2', e.target.value || undefined)} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded bg-white text-slate-700">
@@ -837,7 +837,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                               <option value="Per Treatment">Per Treatment</option>
                               <option value="Per Accident">Per Accident</option>
                             </select>
-                            <input type="number" value={editingPolicy.accidentPhysioLimitAmount2 || ''} onChange={e => handleUpdateField('accidentPhysioLimitAmount2', Number(e.target.value))} placeholder="$ Limit 2" disabled={!editingPolicy.accidentPhysioLimitType2} className="w-full px-2 py-1.5 text-sm border border-orange-200 rounded bg-white disabled:bg-slate-100" />
+                            <input type="number" value={editingPolicy.accidentPhysioLimitAmount2 || ''} onChange={e => handleUpdateField('accidentPhysioLimitAmount2', Number(e.target.value))} placeholder="$ Limit 2" disabled={!editingPolicy.accidentPhysioLimitType2} className="w-full px-2 py-1.5 text-sm border border-orange-200 dark:border-orange-500/30 rounded bg-white dark:bg-white/5 disabled:bg-slate-100 dark:disabled:bg-white/10 text-slate-900 dark:text-white" />
                           </div>
                         </div>
                       </div>
@@ -849,7 +849,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1">Total Cash Value</label>
-                        <input type="number" value={editingPolicy.totalCashValue || ''} onChange={e => handleUpdateField('totalCashValue', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded bg-white" />
+                        <input type="number" value={editingPolicy.totalCashValue || ''} onChange={e => handleUpdateField('totalCashValue', Number(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                       </div>
                     </div>
                   </div>
@@ -905,7 +905,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         <div className="grid grid-cols-12 gap-2">
                           <div className="col-span-6">
                             <label className="block font-medium text-slate-500 mb-1">Premium Amt</label>
-                            <input type="number" value={rider.premiumAmount} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'premiumAmount', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                            <input type="number" value={rider.premiumAmount} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'premiumAmount', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                           </div>
                           <div className="col-span-6">
                             <label className="block font-medium text-slate-500 mb-1">Sum Insured</label>
@@ -923,7 +923,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                                 <option value="High-End Private">High-End Private</option>
                               </select>
                             ) : (
-                              <input type="number" value={rider.sumInsured || ''} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                              <input type="number" value={rider.sumInsured || ''} placeholder="Amount" onChange={e => handleUpdateRider(idx, 'sumInsured', Number(e.target.value))} className="w-full px-2 py-1.5 border rounded border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                             )}
                           </div>
                         </div>
@@ -931,11 +931,11 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         <div className="grid grid-cols-12 gap-2">
                           <div className="col-span-6">
                             <label className="block font-medium text-slate-500 mb-1">Protection Maturity</label>
-                            <input type="text" value={rider.protectionMatureDate || ''} placeholder="Age 100/Date" onChange={e => handleUpdateRider(idx, 'protectionMatureDate', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                            <input type="text" value={rider.protectionMatureDate || ''} placeholder="Age 100/Date" onChange={e => handleUpdateRider(idx, 'protectionMatureDate', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                           </div>
                           <div className="col-span-6">
                             <label className="block font-medium text-slate-500 mb-1">Premium Maturity</label>
-                            <input type="text" value={rider.premiumMatureDate || ''} placeholder="Age 65/Date" onChange={e => handleUpdateRider(idx, 'premiumMatureDate', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300" />
+                            <input type="text" value={rider.premiumMatureDate || ''} placeholder="Age 65/Date" onChange={e => handleUpdateRider(idx, 'premiumMatureDate', e.target.value)} className="w-full px-2 py-1.5 border rounded border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 text-slate-900 dark:text-white" />
                           </div>
                         </div>
                         {(products.find(p => p.name === rider.name)?.annualCoverageLimit || products.find(p => p.name === rider.name)?.wholeLifeCoverageLimit) ? (
@@ -999,7 +999,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     type="text"
                     value={editingClient.name}
                     onChange={e => setEditingClient({ ...editingClient, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   />
                 </div>
 
@@ -1010,7 +1010,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="text"
                       value={editingClient.phone}
                       onChange={e => setEditingClient({ ...editingClient, phone: e.target.value })}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     />
                   </div>
                   <div>
@@ -1019,7 +1019,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                       type="text"
                       value={editingClient.birthday}
                       onChange={e => setEditingClient({ ...editingClient, birthday: e.target.value })}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                     />
                   </div>
                 </div>
@@ -1030,7 +1030,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     type="email"
                     value={editingClient.email}
                     onChange={e => setEditingClient({ ...editingClient, email: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                   />
                 </div>
 
@@ -1040,7 +1040,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   {/* Tag Selection Dropdown */}
                   <div className="relative mb-2">
                     <select
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-slate-50 hover:bg-white focus:bg-white focus:ring-2 focus:ring-brand-500 appearance-none text-slate-700 transition-colors cursor-pointer"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 focus:bg-white dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 appearance-none text-slate-700 dark:text-white transition-colors cursor-pointer"
                       style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       value=""
                       onChange={e => {
@@ -1062,7 +1062,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                     <input
                       type="text"
                       id="custom-tag-input"
-                      className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-500 dark:placeholder-slate-400"
+                      className="flex-1 px-3 py-1.5 text-sm border border-slate-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-slate-500 dark:placeholder-slate-400 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       placeholder="Or type custom tag..."
                       onKeyDown={e => {
                         if (e.key === 'Enter') {

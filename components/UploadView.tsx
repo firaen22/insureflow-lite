@@ -542,7 +542,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         type="text"
                         value={activeItem.data.policyNumber}
                         onChange={e => handleUpdateCurrentField('policyNumber', e.target.value)}
-                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm font-mono"
+                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm font-mono bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       />
                     </div>
                     <div>
@@ -560,7 +560,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               handleUpdateCurrentField('company', val);
                             }
                           }}
-                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/[0.02] hover:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 backdrop-blur-xl focus:bg-white/80 dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none text-slate-900 dark:text-white"
                           style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2rem' }}
                         >
                           <option value="">Select insurer...</option>
@@ -573,7 +573,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                             type="text"
                             value={activeItem.data.company || ''}
                             onChange={(e) => handleUpdateCurrentField('company', e.target.value)}
-                            className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm animate-in fade-in slide-in-from-top-1"
+                            className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm animate-in fade-in slide-in-from-top-1 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                             placeholder="Enter custom insurer..."
                             autoFocus
                           />
@@ -586,7 +586,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       <select
                         value={activeItem.data.type}
                         onChange={e => handleUpdateCurrentField('type', e.target.value)}
-                        className="w-full p-2.5 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/[0.02] hover:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none"
+                        className="w-full p-2.5 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 backdrop-blur-xl focus:bg-white/80 dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 font-medium transition-colors cursor-pointer appearance-none text-slate-900 dark:text-white"
                         style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
                       >
                         {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -658,7 +658,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               handleUpdateCurrentField('clientId', undefined); // Clear if no match
                             }
                           }}
-                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         />
                         <datalist id="client-list">
                           {clients.map(c => (
@@ -678,7 +678,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         type="text"
                         value={activeItem.data.insuredName || ''}
                         onChange={e => handleUpdateCurrentField('insuredName', e.target.value)}
-                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         placeholder="If different from holder"
                       />
                     </div>
@@ -690,7 +690,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           placeholder="DD/MM"
                           value={activeItem.data.policyAnniversaryDate}
                           onChange={e => handleUpdateCurrentField('policyAnniversaryDate', e.target.value)}
-                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         />
                       </div>
                       <div>
@@ -712,7 +712,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               }
                             }
                           }}
-                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                          className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         />
                       </div>
                     </div>
@@ -726,7 +726,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         type="date"
                         value={activeItem.data.effectiveDate || ''}
                         onChange={e => handleUpdateCurrentField('effectiveDate', e.target.value)}
-                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       />
                     </div>
                     <div>
@@ -735,7 +735,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         type="text"
                         value={activeItem.data.protectionMatureDate || ''}
                         onChange={e => handleUpdateCurrentField('protectionMatureDate', e.target.value)}
-                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         placeholder="Age 100 or YYYY-MM-DD"
                       />
                     </div>
@@ -745,7 +745,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                         type="text"
                         value={activeItem.data.premiumMatureDate || ''}
                         onChange={e => handleUpdateCurrentField('premiumMatureDate', e.target.value)}
-                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         placeholder="20 Years or YYYY-MM-DD"
                       />
                     </div>
@@ -770,7 +770,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                             type="number"
                             value={activeItem.data.premiumAmount}
                             onChange={e => handleUpdateCurrentField('premiumAmount', parseFloat(e.target.value))}
-                            className="w-full pl-6 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                            className="w-full pl-6 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                           />
                         </div>
                       </div>
@@ -780,7 +780,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       <select
                         value={activeItem.data.paymentMode}
                         onChange={e => handleUpdateCurrentField('paymentMode', e.target.value)}
-                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/[0.02] hover:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none"
+                        className="w-full p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-slate-50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 backdrop-blur-xl focus:bg-white/80 dark:focus:bg-white/10 focus:ring-2 focus:ring-brand-500 transition-colors cursor-pointer appearance-none text-slate-900 dark:text-white"
                         style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2rem' }}
                       >
                         <option value="Yearly">Yearly</option>
@@ -800,7 +800,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.sumInsured || ''}
                           onChange={e => handleUpdateCurrentField('sumInsured', parseFloat(e.target.value))}
                           placeholder="0"
-                          className="w-full pl-6 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm"
+                          className="w-full pl-6 p-2 border border-slate-300 dark:border-white/20 rounded-lg text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         />
                       </div>
                     </div>
@@ -930,7 +930,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.cashValue || ''}
                           onChange={e => handleUpdateCurrentField('cashValue', parseFloat(e.target.value))}
                           placeholder="0.00"
-                          className="w-full pl-5 p-1.5 border border-slate-300 dark:border-white/20 rounded text-sm"
+                          className="w-full pl-5 p-1.5 border border-slate-300 dark:border-white/20 rounded text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         />
                       </div>
                     </div>
@@ -943,7 +943,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                           value={activeItem.data.accumulatedDividend || ''}
                           onChange={e => handleUpdateCurrentField('accumulatedDividend', parseFloat(e.target.value))}
                           placeholder="0.00"
-                          className="w-full pl-5 p-1.5 border border-slate-300 dark:border-white/20 rounded text-sm"
+                          className="w-full pl-5 p-1.5 border border-slate-300 dark:border-white/20 rounded text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                         />
                       </div>
                     </div>
@@ -998,7 +998,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                               }
                             }}
                             placeholder="Rider Name"
-                            className="w-full p-1.5 border border-slate-300 dark:border-white/20 rounded text-sm bg-white/80 dark:bg-white/5 backdrop-blur-xl focus:ring-1 focus:ring-brand-500 focus:outline-none"
+                            className="w-full p-1.5 border border-slate-300 dark:border-white/20 rounded text-sm bg-white dark:bg-white/5 text-slate-900 dark:text-white backdrop-blur-xl focus:ring-1 focus:ring-brand-500 focus:outline-none"
                           />
                           <datalist id={`rider-products-${idx}`}>
                             {products.map(p => <option key={p.name} value={p.name}>{p.provider} - {p.name}</option>)}
@@ -1104,7 +1104,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
                       value={newTagInput}
                       onChange={e => setNewTagInput(e.target.value)}
                       placeholder="Add tag..."
-                      className="flex-1 p-1.5 border border-slate-300 dark:border-white/20 rounded text-xs"
+                      className="flex-1 p-1.5 border border-slate-300 dark:border-white/20 rounded text-xs bg-white dark:bg-white/5 text-slate-900 dark:text-white"
                       onKeyDown={e => {
                         if (e.key === 'Enter' && newTagInput.trim()) {
                           handleUpdateCurrentField('extractedTags', [...(activeItem.data?.extractedTags || []), newTagInput.trim()]);
