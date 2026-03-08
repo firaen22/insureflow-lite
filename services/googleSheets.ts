@@ -233,9 +233,10 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
             pageSize: 10
         });
         return response.result.files || [];
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error listing spreadsheets", error);
-        throw error;
+        const msg = error?.result?.error?.message || error?.message || (typeof error === 'string' ? error : JSON.stringify(error));
+        throw new Error(msg || 'Unknown error listing spreadsheets');
     }
 };
 
