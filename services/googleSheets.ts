@@ -26,6 +26,30 @@ export const getDebugInfo = () => {
 }
 // Obsolete initGoogleClient removed - using new one below
 
+const ensureDriveLoaded = async () => {
+    if (!window.gapi?.client) {
+        throw new Error('Google API client not initialized');
+    }
+    if (!window.gapi.client.drive) {
+        await window.gapi.client.load('drive', 'v3');
+    }
+    if (!window.gapi.client.drive) {
+        throw new Error('Failed to load Google Drive API');
+    }
+};
+
+const ensureSheetsLoaded = async () => {
+    if (!window.gapi?.client) {
+        throw new Error('Google API client not initialized');
+    }
+    if (!window.gapi.client.sheets) {
+        await window.gapi.client.load('sheets', 'v4');
+    }
+    if (!window.gapi.client.sheets) {
+        throw new Error('Failed to load Google Sheets API');
+    }
+};
+
 export const setGoogleToken = (token: string) => {
     if (window.gapi && window.gapi.client) {
         window.gapi.client.setToken({ access_token: token });
@@ -202,6 +226,7 @@ export const getUserProfile = async (): Promise<UserProfile> => {
 
 export const listSpreadsheets = async (): Promise<Array<{ id: string, name: string }>> => {
     try {
+        await ensureDriveLoaded();
         const response = await window.gapi.client.drive.files.list({
             q: "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false",
             fields: 'files(id, name)',
@@ -216,6 +241,7 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
 
 const ensureAppFolder = async (folderName: string = "Insureflow"): Promise<string> => {
     try {
+        await ensureDriveLoaded();
         // Check if folder exists
         const response = await window.gapi.client.drive.files.list({
             q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed=false`,
@@ -283,6 +309,8 @@ export const organizeFileInAppFolder = async (fileId: string) => {
 
 export const createSpreadsheet = async (title: string): Promise<string> => {
     try {
+        await ensureSheetsLoaded();
+        await ensureDriveLoaded();
         if (!window.gapi.client.sheets) {
             throw new Error("Google Sheets API not loaded. Please refresh the page.");
         }
