@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Product } from '../types';
 import { TRANSLATIONS, PRODUCT_TYPES, HK_PROVIDERS } from '../constants';
 import { Search, Plus, MoreHorizontal, Shield, Tag, Box, HeartPulse, Home, Car, AlertTriangle, PiggyBank, Briefcase, Pencil, X, Check, Save, Layers } from 'lucide-react';
+import { useToast } from './Toast';
 
 interface ProductLibraryViewProps {
   t: typeof TRANSLATIONS['en']['products'];
@@ -13,6 +14,7 @@ interface ProductLibraryViewProps {
 
 export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, products, onUpdateProduct, onAddProduct, onMergeProducts }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const toast = useToast();
 
   // Selection State
   const [selectedProductNames, setSelectedProductNames] = useState<string[]>([]);
@@ -97,9 +99,9 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
     if (duplicates.length > 0) {
       const uniqueDupes = Array.from(new Set(duplicates));
       setSelectedProductNames(uniqueDupes);
-      alert(`Found ${uniqueDupes.length} potential duplicates with overlapping names. They have been selected for your review.`);
+      toast.info(`Found ${uniqueDupes.length} potential duplicates with overlapping names. They have been selected for your review.`);
     } else {
-      alert("No obvious duplicates found.");
+      toast.success("No obvious duplicates found.");
     }
   };
 

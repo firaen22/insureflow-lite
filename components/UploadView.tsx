@@ -3,6 +3,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { Upload, FileText, CheckCircle, Loader2, AlertCircle, X, ShieldCheck, Pencil, Save, Tag, Sparkles, BookOpen, Cake, Plus, Calendar, Layers, Trash2, Activity, Keyboard, FileSpreadsheet, ListChecks } from 'lucide-react';
 import { UploadStatus, PolicyData, Product, Rider } from '../types';
 import { TRANSLATIONS, PRODUCT_TYPES, HK_PROVIDERS } from '../constants';
+import { useToast } from './Toast';
 
 import { Client } from '../types';
 
@@ -25,6 +26,7 @@ interface ProcessedFile {
 export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, onSave }) => {
   // Mode: 'upload' (dropzone) or 'review' (validation table)
   const [viewMode, setViewMode] = useState<'upload' | 'review'>('upload');
+  const toast = useToast();
 
   const [processedFiles, setProcessedFiles] = useState<ProcessedFile[]>([]);
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
@@ -315,7 +317,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ t, products, clients, on
     completed.forEach(item => {
       if (item.data) onSave(item.data, !!item.isNewProduct);
     });
-    alert(`Successfully saved ${completed.length} policies!`);
+    toast.success(`Successfully saved ${completed.length} policies!`);
     // Reset
     setProcessedFiles([]);
     setViewMode('upload');

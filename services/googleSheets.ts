@@ -13,6 +13,10 @@ const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googlea
 let tokenClient: any;
 let gapiInited = false;
 let gisInited = false;
+let initPromise: Promise<boolean> | null = null;
+
+// In-memory token storage (Phase 4 security fix — no longer persisted to localStorage)
+let _accessToken: string | null = null;
 
 export const getDebugInfo = () => {
     return {
@@ -51,16 +55,18 @@ const ensureSheetsLoaded = async () => {
 };
 
 export const setGoogleToken = (token: string) => {
+    _accessToken = token;
     if (window.gapi && window.gapi.client) {
         window.gapi.client.setToken({ access_token: token });
-        gapiInited = true; // Assume GAPI is ready if we are setting token
+        gapiInited = true;
     }
-    // Also store for later init if gapi is not ready
-    window.localStorage.setItem('google_access_token', token);
 };
 
 export const initGoogleClient = async () => {
-    return new Promise<boolean>((resolve, reject) => {
+    // Return existing promise if init is already in progress or complete
+    if (initPromise) return initPromise;
+
+    initPromise = new Promise<boolean>((resolve, reject) => {
         const checkInit = () => {
             if (gapiInited) resolve(true);
         }
@@ -86,7 +92,7 @@ export const initGoogleClient = async () => {
                     }
 
                     // Check for external token
-                    const externalToken = window.localStorage.getItem('google_access_token');
+                    const externalToken = _accessToken;
                     if (externalToken) {
                         window.gapi.client.setToken({ access_token: externalToken });
                     }
@@ -95,11 +101,15 @@ export const initGoogleClient = async () => {
                     checkInit();
                 } catch (err: any) {
                     console.error("GAPI Init Error", err);
+                    initPromise = null; // Allow retry on failure
                     reject(new Error("GAPI Init failed: " + (err.result?.error?.message || err.message || JSON.stringify(err))));
                 }
             });
         };
-        gapiScript.onerror = () => reject(new Error("Failed to load GAPI script"));
+        gapiScript.onerror = () => {
+            initPromise = null; // Allow retry on failure
+            reject(new Error("Failed to load GAPI script"));
+        };
         document.body.appendChild(gapiScript);
 
         // Load GIS
@@ -133,6 +143,8 @@ export const initGoogleClient = async () => {
         gisScript.onerror = () => console.warn("Failed to load GIS script");
         document.body.appendChild(gisScript);
     });
+
+    return initPromise;
 };
 
 export const signIn = async (options: { prompt?: string } = { prompt: 'consent' }) => {
@@ -159,9 +171,9 @@ export const signIn = async (options: { prompt?: string } = { prompt: 'consent' 
                 window.gapi.client.setToken(resp);
             }
 
-            // Persist valid token
+            // Persist valid token in memory
             if (resp.access_token) {
-                window.localStorage.setItem('google_access_token', resp.access_token);
+                _accessToken = resp.access_token;
             }
 
             resolve();
@@ -192,7 +204,7 @@ export const signOut = async () => {
         }
     }
     window.gapi?.client?.setToken(null);
-    window.localStorage.removeItem('google_access_token');
+    _accessToken = null;
 };
 
 export const getIsSignedIn = () => {
@@ -230,7 +242,7 @@ export const listSpreadsheets = async (): Promise<Array<{ id: string, name: stri
         const response = await window.gapi.client.drive.files.list({
             q: "mimeType='application/vnd.google-apps.spreadsheet' and trashed=false",
             fields: 'files(id, name)',
-            pageSize: 10
+            pageSize: 100
         });
         return response.result.files || [];
     } catch (error: any) {
@@ -517,7 +529,6 @@ const parsePolicy = (row: any): PolicyData => {
         status: row[9],
         extractedTags: JSON.parse(row[10] || '[]'),
         riders: JSON.parse(row[11] || '[]'),
-        currency: 'HKD',
         ...extraData
     };
 };

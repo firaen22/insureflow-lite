@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { ToastProvider } from './components/Toast';
 
 import { ClerkProvider } from '@clerk/clerk-react'
 
@@ -20,7 +21,9 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </ClerkProvider>
   </React.StrictMode>
 );

@@ -223,11 +223,15 @@ const analyzeWithOpenAICompatible = async (file: File, apiKey: string, model: st
     };
 
     try {
+        const proxyHeaders: Record<string, string> = {
+            'Content-Type': 'application/json'
+        };
+        const proxySecret = import.meta.env.VITE_PROXY_SECRET;
+        if (proxySecret) proxyHeaders['x-proxy-secret'] = proxySecret;
+
         const response = await fetch('/api/chat', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: proxyHeaders,
             body: JSON.stringify({
                 apiKey,
                 baseUrl,

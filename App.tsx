@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Layout } from './components/Layout';
 import { DashboardView } from './components/DashboardView';
 import { UploadView } from './components/UploadView';
@@ -15,8 +15,10 @@ import { TRANSLATIONS, MOCK_CLIENTS, RECENT_POLICIES, PRODUCT_LIBRARY, DEFAULT_P
 
 import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
 import { setGoogleToken, initGoogleClient, syncOnLogin, saveData, getIsSignedIn, trySilentSignIn } from './services/googleSheets';
+import { useToast } from './components/Toast';
 
 const App: React.FC = () => {
+  const toast = useToast();
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   // Settings State
   const [settings, setSettings] = useState<AppSettings>({
@@ -59,6 +61,7 @@ const App: React.FC = () => {
   }, []);
 
   const { getToken, userId } = useAuth();
+  const syncInProgress = useRef(false);
 
   // 1. Clerk Token Sync (Restored with Safety Check)
   useEffect(() => {
@@ -82,8 +85,10 @@ const App: React.FC = () => {
           // Re-init Google Client to pick up the token
           await initGoogleClient();
 
-          // Attempt Auto-Sync
+          // Attempt Auto-Sync (skip if another sync already populated data)
+          if (syncInProgress.current) return;
           if (getIsSignedIn()) {
+            syncInProgress.current = true;
             setSyncStatus('Syncing...');
             const syncResult = await syncOnLogin();
             if (syncResult.data) {
@@ -94,12 +99,14 @@ const App: React.FC = () => {
               if (syncResult.data.products) setProducts(syncResult.data.products);
             } else {
               setSyncStatus('');
+              syncInProgress.current = false;
             }
           }
         }
       } catch (e) {
         console.error("Failed to sync Google Token from Clerk", e);
         setSyncStatus('Sync Error');
+        syncInProgress.current = false;
       }
     };
 
@@ -108,24 +115,26 @@ const App: React.FC = () => {
     }
   }, [userId, getToken]);
 
-  // 2. Auto-Init and Load from Google Sheets (LocalStorage Fallback + Silent Sign-In)
+  // 2. Auto-Init and Load from Google Sheets (Silent Sign-In)
   useEffect(() => {
     const initAndSync = async () => {
       try {
         await initGoogleClient();
 
-        // Check if we have a token (from localStorage or GAPI)
+        // Check if we have a token
         let signedIn = getIsSignedIn();
 
         // If NOT signed in, try Silent Sign-In (if authorized before)
         if (!signedIn) {
-          // Only if we haven't explicitly signed out recently? 
-          // For now, always try silent sign-in on fresh load.
           const silentSuccess = await trySilentSignIn();
           if (silentSuccess) signedIn = true;
         }
 
+        // Skip if Clerk sync already populated data
+        if (syncInProgress.current) return;
+
         if (signedIn) {
+          syncInProgress.current = true;
           setSyncStatus('Loading...');
           const syncResult = await syncOnLogin();
           if (syncResult.data && syncResult.spreadsheetId) {
@@ -136,6 +145,7 @@ const App: React.FC = () => {
             if (syncResult.data.products) setProducts(syncResult.data.products);
           } else {
             setSyncStatus('Not Connected');
+            syncInProgress.current = false;
           }
         } else {
           setSyncStatus('Not Connected');
@@ -143,6 +153,7 @@ const App: React.FC = () => {
       } catch (e) {
         console.error("Auto-sync initialization failed", e);
         setSyncStatus('Sync Error');
+        syncInProgress.current = false;
       }
     };
 
@@ -167,7 +178,7 @@ const App: React.FC = () => {
         if (msg.includes("401") || msg.includes("403") || msg.includes("invalid authentication")) {
           setSpreadsheetId(null); // Disconnect
           setSyncStatus('Auth Error');
-          alert("Google Sheets session expired. Please sign in again via the sync button.");
+          toast.error("Google Sheets session expired. Please sign in again via the sync button.");
         }
       }
     }, 3000); // 3-second debounce
@@ -338,16 +349,8 @@ const App: React.FC = () => {
   };
 
   const handleDeletePolicy = (policyId: string) => {
-    const policy = policies.find(p => p.id === policyId);
-    if (!policy) return;
-
     setPolicies(prev => prev.filter(p => p.id !== policyId));
-    setClients(prev => prev.map(client => {
-      if (client.name === policy.holderName) {
-        return { ...client, totalPolicies: Math.max(0, client.totalPolicies - 1) };
-      }
-      return client;
-    }));
+    // totalPolicies is now derived at render time (Phase 5 item 12) — no manual decrement needed
   };
 
   const handleUpdateClient = (updatedClient: Client) => {
@@ -369,13 +372,22 @@ const App: React.FC = () => {
   };
 
   const handleDeleteClient = (clientId: string) => {
-    // 1. Remove Client
-    setClients(prev => prev.filter(c => c.id !== clientId));
-    // 2. Remove Linked Policies
-    const clientName = clients.find(c => c.id === clientId)?.name;
-    if (clientName) {
-      setPolicies(prev => prev.filter(p => p.holderName !== clientName));
-    }
+    // 1. Remove Client and capture name inside updater to avoid stale closure
+    let deletedClientName: string | undefined;
+    setClients(prev => {
+      const client = prev.find(c => c.id === clientId);
+      deletedClientName = client?.name;
+      return prev.filter(c => c.id !== clientId);
+    });
+    // 2. Remove Linked Policies (holder OR insured)
+    // Use a microtask to ensure deletedClientName is set from the sync updater above
+    setPolicies(prev => {
+      if (!deletedClientName) return prev;
+      return prev.filter(p =>
+        p.holderName !== deletedClientName &&
+        !(p.insuredName?.trim().toLowerCase() === deletedClientName!.trim().toLowerCase())
+      );
+    });
   };
 
 
@@ -386,13 +398,16 @@ const App: React.FC = () => {
 
   const handleAddProduct = (newProduct: Product) => {
     if (products.some(p => p.name === newProduct.name)) {
-      alert("A product with this name already exists.");
+      toast.warning("A product with this name already exists.");
       return;
     }
     setProducts(prev => [newProduct, ...prev]);
   };
 
   const handleMergeProducts = (masterProduct: Product, productsToDelete: string[]) => {
+    // Capture count BEFORE state update to avoid stale closure
+    const affectedCount = policies.filter(p => productsToDelete.includes(p.planName)).length;
+
     // 1. Update Policies: Replace old plan names with the master plan name
     setPolicies(prev => prev.map(p => {
       if (productsToDelete.includes(p.planName)) {
@@ -400,7 +415,7 @@ const App: React.FC = () => {
           ...p,
           planName: masterProduct.name,
           type: masterProduct.type,
-          company: masterProduct.provider // Always force sync to the master provider for merged products
+          company: masterProduct.provider
         };
       }
       return p;
@@ -409,14 +424,15 @@ const App: React.FC = () => {
     // 2. Remove old products from Library
     setProducts(prev => prev.filter(p => !productsToDelete.includes(p.name)));
 
-    // Calculate affected policies for the alert
-    const affectedCount = policies.filter(p => productsToDelete.includes(p.planName)).length;
-    alert(`Merged into "${masterProduct.name}". ${affectedCount} policies updated to match.`);
+    toast.success(`Merged into "${masterProduct.name}". ${affectedCount} policies updated to match.`);
   };
 
   const selectedClient = clients.find(c => c.id === selectedClientId);
   const selectedClientPolicies = selectedClient
-    ? policies.filter(p => p.holderName === selectedClient.name)
+    ? policies.filter(p =>
+      p.holderName === selectedClient.name ||
+      (p.insuredName?.trim().toLowerCase() === selectedClient.name.trim().toLowerCase())
+    )
     : [];
 
   return (

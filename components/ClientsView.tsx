@@ -22,6 +22,7 @@ import {
   Search,
 } from "lucide-react";
 import { Client, PolicyData, Rider, Product } from "../types";
+import { useToast } from './Toast';
 
 interface ClientsViewProps {
   t: (typeof TRANSLATIONS)["en"]["clients"];
@@ -82,6 +83,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 }) => {
   // State for search
   const [searchTerm, setSearchTerm] = useState("");
+  const toast = useToast();
 
   // State for system tags
   // State for system tags
@@ -229,7 +231,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
     // Prevent duplicate if renaming to another existing tag (unless it's the same tag)
     if (newTag !== oldTag && systemTags.includes(newTag)) {
-      alert("Tag already exists");
+      toast.warning("Tag already exists");
       return;
     }
 

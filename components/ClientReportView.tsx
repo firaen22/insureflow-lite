@@ -8,6 +8,7 @@ import {
     calculateTotalCISumInsuredHKD,
     calculateTotalLifeSumInsuredHKD
 } from '../utils/policyCalculations';
+import { useToast } from './Toast';
 
 interface ClientReportViewProps {
     client: Client;
@@ -22,6 +23,7 @@ interface ClientReportViewProps {
 export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, policies, products = [], pdfLayout, onUpdateLayout, onBack, t }) => {
     const reportRef = useRef<HTMLDivElement>(null);
     const [isGenerating, setIsGenerating] = useState(false);
+    const toast = useToast();
 
     // Calculate totals using shared utility
     const totalLifeSA = calculateTotalLifeSumInsuredHKD(policies, client.name);
@@ -240,7 +242,7 @@ export const ClientReportView: React.FC<ClientReportViewProps> = ({ client, poli
             pdf.save(`${client.name}_Report.pdf`);
         } catch (err) {
             console.error('Failed to generate PDF', err);
-            alert('Failed to generate PDF. Please try again.');
+            toast.error('Failed to generate PDF. Please try again.');
         } finally {
             setIsGenerating(false);
         }

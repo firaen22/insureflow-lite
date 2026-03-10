@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AppSettings, UserProfile, Client, PolicyData, Product, PDFColumnConfig } from '../types';
 import { Languages, Database, Cloud, Bell, Trash2, Download, RefreshCw, User, CheckCircle, AlertCircle, Sparkles, FileText, Eye, EyeOff, ArrowUp, ArrowDown } from 'lucide-react';
 import { getUserProfile, listSpreadsheets } from '../services/googleSheets';
+import { useToast } from './Toast';
 
 interface SettingsViewProps {
     settings: AppSettings;
@@ -30,6 +31,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [connectionStatus, setConnectionStatus] = useState<'unknown' | 'connected' | 'error'>('unknown');
     const [statusMessage, setStatusMessage] = useState('');
+    const toast = useToast();
 
     // Gemini API Key State
     const [apiKey, setApiKey] = useState('');
@@ -306,7 +308,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                         localStorage.setItem('ai_base_url', settings.aiBaseUrl || '');
                                         localStorage.setItem('cached_models', JSON.stringify(models));
 
-                                        alert(`Key Verified! Available models: ${models.join(', ')}`);
+                                        toast.success(`Key Verified! Available models: ${models.join(', ')}`);
                                     } catch (e) {
                                         const provider = settings.aiProvider || 'gemini';
                                         let fallbacks: string[] = [];
@@ -326,9 +328,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                                             localStorage.setItem('cached_models', JSON.stringify(fallbacks));
                                             localStorage.setItem('ai_provider', provider);
                                             localStorage.setItem('ai_base_url', settings.aiBaseUrl || '');
-                                            alert(`Connection check failed (${(e as Error).message}), but enabled standard models for ${provider}. You can proceed.`);
+                                            toast.warning(`Connection check failed (${(e as Error).message}), but enabled standard models for ${provider}. You can proceed.`);
                                         } else {
-                                            alert(`Key Verification Failed: ${(e as Error).message}`);
+                                            toast.error(`Key Verification Failed: ${(e as Error).message}`);
                                         }
                                     }
                                 }}

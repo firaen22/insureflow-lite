@@ -6,6 +6,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    // Phase 4: Shared-secret guard — blocks abuse from external callers
+    const proxySecret = process.env.VITE_PROXY_SECRET;
+    if (proxySecret && req.headers['x-proxy-secret'] !== proxySecret) {
+        return res.status(403).json({ error: 'Forbidden' });
+    }
+
     const { apiKey, baseUrl, body } = req.body;
 
     if (!apiKey || !body) {
