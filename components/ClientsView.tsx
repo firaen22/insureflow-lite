@@ -1019,7 +1019,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white">Add Policy</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-white">{t.addPolicy}</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     for {addingPolicyToClient.name}
                   </p>

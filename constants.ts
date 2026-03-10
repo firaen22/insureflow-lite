@@ -176,6 +176,7 @@ export const TRANSLATIONS = {
       title: 'Client Management',
       subtitle: 'Manage client records, tags, and contact details.',
       addClient: 'Add New Client',
+      addPolicy: 'Add Policy',
       searchPlaceholder: 'Search by name, email, phone, or tags...',
       filterTags: 'Filter by System Tags:',
       all: 'All',
@@ -209,6 +210,12 @@ export const TRANSLATIONS = {
       deleteConfirm: 'Are you sure you want to delete this policy?',
       saveChanges: 'Save Changes',
       cancel: 'Cancel',
+      protectionMatureDate: 'Protection Maturity',
+      premiumMatureDate: 'Premium Maturity',
+      generatePdf: 'Generate PDF',
+      noMetadataTags: 'No metadata tags',
+      editClientDetails: 'Edit Client Details',
+      noRidersAdded: 'No riders added.',
       summary: {
         title: 'Protection Summary (HKD)',
         totalPremium: 'Total Annual Premium',
@@ -243,6 +250,7 @@ export const TRANSLATIONS = {
     },
     meetings: {
       title: 'Meeting Logs',
+      subtitle: 'Timeline of all client interactions and reviews',
       addLog: 'Add Meeting Log',
       date: 'Date',
       type: 'Type',
@@ -251,6 +259,13 @@ export const TRANSLATIONS = {
       summarize: 'AI Summarize',
       noLogs: 'No meetings logged yet.',
       deleteConfirm: 'Delete this meeting log?',
+      searchPlaceholder: 'Search logs or clients...',
+      viewRoughNotes: 'View Rough Notes',
+      filterAll: 'All',
+      filter30d: '30d',
+      filter60d: '60d',
+      filter90d: '90d',
+      filter90dPlus: '90d+',
       types: {
         Intro: 'Intro',
         PolicyReview: 'Policy Review',
@@ -273,7 +288,8 @@ export const TRANSLATIONS = {
         type: 'Category',
         tags: 'Auto-Tags',
         actions: 'Actions',
-        noProducts: 'No products found.'
+        noProducts: 'No products found.',
+        noTags: 'No tags'
       },
       form: {
         name: 'Product Name',
@@ -459,6 +475,7 @@ export const TRANSLATIONS = {
       title: '客戶管理',
       subtitle: '管理客戶記錄、標籤和聯絡詳情。',
       addClient: '新增客戶',
+      addPolicy: '新增保單',
       searchPlaceholder: '搜尋姓名、電郵、電話或標籤...',
       filterTags: '依系統標籤篩選：',
       all: '全部',
@@ -492,6 +509,10 @@ export const TRANSLATIONS = {
       deleteConfirm: '您確定要刪除此保單嗎？',
       saveChanges: '儲存變更',
       cancel: '取消',
+      generatePdf: '產生 PDF',
+      noMetadataTags: '無標記',
+      editClientDetails: '編輯客戶資料',
+      noRidersAdded: '尚未新增附約。',
       protectionMatureDate: '保障期滿日',
       premiumMatureDate: '繳費期滿日',
       summary: {
@@ -528,6 +549,7 @@ export const TRANSLATIONS = {
     },
     meetings: {
       title: '會議記錄',
+      subtitle: '所有客戶互動與審查的時間線',
       addLog: '新增會議記錄',
       date: '日期',
       type: '類型',
@@ -536,6 +558,13 @@ export const TRANSLATIONS = {
       summarize: 'AI 摘要',
       noLogs: '尚無會議記錄。',
       deleteConfirm: '確定要刪除此會議記錄？',
+      searchPlaceholder: '搜尋記錄或客戶...',
+      viewRoughNotes: '查看原始筆記',
+      filterAll: '全部',
+      filter30d: '30天',
+      filter60d: '60天',
+      filter90d: '90天',
+      filter90dPlus: '90天+',
       types: {
         Intro: '介紹',
         PolicyReview: '保單檢視',
@@ -545,7 +574,7 @@ export const TRANSLATIONS = {
       }
     },
     products: {
-      title: 'Product Library',
+      title: '產品資料庫',
       subtitle: '集中管理保險計劃及提取規則。',
       addProduct: '新增產品',
       editProduct: '編輯產品',
@@ -558,7 +587,8 @@ export const TRANSLATIONS = {
         type: '類別',
         tags: '自動標籤',
         actions: '操作',
-        noProducts: '未找到產品。'
+        noProducts: '未找到產品。',
+        noTags: '無標籤'
       },
       form: {
         name: '產品名稱',
@@ -744,6 +774,7 @@ export const TRANSLATIONS = {
       title: '客户管理',
       subtitle: '管理客户记录、标签和联络详情。',
       addClient: '新增客户',
+      addPolicy: '新增保单',
       searchPlaceholder: '搜索姓名、电邮、电话或标签...',
       filterTags: '依系统标签筛选：',
       all: '全部',
@@ -777,6 +808,10 @@ export const TRANSLATIONS = {
       deleteConfirm: '您确定要删除此保单吗？',
       saveChanges: '保存变更',
       cancel: '取消',
+      generatePdf: '生成 PDF',
+      noMetadataTags: '无标记',
+      editClientDetails: '编辑客户资料',
+      noRidersAdded: '尚未添加附约。',
       protectionMatureDate: '保障期满日',
       premiumMatureDate: '缴费期满日',
       summary: {
@@ -813,6 +848,7 @@ export const TRANSLATIONS = {
     },
     meetings: {
       title: '会议记录',
+      subtitle: '所有客户互动与审查的时间线',
       addLog: '新增会议记录',
       date: '日期',
       type: '类型',
@@ -821,6 +857,13 @@ export const TRANSLATIONS = {
       summarize: 'AI 摘要',
       noLogs: '尚无会议记录。',
       deleteConfirm: '确定要删除此会议记录？',
+      searchPlaceholder: '搜索记录或客户...',
+      viewRoughNotes: '查看原始草稿',
+      filterAll: '全部',
+      filter30d: '30天',
+      filter60d: '60天',
+      filter90d: '90天',
+      filter90dPlus: '90天+',
       types: {
         Intro: '介绍',
         PolicyReview: '保单检视',
@@ -843,7 +886,8 @@ export const TRANSLATIONS = {
         type: '类别',
         tags: '自动标签',
         actions: '操作',
-        noProducts: '未找到产品。'
+        noProducts: '未找到产品。',
+        noTags: '无标签'
       },
       form: {
         name: '产品名称',

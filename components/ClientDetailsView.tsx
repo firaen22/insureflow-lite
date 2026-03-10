@@ -165,7 +165,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               <button
                 onClick={() => setEditingClient(client)}
                 className="p-2 bg-white dark:bg-white/5 hover:bg-white/10 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white border border-slate-100 dark:border-white/5 transition-all"
-                title="Edit Client Details"
+                title={t.editClientDetails}
               >
                 <Edit className="w-4 h-4" />
               </button>
@@ -184,7 +184,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
               className="flex items-center gap-2 px-6 py-3 bg-white text-slate-900 rounded-2xl hover:bg-slate-200 transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] text-sm font-black uppercase tracking-widest active:scale-95"
             >
               <FileText className="w-4 h-4" />
-              <span>Generate PDF</span>
+              <span>{t.generatePdf}</span>
             </button>
           )}
         </div>
@@ -247,7 +247,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                   <span key={tag} className="bg-white dark:bg-white/5 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-slate-200 dark:border-white/10 flex items-center gap-1 hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-colors">
                     <Tag className="w-3 h-3" /> {tag}
                   </span>
-                )) : <span className="text-[10px] text-slate-600 font-black uppercase py-1">No metadata tags</span>}
+                )) : <span className="text-[10px] text-slate-600 font-black uppercase py-1">{t.noMetadataTags}</span>}
               </div>
             </div>
           </div>
@@ -952,7 +952,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
                         ) : null}
                       </div>
                     ))}
-                    {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-500 dark:text-slate-400 italic">No riders added.</p>}
+                    {(!editingPolicy.riders || editingPolicy.riders.length === 0) && <p className="text-xs text-slate-500 dark:text-slate-400 italic">{t.noRidersAdded}</p>}
                   </div>
                 </div>
 
@@ -983,7 +983,7 @@ export const ClientDetailsView: React.FC<ClientDetailsViewProps> = ({
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 dark:bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto print:hidden">
             <div className="bg-white rounded-xl shadow-sm dark:shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
               <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 className="font-bold text-slate-800">Edit Client Details</h3>
+                <h3 className="font-bold text-slate-800">{t.editClientDetails}</h3>
                 <button
                   onClick={() => setEditingClient(null)}
                   className="text-slate-500 dark:text-slate-400 hover:text-slate-600 transition-colors"

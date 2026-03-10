@@ -261,7 +261,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                     <div className="flex flex-col items-center justify-center">
                       <Box className="w-12 h-12 text-slate-600 dark:text-slate-300 mb-3" />
-                      <p className="text-lg font-medium text-slate-700 dark:text-slate-200">No products found</p>
+                      <p className="text-lg font-medium text-slate-700 dark:text-slate-200">{t.table.noProducts}</p>
                       <p className="text-sm mt-1">Try adjusting your search or add a new product.</p>
                     </div>
                   </td>
@@ -320,7 +320,7 @@ export const ProductLibraryView: React.FC<ProductLibraryViewProps> = ({ t, produ
                             </span>
                           ))}
                           {(!product.defaultTags || product.defaultTags.length === 0) && (
-                            <span className="text-xs text-slate-500 dark:text-slate-400 italic">No tags</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400 italic">{t.table.noTags}</span>
                           )}
                         </div>
                       </td>

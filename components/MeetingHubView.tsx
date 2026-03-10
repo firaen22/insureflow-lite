@@ -47,16 +47,16 @@ export const MeetingHubView: React.FC<MeetingHubViewProps> = ({ clients, onViewC
                         <Clock className="w-6 h-6 text-slate-900 dark:text-white" />
                         {t.title}
                     </h1>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Timeline of all client interactions and reviews</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t.subtitle}</p>
                 </div>
 
                 <div className="flex items-center gap-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl p-1 rounded-lg border border-slate-200 dark:border-white/10 shadow-lg shadow-black/20">
                     {[
-                        { label: 'All', value: 'all' },
-                        { label: '30d', value: 30 },
-                        { label: '60d', value: 60 },
-                        { label: '90d', value: 90 },
-                        { label: '90d+', value: 'over90' }
+                        { label: t.filterAll, value: 'all' },
+                        { label: t.filter30d, value: 30 },
+                        { label: t.filter60d, value: 60 },
+                        { label: t.filter90d, value: 90 },
+                        { label: t.filter90dPlus, value: 'over90' }
                     ].map(btn => (
                         <button
                             key={btn.value}
@@ -76,7 +76,7 @@ export const MeetingHubView: React.FC<MeetingHubViewProps> = ({ clients, onViewC
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 w-4 h-4" />
                 <input
                     type="text"
-                    placeholder="Search logs or clients..."
+                    placeholder={t.searchPlaceholder}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-lg shadow-black/20 text-slate-900 dark:text-white"
@@ -123,7 +123,7 @@ export const MeetingHubView: React.FC<MeetingHubViewProps> = ({ clients, onViewC
                                 {log.rawNotes && (
                                     <details className="mt-2 group/notes">
                                         <summary className="text-[11px] text-slate-500 dark:text-slate-400 cursor-pointer hover:text-slate-600 dark:text-slate-300 font-bold uppercase tracking-tight list-none flex items-center gap-1">
-                                            <MessageSquare className="w-3 h-3" /> View Rough Notes
+                                            <MessageSquare className="w-3 h-3" /> {t.viewRoughNotes}
                                         </summary>
                                         <div className="mt-2 p-3 bg-slate-50 dark:bg-white/[0.02] rounded-lg text-xs text-slate-500 dark:text-slate-400 whitespace-pre-wrap leading-normal font-mono">
                                             {log.rawNotes}
